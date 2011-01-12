@@ -1,0 +1,9 @@
+settings_local.py
+nbproject/
+media/
+*.pyc
+*.html~
+*.py~
+*.js~
+*.css~
+
