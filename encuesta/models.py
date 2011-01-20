@@ -29,6 +29,8 @@ SEXOS = (('femenino', 'Femenino'), ('masculino', 'Masculino'))
 ESTADO_CIVIL = (('soltero', 'Soltero/a'), ('casado', 'Casado/a'), ('no-aplica', 'No aplica'))
 SI_NO = (('si', 'Si'), ('no', 'No'), ('no-aplica', 'No Aplica'))
 SI_NO_SIMPLE = (('si', 'Si'), ('no', 'No'))
+SI_NO_RESPONDE = ((1, 'Si'), (2, 'No'), (3, 'No sabe'), (4, 'No responde'))
+
 NIVEL_EDUCATIVO = (('primaria-completa', 'Primaria Completa'),
                    ('primaria-incompleta', 'Primaria Incompleta'),
                    ('secundaria-completa', 'Secundaria Completa'),
@@ -114,6 +116,17 @@ FRECUENCIA = ((1, 'A diario'),
               (2, 'Una vez a la semana'),
               (3, 'Una vez al mes'),
               (4, 'Más de una vez al mes'))
+
+SATISFECHAS = ((1, 'Bastante satisfechas'), (2, 'Poco satisfechas'), (3, 'Nada satisfechas'))
+
+SERVICIOS = ((1, 'Buenos'), (2, 'Regulares'), (3, 'Deficientes'))
+
+HOGAR = ((1, 'Siempre'), (2, 'Frecuentemente'), (3, 'A veces'), (4, 'Nunca'))
+
+COMUNICACION = ((1, 'De acuerdo'),
+                      (2, 'En desacuerdo'),
+                      (3, 'No sabe'),
+                      (4, 'No responde'))
 
 class Base(models.Model):
     sexo = models.CharField(max_length=30, choices=SEXOS)
@@ -399,3 +412,259 @@ class PrevalenciaVBG(models.Model):
     class Meta:
         verbose_name = 'Prevalencia de la VBG'
         verbose_name_plural = 'Prevalencias de la VBG'
+
+#la VBG debe ser resuelta con ayuda de: esta es la tabla de valores a selccionar
+class ResolverVBG(models.Model):
+    nombre = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = 'La VBG debe resolverse con'
+        verbose_name_plural = 'La VBG de resolverse con'
+
+class AsuntoPublicoVBG(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField(db_index=True)
+    content_object = generic.GenericForeignKey()
+
+    resolverse_con = models.ManyToManyField(ResolverVBG, verbose_name='¿Considera usted que la VBG es un asunto que debe ser resuelto con la participación de:')
+
+    def __unicode__(self):
+        return 'La VBG asunto público %s' % self.id
+
+    class Meta:
+        verbose_name = 'La VBG como asunto público'
+        verbose_name_plural = 'La VBG como asunto público'
+
+#tabla como afecta a las mujeres pag 9
+class ComoAfecta(models.Model):
+    nombre = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = 'Como afecta la VBG'
+        verbose_name = 'Como afecta la VBG'
+
+class EfectoVBG(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField(db_index=True)
+    content_object = generic.GenericForeignKey()
+
+    afecta_mujeres = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='¿Cree Ud que la VBG afecta a las mujeres, la familia y a la comunidad?')
+    como_afecta = models.ManyToManyField(ComoAfecta, verbose_name='¿Cómo la VBG afecta a las mujeres, las familias y a las comunidades?')
+
+    def __unicode__(self):
+        return 'Efecto VBG %s' % self.id
+
+    class Meta:
+        verbose_name = 'Efecto de la VBG'
+        verbose_name_plural = 'Efectos de la VBG'
+
+class ConocimientoLey(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField(db_index=True)
+    content_object = generic.GenericForeignKey()
+
+    existe_ley = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='¿Sabe usted si en Nicaragua existe alguna ley que penaliza la violencia contra las mujeres')
+    mencione = models.CharField(max_length=200, verbose_name='Puede mencionar el nombre de la ley que penaliza la Violencia contra las mujeres', blank=True, default='')
+
+
+    def __unicode__(self):
+        return 'Conocimiento de ley %s' % self.id
+
+    class Meta:
+        verbose_name = 'Conocimiento de Ley'
+        verbose_name_plural = 'Conocimiento de leyes'
+
+#clase para agregar las acciones prohibidas por la ley
+class AccionProhibida(models.Model):
+    padre_golpea = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Un padre o madre golpea a un hijo(a)', blank=True, default=4)
+    maestro_castiga = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Un maestro o maestra que castiga física o psicologicamente a um alumno(a)', blank=True, default=4)
+    maestro_relacion = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Un maestro o maestra que tiene relaciones sexuales con una alumna o un alumno', blank=True, default=4)
+    joven_case = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Que un joven o una joven se case antes de los 18', blank=True, default=4)
+    joven_relacion = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='2 personas menores de 18 años que tienen relaciones sexuales', blank=True, default=4)
+    patron_acoso = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Un patrón que molesta/acosa sexualmente a una empleada', blank=True, default=4)
+    lider_religioso = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Un líder religioso o comunitario que acosa sexualmente a una persona de su comunidad', blank=True, default=4)
+    adulto_relacion = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Un adulto que sostiene relaciones con otra que es menor de edad', blank=True, default=4)
+    adulto_dinero = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Una persona adulta que ofrece dinero a una adolescente para tener relaciones sexuales', blank=True, default=4)
+    conocimiento = models.ForeignKey(ConocimientoLey)
+
+    def __unicode__(self):
+        return 'Accion Prohibida %s' % self.id
+
+    class Meta:
+        verbose_name = 'Acción prohibida por la ley'
+        verbose_name_plural = 'Acciones prohibidas por la ley'
+
+#clase para saber las decisiones a tomar
+class Decision(models.Model):
+    nombre = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name_plural = 'Decisiones'
+
+class TomaDecision(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField(db_index=True)
+    content_object = generic.GenericForeignKey()
+
+    decision = models.ManyToManyField(Decision, verbose_name='¿Cuando una mujer vive VBG cuales acciones deberia realizar?')
+
+    def __unicode__(self):
+        return 'Decisión %s' % self.id
+
+    class Meta:
+        verbose_name = 'Toma de decisión'
+        verbose_name_plural = 'Toma de decisiones'
+
+class Espacio(models.Model):
+    nombre = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = 'Espacio comunitario'
+        verbose_name_plural = 'Espacios Comunitarios'
+
+class MotivoParticipacion(models.Model):
+    nombre = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name_plural = 'Motivios de participación'
+
+class ParticipacionPublica(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField(db_index=True)
+    content_object = generic.GenericForeignKey()
+
+    espacio = models.ManyToManyField(Espacio, verbose_name='¿En qué organización o espacios comunitarios te encuentras integrada actualmente?')
+    motivo = models.ManyToManyField(MotivoParticipacion, verbose_name='¿Qué le motiva a participar en esta organización?')
+
+    def __unicode__(self):
+        return 'Participación publica %s' % self.id
+
+    class Meta:
+        verbose_name = 'Participación Pública'
+        verbose_name_plural = 'Participaciones Públicas'
+
+class IncidenciaPolitica(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField(db_index=True)
+    content_object = generic.GenericForeignKey()
+
+    existen_mujeres = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='¿En su comunidad existen mujeres que representan a otras en espacios de participación ciudadana')
+    satisfecha = models.IntegerField(choices=SATISFECHAS, verbose_name='¿Qué tan satisfechas cree Ud que están las mujeres de su comunidad con quienes las representan en esos espacios?')
+
+    def __unicode__(self):
+        return 'Incidencia Política %s' % self.id
+
+    class Meta:
+        verbose_name_plural = 'Incidencia Política'
+
+class CalidadAtencion(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField(db_index=True)
+    content_object = generic.GenericForeignKey()
+
+    valor_servicio = models.IntegerField(choices=SERVICIOS, verbose_name='¿Como valora Ud los servicios que las intituciones ofrecen a las mujeres que viven situaciones de VBG')
+
+
+class Propuesta(models.Model):
+    propuesta = models.IntegerField(choices=SI_NO_SIMPLE, verbose_name='Ha presentado propuestas ante las autoridades públicas para mejorar los servicios que brindan a mujeres en situaciones de VBG?')
+    si_tipo = models.TextField(verbose_name='Si ha presentado propuestas, escriba que tipo de propuesta', blank=True)
+    no_porque = models.TextField(verbose_name='No ha presentado propuestas? Porque?')
+
+    calidad = models.ForeignKey(CalidadAtencion)
+
+    def __unicode__(self):
+        return 'Propuesta %s' % self.id
+
+    class Meta:
+        verbose_name_plural = 'Propuestas'
+
+class PropuestaNegociada(models.Model):
+    propuesta = models.IntegerField(choices=SI_NO_SIMPLE, verbose_name='Ha negociado con las autoridades públicas alguna propuesta para mejorar los servicios que brindan a mujeres en situaciones de VBG?')
+    si_tipo = models.TextField(verbose_name='Si ha negociado alguna, escriba que tipo de propuesta', blank=True)
+    no_porque = models.TextField(verbose_name='No ha negociado ninguna? Porque?')
+
+    calidad = models.ForeignKey(CalidadAtencion)
+
+    def __unicode__(self):
+        return 'Propuesta Negociadas %s' % self.id
+
+    class Meta:
+        verbose_name_plural = 'Propuestas Negociadas'
+
+class Corresponsabilidad(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField(db_index=True)
+    content_object = generic.GenericForeignKey()
+
+    lavar = models.IntegerField(choices=HOGAR, verbose_name='Lavar la ropa')
+    plancar = models.IntegerField(choices=HOGAR, verbose_name='Planchar la ropa')
+    limpiar = models.IntegerField(choices=HOGAR, verbose_name='Limpiar la casa')
+    jalar_agua = models.IntegerField(choices=HOGAR)
+    cuidar_ninos = models.IntegerField(choices=HOGAR, verbose_name='Cuidar a los niños y niñas')
+    hacer_mandados = models.IntegerField(choices=HOGAR)
+    llevar_lena = models.IntegerField(choices=HOGAR, verbose_name='Llevar la leña')
+    lavar_trastes = models.IntegerField(choices=HOGAR, verbose_name='Lavar los trastes')
+    arreglar_cama = models.IntegerField(choices=HOGAR, verbose_name='Arreglar la cama')
+    ir_reuniones = models.IntegerField(choices=HOGAR, verbose_name='Ir a las reuniones en la escuela')
+    acompanar = models.IntegerField(choices=HOGAR, verbose_name='Acompañar a los hijos/as en las tareas')
+    hacer_compras = models.IntegerField(choices=HOGAR, verbose_name='Hacer las compras de la casa')
+    pagar_servicios = models.IntegerField(choices=HOGAR, verbose_name='Pagar los sevicios públicos (agua, luz, etc.)')
+    llevar_enfermos = models.IntegerField(choices=HOGAR, verbose_name='Llevar a los enfermos al médico/hospital')
+    cuidar_enfermos = models.IntegerField(choices=HOGAR, verbose_name='Cuidar a los enfermos')
+
+    def __unicode__(self):
+        return 'Corresponsabilidad %s' % self.id
+
+    class Meta:
+        verbose_name = 'Actividad que realiza en el hogar'
+        verbose_name_plural = 'Actividades que realiza en el hogar'
+
+class SolucionConflicto(models.Model):
+    nombre = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = 'Solución a conflicto'
+        verbose_name_plural = 'Soluciones a conflicto'
+
+class NegociacionExitosa(models.Model):
+    nombre = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = 'Negociación exitosa'
+        verbose_name_plural = 'Negociaciones exitosa'
+
+class ComunicacionAsertiva(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField(db_index=True)
+    content_object = generic.GenericForeignKey()
+
+    identifico = models.ManyToManyField(SolucionConflicto, verbose_name='¿Qué debo hacer para que la solución a un conflicto sea exitosa?')
+    negociacion_exitosa = models.ManyToManyField(NegociacionExitosa, verbose_name='¿Qué se debe hacer para que una negociación de pareja sea exitosa?')
+
+    def __unicode__(self):
+        return 'Comunicación asertiva %s' % self.id
+
+    class Meta:
+        verbose_name = 'Comunicación asertiva'
+        verbose_name_plural = 'Comunicaciones asertivas'
