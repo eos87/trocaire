@@ -69,4 +69,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',    
     'django.contrib.admin',
     'trocaire.lugar',
+    'trocaire.encuesta',
+    'south',
 )

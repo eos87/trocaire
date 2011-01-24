@@ -6,7 +6,7 @@ from trocaire.lugar.models import *
 
 class Encuestador(models.Model):
     nombre_completo = models.CharField(max_length=250, help_text='Un nombre y un Apellido')
-    telefono = models.CharField(max_length=20, blank=True, defatult='')
+    telefono = models.CharField(max_length=20, blank=True, default='')
 
     def __unicode__(self):
         return self.nombre_completo
@@ -133,20 +133,14 @@ class Base(models.Model):
     edad = models.IntegerField(help_text='Edad en años')
     comunidad = models.ForeignKey(Comunidad)
     municipio = models.ForeignKey(Municipio)
-    estado_civil = models.CharField(choices=ESTADO_CIVIL)
-    lugar_origen = models.CharField(max_length=200, blank=True, default='')
-    asiste_iglesia = models.BooleanField()
+    estado_civil = models.CharField(choices=ESTADO_CIVIL, max_length=20)
+    lugar_origen = models.CharField(max_length=200, blank=True, default='', verbose_name='Lugar de origen')
+    asiste_iglesia = models.BooleanField(verbose_name='¿Asiste a alguna iglesia?')
     cual_iglesia = models.CharField(max_length=150, blank=True, default='')
 
     class Meta:
         abstract = True
         ordering = ['-id']
-
-
-class Mujer(Base):
-    class Meta:
-        verbose_name = 'Encuesta Mujer'
-        verbose_name_plural = 'Encuestas Mujeres'
 
 class ViveCon(models.Model):
     nombre = models.CharField(max_length=30)
@@ -215,6 +209,10 @@ class InformacionSocioEconomica(models.Model):
     def __unicode__(self):
         return 'Info SocioEconomica %s' % self.id
 
+    class Meta:
+        verbose_name = 'Información socio-económica'
+        verbose_name_plural = 'Información socio-económica'
+
 class Recurso(models.Model):
     nombre = models.CharField(max_length=60)
 
@@ -224,13 +222,13 @@ class Recurso(models.Model):
     class Meta:
         verbose_name_plural = 'Recursos'
 
-class AccesoControlRecurso(models.Model):
+class AccesoControlRecurso(models.Model):    
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    recursos = models.ManyToManyField(Recurso, verbose_name='Mencione los recursos de los cuales ud. es dueño/a')
-    recursos_decide = models.ManyToManyField(Recurso, related_name='recursos-decide', verbose_name='Menciones los recursos de los cuales ud. decide sobre el uso que les da')
+    recursos = models.ManyToManyField(Recurso, related_name='recursos', verbose_name='Mencione los recursos de los cuales ud. es dueno/a')
+    recursos_decide = models.ManyToManyField(Recurso, related_name='recursos_decide', verbose_name='Mencione los recursos de los cuales ud. decide sobre el uso que les da')
 
     def __unicode__(self):
         return 'Acceso y control %s' % self.id
@@ -240,7 +238,7 @@ class AccesoControlRecurso(models.Model):
         verbose_name_plural = 'Accesos y control de recursos'
 
 class VBG(models.Model):
-    nombre = models.CharField(max_lenth=50)
+    nombre = models.CharField(max_length=50)
 
     def __unicode__(self):
         return self.nombre
@@ -296,7 +294,7 @@ class JustificacionVBG(models.Model):
     content_object = generic.GenericForeignKey()
 
     justificacion = models.IntegerField(choices=JUSTIFICACIONES, verbose_name='Para Ud los hombres efercen violencia hacia las mujeres porque:')
-    respuesta = models.CharField(choices=SI_NO_SIMPLE, verbose_name='Seleccione la respuesta')
+    respuesta = models.CharField(choices=SI_NO_SIMPLE, verbose_name='Seleccione la respuesta', max_length=10)
 
     def __unicode__(self):
         return 'Justificacion VBG %s' % self.id
@@ -363,7 +361,7 @@ class AccionVBG(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    ha_ayudado = models.InterField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='En el último año Ud ha ayudado a alguna mujer que ha vivido VBG?')
+    ha_ayudado = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='En el último año Ud ha ayudado a alguna mujer que ha vivido VBG?')
     donde_buscar = models.ManyToManyField(BuscarAyuda, verbose_name='Dónde debe buscar ayuda una mujer que vive VBG')
     accion_tomar = models.ManyToManyField(QueDebeHacer, verbose_name='Si un hombre le pega a su pareja, cuál de las siguientes acciones ella debería tomar')
 
@@ -581,7 +579,7 @@ class CalidadAtencion(models.Model):
 
 
 class Propuesta(models.Model):
-    propuesta = models.IntegerField(choices=SI_NO_SIMPLE, verbose_name='Ha presentado propuestas ante las autoridades públicas para mejorar los servicios que brindan a mujeres en situaciones de VBG?')
+    propuesta = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Ha presentado propuestas ante las autoridades públicas para mejorar los servicios que brindan a mujeres en situaciones de VBG?')
     si_tipo = models.TextField(verbose_name='Si ha presentado propuestas, escriba que tipo de propuesta', blank=True)
     no_porque = models.TextField(verbose_name='No ha presentado propuestas? Porque?')
 
@@ -594,7 +592,7 @@ class Propuesta(models.Model):
         verbose_name_plural = 'Propuestas'
 
 class PropuestaNegociada(models.Model):
-    propuesta = models.IntegerField(choices=SI_NO_SIMPLE, verbose_name='Ha negociado con las autoridades públicas alguna propuesta para mejorar los servicios que brindan a mujeres en situaciones de VBG?')
+    propuesta = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Ha negociado con las autoridades públicas alguna propuesta para mejorar los servicios que brindan a mujeres en situaciones de VBG?')
     si_tipo = models.TextField(verbose_name='Si ha negociado alguna, escriba que tipo de propuesta', blank=True)
     no_porque = models.TextField(verbose_name='No ha negociado ninguna? Porque?')
 
@@ -668,3 +666,34 @@ class ComunicacionAsertiva(models.Model):
     class Meta:
         verbose_name = 'Comunicación asertiva'
         verbose_name_plural = 'Comunicaciones asertivas'
+
+class Mujer(Base):
+    encuestador = models.ForeignKey(Encuestador)
+    contraparte = models.ForeignKey(Contraparte)
+    composicion_hogar = generic.GenericRelation(ComposicionHogar)
+    informacion_socio = generic.GenericRelation(InformacionSocioEconomica)
+    acceso_recurso = generic.GenericRelation(AccesoControlRecurso)
+    concepto_violencia = generic.GenericRelation(ConceptoViolencia)
+    expresion_violencia = generic.GenericRelation(ExpresionVBG)
+    creencia = generic.GenericRelation(Creencia)
+    justificacion = generic.GenericRelation(JustificacionVBG)
+    causa = generic.GenericRelation(CausaVBG)
+    situacion = generic.GenericRelation(SituacionVBG)
+    accionvbg = generic.GenericRelation(AccionVBG)
+    prevalencia = generic.GenericRelation(PrevalenciaVBG)
+    asunto_publico = generic.GenericRelation(AsuntoPublicoVBG)
+    efecto = generic.GenericRelation(EfectoVBG)
+    conocimiento = generic.GenericRelation(ConocimientoLey)
+    toma_decision = generic.GenericRelation(TomaDecision)
+    participacion = generic.GenericRelation(ParticipacionPublica)
+    incidencia = generic.GenericRelation(IncidenciaPolitica)
+    calidad_atencion = generic.GenericRelation(CalidadAtencion)
+    corresponsabilidad = generic.GenericRelation(Corresponsabilidad)
+    comunicacion = generic.GenericRelation(ComunicacionAsertiva)
+    
+    class Meta:
+        verbose_name = 'Encuesta Mujer'
+        verbose_name_plural = 'Encuestas Mujeres'
+
+    def __unicode__(self):
+        return 'Encuesta Mujeres %s' % self.id
