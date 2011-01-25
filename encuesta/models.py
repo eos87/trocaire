@@ -124,9 +124,17 @@ SERVICIOS = ((1, 'Buenos'), (2, 'Regulares'), (3, 'Deficientes'))
 HOGAR = ((1, 'Siempre'), (2, 'Frecuentemente'), (3, 'A veces'), (4, 'Nunca'))
 
 COMUNICACION = ((1, 'De acuerdo'),
-                      (2, 'En desacuerdo'),
-                      (3, 'No sabe'),
-                      (4, 'No responde'))
+                (2, 'En desacuerdo'),
+                (3, 'No sabe'),
+                (4, 'No responde'))
+
+HABLAN_DE = ((1, 'Agresión física'),
+             (2, 'Daño psicológico'),
+             (3, 'Violencia sexual'),
+             (4, 'Abuso de poder'),
+             (5, 'Irrespeto al derecho de mujeres, niñas y adolescentes'),
+             (6, 'Violencia verbal'),
+             (7, 'Otros'))
 
 class Base(models.Model):
     sexo = models.CharField(max_length=30, choices=SEXOS)
@@ -237,21 +245,23 @@ class AccesoControlRecurso(models.Model):
         verbose_name = 'Acceso y control de recursos'
         verbose_name_plural = 'Accesos y control de recursos'
 
-class VBG(models.Model):
+"""class VBG(models.Model):
     nombre = models.CharField(max_length=50)
 
     def __unicode__(self):
         return self.nombre
 
     class Meta:
-        verbose_name_plural = 'VBGs'
+        verbose_name_plural = 'VBGs'"""
 
 class ConceptoViolencia(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    conocimientoVBG = models.ManyToManyField(VBG, verbose_name='Cuando alguien le habla de VBG, usted cree que están hablando de:')
+    #conocimientoVBG = models.ManyToManyField(VBG, verbose_name='Cuando alguien le habla de VBG, usted cree que están hablando de:')
+    sobre = models.IntegerField(choices=HABLAN_DE, verbose_name='Cuando alguien le habla de VBG, usted cree que están hablando de:', blank=True, null=True)
+    respuesta = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Seleccione la respuesta', blank=True, null=True)
 
     def __unicode__(self):
         return 'Conocimiento de Violencia %s' % self.id

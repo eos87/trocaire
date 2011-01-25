@@ -36,10 +36,44 @@ class AccesoControlRecursoInline(generic.GenericTabularInline):
     model = AccesoControlRecurso    
     max_num = 1
 
+class ConceptoViolenciaInline(generic.GenericTabularInline):
+    model = ConceptoViolencia
+    extra = 1
+
+class ExpresionVBGInline(generic.GenericTabularInline):
+    model = ExpresionVBG
+    extra = 1
+
+class CreenciaInline(generic.GenericTabularInline):
+    model = Creencia
+    extra = 1
+
+class JustificacionVBGInline(generic.GenericTabularInline):
+    model = JustificacionVBG
+    extra = 1
+
+class CausaVBGInline(generic.GenericTabularInline):
+    model = CausaVBG
+    extra = 1
+
+class SituacionVBGInline(generic.GenericTabularInline):
+    model = SituacionVBG
+    max_num = 1
+
+#inline especial que se incluye dentro de otro
+class QueHaceUdInline(admin.TabularInline):
+    model = QueHaceUd
+    max_num = 1
+
+class AccionVBGInline(generic.GenericTabularInline):
+    model = AccionVBG
+    inlines = (QueHaceUdInline,)
+    max_num = 1
+
 class MujeresAdmin(admin.ModelAdmin):
     class Media:
         css = {
-            "all": ("/files/css/especial.css", )
+            "all": ("/files/css/especial.css",)
         }
 
         """js = ('/files/js/tiny_mce/tiny_mce.js',
@@ -47,10 +81,20 @@ class MujeresAdmin(admin.ModelAdmin):
 
     save_on_top = True
     actions_on_top = True
-    inlines = [ComposicionHogarInline, InfoSocioEconomicaInline, AccesoControlRecursoInline
-    ]
+    inlines = [ComposicionHogarInline,
+        InfoSocioEconomicaInline,
+        AccesoControlRecursoInline,
+        ConceptoViolenciaInline,
+        ExpresionVBGInline,
+        CreenciaInline,
+        JustificacionVBGInline,
+        CausaVBGInline,
+        SituacionVBGInline,
+        AccionVBGInline,
+        ]
 
 admin.site.register(Mujer, MujeresAdmin)
 admin.site.register(ViveCon)
 admin.site.register(LugarDeTrabajo)
 admin.site.register(Recurso)
+admin.site.register(AccionVBG)
