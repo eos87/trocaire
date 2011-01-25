@@ -66,9 +66,11 @@ class QueHaceUdInline(admin.TabularInline):
     max_num = 1
 
 class AccionVBGInline(generic.GenericTabularInline):
-    model = AccionVBG
-    inlines = (QueHaceUdInline,)
+    model = AccionVBG    
     max_num = 1
+
+class AccionVBGAdmin(admin.ModelAdmin):
+    inlines = [QueHaceUdInline,]
 
 class MujeresAdmin(admin.ModelAdmin):
     class Media:
@@ -97,4 +99,3 @@ admin.site.register(Mujer, MujeresAdmin)
 admin.site.register(ViveCon)
 admin.site.register(LugarDeTrabajo)
 admin.site.register(Recurso)
-admin.site.register(AccionVBG)
