@@ -60,22 +60,28 @@ class SituacionVBGInline(generic.GenericTabularInline):
     model = SituacionVBG
     max_num = 1
 
-#inline especial que se incluye dentro de otro
-class QueHaceUdInline(admin.TabularInline):
-    model = QueHaceUd
+class AccionVBGInline(generic.GenericStackedInline):
+    model = AccionVBG
+    pregunta = '¿Qié hace Ud cuando existe una situación de VBG en su comunidad?'
+    fieldsets = [
+        (None, {'fields': ['ha_ayudado']}),
+        (pregunta, {'fields': ['se_acerca', 'invita_actividad', 'no_hace_nada', 'no_hace_problema', 'busca_alternativa', 'no_sabe']}),
+    ]
+    radio_fields = {
+        'se_acerca': admin.HORIZONTAL,
+        'invita_actividad': admin.HORIZONTAL,
+        'no_hace_nada': admin.HORIZONTAL,
+        'no_hace_problema': admin.HORIZONTAL,
+        'busca_alternativa': admin.HORIZONTAL,
+        'no_sabe': admin.HORIZONTAL
+    }
     max_num = 1
 
-class AccionVBGInline(generic.GenericTabularInline):
-    model = AccionVBG    
-    max_num = 1
-
-class AccionVBGAdmin(admin.ModelAdmin):
-    inlines = [QueHaceUdInline,]
 
 class MujeresAdmin(admin.ModelAdmin):
     class Media:
         css = {
-            "all": ("/files/css/especial.css",)
+            "all": ("/files/css/especial.css", )
         }
 
         """js = ('/files/js/tiny_mce/tiny_mce.js',
@@ -99,3 +105,6 @@ admin.site.register(Mujer, MujeresAdmin)
 admin.site.register(ViveCon)
 admin.site.register(LugarDeTrabajo)
 admin.site.register(Recurso)
+admin.site.register(Comunidad)
+admin.site.register(Encuestador)
+admin.site.register(Contraparte)

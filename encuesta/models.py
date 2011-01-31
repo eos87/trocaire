@@ -365,6 +365,13 @@ class QueDebeHacer(models.Model):
         verbose_name = 'Que hacer si sufre VBG'
         verbose_name_plural = 'Que hacer si sufre VBG'
 
+CERO_SEIS = ((0, '1'),
+             (1, '2'),
+             (2, '3'),
+             (3, '4'),
+             (4, '5'),
+             (5, '6'))
+             
 #inline en esta shit
 class AccionVBG(models.Model):
     content_type = models.ForeignKey(ContentType)
@@ -372,6 +379,14 @@ class AccionVBG(models.Model):
     content_object = generic.GenericForeignKey()
 
     ha_ayudado = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='En el último año Ud ha ayudado a alguna mujer que ha vivido VBG?')
+    #campos de la pregunta que hace Ud?
+    se_acerca = models.IntegerField(verbose_name='Se acerca a la persona, la escucha y le brinda condiciones', choices=CERO_SEIS)
+    invita_actividad = models.IntegerField(verbose_name='La invita a una actividad colectiva en la que se habla sobre las causas y consecuencias de la VBG', choices=CERO_SEIS)
+    no_hace_nada = models.IntegerField(verbose_name='No hace nada por pena', choices=CERO_SEIS)
+    no_hace_problema = models.IntegerField('No hace nada porque cree que eso es meterse en problemas', choices=CERO_SEIS)
+    busca_alternativa = models.IntegerField('Busca alternativas y le da seguimiento', choices=CERO_SEIS)
+    no_sabe = models.IntegerField('No sabe que hacer', choices=CERO_SEIS)
+    #terminan campos de que hace Ud?
     donde_buscar = models.ManyToManyField(BuscarAyuda, verbose_name='Dónde debe buscar ayuda una mujer que vive VBG')
     accion_tomar = models.ManyToManyField(QueDebeHacer, verbose_name='Si un hombre le pega a su pareja, cuál de las siguientes acciones ella debería tomar')
 
@@ -381,18 +396,6 @@ class AccionVBG(models.Model):
     class Meta:
         verbose_name = 'Acción ante situación de VBG'
         verbose_name_plural = 'Acciones ante situación de VBG'
-
-#clase para la pregunta anterior. Tener en cuenta el fuckin inline
-class QueHaceUd(models.Model):
-    accionvbg = models.ForeignKey(AccionVBG)
-    que_hace = models.IntegerField(choices=QUE_HACE, verbose_name='Qué hace usted cuando existe una situación de violencia basada en género en su comunidad?')
-
-    def __unicode__(self):
-        return 'Que hace Ud %s' % self.id
-
-    class Meta:
-        verbose_name = 'Que hace Ud en caso de VBG'
-        verbose_name_plural = 'Que hace Ud en caso de VBG'
 
 class Quien(models.Model):
     nombre = models.CharField(max_length=50)
