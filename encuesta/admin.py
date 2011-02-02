@@ -384,7 +384,6 @@ admin.site.register(Funcionario, FuncionarioAdmin)
 admin.site.register(Accion)
 admin.site.register(RecursoCuentaIns)
 admin.site.register(AccionPrevencion)
-admin.site.register(TipoPropuesta)
 
 #temporales para agregar en el admin
 admin.site.register(ViveCon)
