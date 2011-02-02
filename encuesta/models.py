@@ -167,12 +167,13 @@ class ComposicionHogar(models.Model):
     content_object = generic.GenericForeignKey()
 
     tiene_pareja = models.CharField(max_length=10, choices=SI_NO, verbose_name='Actualmente usted tiene esposo/a o compañero/a?')
-    vive_con = models.ManyToManyField(ViveCon)
-    cuantos_viven = models.IntegerField('Cuantas personas habitan en la casa donde usted vive?')
+    vive_con = models.ManyToManyField(ViveCon, verbose_name='En su hogar vive con:')
+    cuantos_viven = models.IntegerField('Cuantas personas habitan en la casa donde usted vive?', default=0)
     entre0y6 = models.IntegerField('Número de niños entre 0 y 6 años que viven en la casa', default=0)
     entre7y17 = models.IntegerField('Número de niños entre 0 y 17 años que viven en la casa', default=0)
     entre18ymas = models.IntegerField('Número de personas de 18 y más años que viven en la casa', default=0)
     tiene_hijos = models.CharField(max_length=10, choices=SI_NO)
+    cuantos_hijos = models.IntegerField(verbose_name='¿Cuántos hijos tiene?', default=0)
     hijos0y6 = models.IntegerField('Hijos entre 0 y 6 años', default=0)
     hijos7y17 = models.IntegerField('Hijos entre 0 y 17 años', default=0)
     hijos18ymas = models.IntegerField('Hijos entre  18 y más', default=0)
@@ -202,13 +203,19 @@ class Aporta(models.Model):
     class Meta:
         verbose_name_plural = 'Aportan'
 
-class InformacionSocioEconomica(models.Model):
+#class padre de InformacionSocioEconomica para hereder elementos
+class BaseInfoSocioEconomica(models.Model):
+    estudia = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Estudia usted actualmente?')
+    nivel_educativo = models.CharField(max_length=100, choices=NIVEL_EDUCATIVO, verbose_name='Cuál es su nivel educativo alcanzado?')
+    
+    class Meta:
+        abstract = True
+
+class InformacionSocioEconomica(BaseInfoSocioEconomica):
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
-
-    estudia = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Estudia usted actualmente?')
-    nivel_educativo = models.CharField(max_length=100, choices=NIVEL_EDUCATIVO, verbose_name='Cuál es su nivel educativo alcanzado?')
+    
     trabaja_fuera = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Trabaja usted fuera del hogar?')
     donde_trabaja = models.ManyToManyField(LugarDeTrabajo, verbose_name='Donde trabaja?')
     hace_dinero = models.IntegerField(choices=QUE_HACE_DINERO, verbose_name='Qué hace usted con el dinero que gana?')
@@ -244,15 +251,6 @@ class AccesoControlRecurso(models.Model):
     class Meta:
         verbose_name = 'Acceso y control de recursos'
         verbose_name_plural = 'Accesos y control de recursos'
-
-"""class VBG(models.Model):
-    nombre = models.CharField(max_length=50)
-
-    def __unicode__(self):
-        return self.nombre
-
-    class Meta:
-        verbose_name_plural = 'VBGs'"""
 
 class ConceptoViolencia(models.Model):
     content_type = models.ForeignKey(ContentType)
@@ -371,24 +369,29 @@ CERO_SEIS = ((0, '1'),
              (3, '4'),
              (4, '5'),
              (5, '6'))
-             
+ 
+#class padre de Acciones ante una situación de VBG
+class BaseAccionVBG(models.Model):
+    ha_ayudado = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='En el último año Ud ha ayudado a alguna mujer que ha vivido VBG?')
+    #campos de la pregunta que hace Ud?
+    se_acerca = models.IntegerField(blank=True, null=True, verbose_name='Se acerca a la persona, la escucha y le brinda condiciones', choices=CERO_SEIS)
+    invita_actividad = models.IntegerField(blank=True, null=True, verbose_name='La invita a una actividad colectiva en la que se habla sobre las causas y consecuencias de la VBG', choices=CERO_SEIS)
+    no_hace_nada = models.IntegerField(blank=True, null=True, verbose_name='No hace nada por pena', choices=CERO_SEIS)
+    no_hace_problema = models.IntegerField('No hace nada porque cree que eso es meterse en problemas', choices=CERO_SEIS, blank=True, null=True)
+    busca_alternativa = models.IntegerField('Busca alternativas y le da seguimiento', choices=CERO_SEIS, blank=True, null=True)
+    no_sabe = models.IntegerField('No sabe que hacer', choices=CERO_SEIS, blank=True, null=True)
+    #terminan campos de que hace Ud?
+    donde_buscar = models.ManyToManyField(BuscarAyuda, verbose_name=u'Dónde debe buscar ayuda una mujer que vive VBG?')
+    accion_tomar = models.ManyToManyField(QueDebeHacer, verbose_name=u'Si un hombre le pega a su pareja, cuál de las siguientes acciones ella debería tomar?')    
+    
+    class Meta:
+        abstract = True
+
 #inline en esta shit
-class AccionVBG(models.Model):
+class AccionVBG(BaseAccionVBG):
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
-
-    ha_ayudado = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='En el último año Ud ha ayudado a alguna mujer que ha vivido VBG?')
-    #campos de la pregunta que hace Ud?
-    se_acerca = models.IntegerField(verbose_name='Se acerca a la persona, la escucha y le brinda condiciones', choices=CERO_SEIS)
-    invita_actividad = models.IntegerField(verbose_name='La invita a una actividad colectiva en la que se habla sobre las causas y consecuencias de la VBG', choices=CERO_SEIS)
-    no_hace_nada = models.IntegerField(verbose_name='No hace nada por pena', choices=CERO_SEIS)
-    no_hace_problema = models.IntegerField('No hace nada porque cree que eso es meterse en problemas', choices=CERO_SEIS)
-    busca_alternativa = models.IntegerField('Busca alternativas y le da seguimiento', choices=CERO_SEIS)
-    no_sabe = models.IntegerField('No sabe que hacer', choices=CERO_SEIS)
-    #terminan campos de que hace Ud?
-    donde_buscar = models.ManyToManyField(BuscarAyuda, verbose_name='Dónde debe buscar ayuda una mujer que vive VBG')
-    accion_tomar = models.ManyToManyField(QueDebeHacer, verbose_name='Si un hombre le pega a su pareja, cuál de las siguientes acciones ella debería tomar')
 
     def __unicode__(self):
         return 'Accion ante VBG %s' % self.id
@@ -413,9 +416,9 @@ class PrevalenciaVBG(models.Model):
     content_object = generic.GenericForeignKey()
 
     ha_vivido_vbg = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='¿Considera Ud que alguna vez ha vivido VBG?')
-    que_tipo = models.IntegerField(choices=TIPO_VBG, verbose_name='¿Qué tipo de VBG ha vivido?')
-    frecuencia = models.IntegerField(choices=FRECUENCIA, verbose_name='En este último año, con qué frecuencia ha vivido situaciones de VBG')
-    quien = models.ManyToManyField(Quien, verbose_name='¿Quién es la persona que ha ejercido VBG sobre usted?')
+    que_tipo = models.IntegerField(choices=TIPO_VBG, verbose_name='¿Qué tipo de VBG ha vivido?', blank=True, null=True)
+    frecuencia = models.IntegerField(choices=FRECUENCIA, verbose_name='En este último año, con qué frecuencia ha vivido situaciones de VBG', blank=True, null=True)
+    quien = models.ManyToManyField(Quien, verbose_name=u'¿Quién es la persona que ha ejercido VBG sobre usted?', blank=True, null=True)
 
     def __unicode__(self):
         return 'Prevalencia de VBG %s' % self.id
@@ -440,14 +443,14 @@ class AsuntoPublicoVBG(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    resolverse_con = models.ManyToManyField(ResolverVBG, verbose_name='¿Considera usted que la VBG es un asunto que debe ser resuelto con la participación de:')
+    resolverse_con = models.ManyToManyField(ResolverVBG, verbose_name=u'¿Considera usted que la VBG es un asunto que debe ser resuelto con la participación de')
 
     def __unicode__(self):
-        return 'La VBG asunto público %s' % self.id
+        return 'VBG asunto público %s' % self.id
 
     class Meta:
-        verbose_name = 'La VBG como asunto público'
-        verbose_name_plural = 'La VBG como asunto público'
+        verbose_name = 'VBG como asunto público'
+        verbose_name_plural = 'VBG como asunto público'
 
 #tabla como afecta a las mujeres pag 9
 class ComoAfecta(models.Model):
@@ -466,7 +469,7 @@ class EfectoVBG(models.Model):
     content_object = generic.GenericForeignKey()
 
     afecta_mujeres = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='¿Cree Ud que la VBG afecta a las mujeres, la familia y a la comunidad?')
-    como_afecta = models.ManyToManyField(ComoAfecta, verbose_name='¿Cómo la VBG afecta a las mujeres, las familias y a las comunidades?')
+    como_afecta = models.ManyToManyField(ComoAfecta, verbose_name=u'¿Cómo la VBG afecta a las mujeres, las familias y a las comunidades?', blank=True, null=True)
 
     def __unicode__(self):
         return 'Efecto VBG %s' % self.id
@@ -483,16 +486,7 @@ class ConocimientoLey(models.Model):
     existe_ley = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='¿Sabe usted si en Nicaragua existe alguna ley que penaliza la violencia contra las mujeres')
     mencione = models.CharField(max_length=200, verbose_name='Puede mencionar el nombre de la ley que penaliza la Violencia contra las mujeres', blank=True, default='')
 
-
-    def __unicode__(self):
-        return 'Conocimiento de ley %s' % self.id
-
-    class Meta:
-        verbose_name = 'Conocimiento de Ley'
-        verbose_name_plural = 'Conocimiento de leyes'
-
-#clase para agregar las acciones prohibidas por la ley
-class AccionProhibida(models.Model):
+    #CAMPOS QUE VAN DENTRO DE UN FIELDSET
     padre_golpea = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Un padre o madre golpea a un hijo(a)', blank=True, default=4)
     maestro_castiga = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Un maestro o maestra que castiga física o psicologicamente a um alumno(a)', blank=True, default=4)
     maestro_relacion = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Un maestro o maestra que tiene relaciones sexuales con una alumna o un alumno', blank=True, default=4)
@@ -502,14 +496,14 @@ class AccionProhibida(models.Model):
     lider_religioso = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Un líder religioso o comunitario que acosa sexualmente a una persona de su comunidad', blank=True, default=4)
     adulto_relacion = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Un adulto que sostiene relaciones con otra que es menor de edad', blank=True, default=4)
     adulto_dinero = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='Una persona adulta que ofrece dinero a una adolescente para tener relaciones sexuales', blank=True, default=4)
-    conocimiento = models.ForeignKey(ConocimientoLey)
+
 
     def __unicode__(self):
-        return 'Accion Prohibida %s' % self.id
+        return 'Conocimiento de ley %s' % self.id
 
     class Meta:
-        verbose_name = 'Acción prohibida por la ley'
-        verbose_name_plural = 'Acciones prohibidas por la ley'
+        verbose_name = 'Conocimiento de Ley'
+        verbose_name_plural = 'Conocimiento de leyes'
 
 #clase para saber las decisiones a tomar
 class Decision(models.Model):
@@ -526,7 +520,7 @@ class TomaDecision(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    decision = models.ManyToManyField(Decision, verbose_name='¿Cuando una mujer vive VBG cuales acciones deberia realizar?')
+    decision = models.ManyToManyField(Decision, verbose_name=u'¿Cuando una mujer vive VBG cuales acciones deberia realizar?')
 
     def __unicode__(self):
         return 'Decisión %s' % self.id
@@ -559,15 +553,15 @@ class ParticipacionPublica(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    espacio = models.ManyToManyField(Espacio, verbose_name='¿En qué organización o espacios comunitarios te encuentras integrada actualmente?')
-    motivo = models.ManyToManyField(MotivoParticipacion, verbose_name='¿Qué le motiva a participar en esta organización?')
+    espacio = models.ManyToManyField(Espacio, verbose_name=u'¿En qué organización o espacios comunitarios te encuentras integrada actualmente?')
+    motivo = models.ManyToManyField(MotivoParticipacion, verbose_name=u'¿Qué le motiva a participar en esta organización?')
 
     def __unicode__(self):
         return 'Participación publica %s' % self.id
 
     class Meta:
         verbose_name = 'Participación Pública'
-        verbose_name_plural = 'Participaciones Públicas'
+        verbose_name_plural = 'Participación Pública'
 
 class IncidenciaPolitica(models.Model):
     content_type = models.ForeignKey(ContentType)
@@ -575,7 +569,7 @@ class IncidenciaPolitica(models.Model):
     content_object = generic.GenericForeignKey()
 
     existen_mujeres = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='¿En su comunidad existen mujeres que representan a otras en espacios de participación ciudadana')
-    satisfecha = models.IntegerField(choices=SATISFECHAS, verbose_name='¿Qué tan satisfechas cree Ud que están las mujeres de su comunidad con quienes las representan en esos espacios?')
+    satisfecha = models.IntegerField(choices=SATISFECHAS, verbose_name='¿Qué tan satisfechas cree Ud que están las mujeres de su comunidad con quienes las representan en esos espacios?', blank=True, null=True)
 
     def __unicode__(self):
         return 'Incidencia Política %s' % self.id
@@ -589,33 +583,21 @@ class CalidadAtencion(models.Model):
     content_object = generic.GenericForeignKey()
 
     valor_servicio = models.IntegerField(choices=SERVICIOS, verbose_name='¿Como valora Ud los servicios que las intituciones ofrecen a las mujeres que viven situaciones de VBG')
-
-
-class Propuesta(models.Model):
+    #presentacion de propuestas
     propuesta = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Ha presentado propuestas ante las autoridades públicas para mejorar los servicios que brindan a mujeres en situaciones de VBG?')
-    si_tipo = models.TextField(verbose_name='Si ha presentado propuestas, escriba que tipo de propuesta', blank=True)
-    no_porque = models.TextField(verbose_name='No ha presentado propuestas? Porque?')
-
-    calidad = models.ForeignKey(CalidadAtencion)
-
-    def __unicode__(self):
-        return 'Propuesta %s' % self.id
-
-    class Meta:
-        verbose_name_plural = 'Propuestas'
-
-class PropuestaNegociada(models.Model):
-    propuesta = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Ha negociado con las autoridades públicas alguna propuesta para mejorar los servicios que brindan a mujeres en situaciones de VBG?')
-    si_tipo = models.TextField(verbose_name='Si ha negociado alguna, escriba que tipo de propuesta', blank=True)
-    no_porque = models.TextField(verbose_name='No ha negociado ninguna? Porque?')
-
-    calidad = models.ForeignKey(CalidadAtencion)
+    si_tipo = models.TextField(verbose_name='Si ha presentado propuestas, escriba que tipo de propuesta', blank=True, default='')
+    no_porque = models.TextField(verbose_name='No ha presentado propuestas? Porque?', blank=True, default='')
+    #negociacion de propuestas
+    propuesta2 = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Ha negociado con las autoridades públicas alguna propuesta para mejorar los servicios que brindan a mujeres en situaciones de VBG?')
+    si_tipo2 = models.TextField(verbose_name='Si ha negociado alguna, escriba que tipo de propuesta', blank=True, default='')
+    no_porque2 = models.TextField(verbose_name='No ha negociado ninguna? Porque?', blank=True, default='')
 
     def __unicode__(self):
-        return 'Propuesta Negociadas %s' % self.id
+        return 'Calidad de atencion %s' % self.id
 
     class Meta:
-        verbose_name_plural = 'Propuestas Negociadas'
+        verbose_name_plural = u'Calidad de Atención'
+        verbose_name = u'Calidad de Atención'
 
 class Corresponsabilidad(models.Model):
     content_type = models.ForeignKey(ContentType)
@@ -670,8 +652,8 @@ class ComunicacionAsertiva(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    identifico = models.ManyToManyField(SolucionConflicto, verbose_name='¿Qué debo hacer para que la solución a un conflicto sea exitosa?')
-    negociacion_exitosa = models.ManyToManyField(NegociacionExitosa, verbose_name='¿Qué se debe hacer para que una negociación de pareja sea exitosa?')
+    identifico = models.ManyToManyField(SolucionConflicto, verbose_name=u'¿Qué debo hacer para que la solución a un conflicto sea exitosa?')
+    negociacion_exitosa = models.ManyToManyField(NegociacionExitosa, verbose_name=u'¿Qué se debe hacer para que una negociación de pareja sea exitosa?')
 
     def __unicode__(self):
         return 'Comunicación asertiva %s' % self.id
@@ -693,6 +675,7 @@ class Mujer(Base):
     causa = generic.GenericRelation(CausaVBG)
     situacion = generic.GenericRelation(SituacionVBG)
     accionvbg = generic.GenericRelation(AccionVBG)
+    #prevalencia cambia en hombres
     prevalencia = generic.GenericRelation(PrevalenciaVBG)
     asunto_publico = generic.GenericRelation(AsuntoPublicoVBG)
     efecto = generic.GenericRelation(EfectoVBG)
@@ -710,3 +693,163 @@ class Mujer(Base):
 
     def __unicode__(self):
         return 'Encuesta Mujeres %s' % self.id
+
+class Quien2(models.Model):
+    nombre = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = 'A quien ejerció VBG'
+        verbose_name_plural = 'A quienes ejerció VBG'
+
+
+class PrevalenciaVBGHombre(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField(db_index=True)
+    content_object = generic.GenericForeignKey()
+
+    ha_vivido_vbg = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='¿Considera Ud que alguna ha ejercido violencia hacia una mujer en el último año?')
+    que_tipo = models.IntegerField(choices=TIPO_VBG, verbose_name='¿Qué tipo de VBG ha ejercido?', blank=True, null=True)
+    frecuencia = models.IntegerField(choices=FRECUENCIA, verbose_name='En este último año, con qué frecuencia ha ejercido violencia hacia mujer?', blank=True, null=True)
+    quien = models.ManyToManyField(Quien2, verbose_name=u'¿Qué relación o parentesco tiene Ud con la mujer o mujeres contra las cuales ha ejercido violencia?', blank=True, null=True)
+
+    def __unicode__(self):
+        return 'Prevalencia de VBG %s' % self.id
+
+    class Meta:
+        verbose_name = 'Prevalencia de la VBG hombres'
+        verbose_name_plural = 'Prevalencias de la VBG hombres'
+
+class Hombre(Base):
+    encuestador = models.ForeignKey(Encuestador)
+    contraparte = models.ForeignKey(Contraparte)
+    composicion_hogar = generic.GenericRelation(ComposicionHogar)
+    informacion_socio = generic.GenericRelation(InformacionSocioEconomica)
+    acceso_recurso = generic.GenericRelation(AccesoControlRecurso)
+    concepto_violencia = generic.GenericRelation(ConceptoViolencia)
+    expresion_violencia = generic.GenericRelation(ExpresionVBG)
+    creencia = generic.GenericRelation(Creencia)
+    justificacion = generic.GenericRelation(JustificacionVBG)
+    causa = generic.GenericRelation(CausaVBG)
+    situacion = generic.GenericRelation(SituacionVBG)
+    accionvbg = generic.GenericRelation(AccionVBG)
+    #prevalencia propia de hombres
+    prevalencia = generic.GenericRelation(PrevalenciaVBGHombre)
+    asunto_publico = generic.GenericRelation(AsuntoPublicoVBG)
+    efecto = generic.GenericRelation(EfectoVBG)
+    conocimiento = generic.GenericRelation(ConocimientoLey)
+    toma_decision = generic.GenericRelation(TomaDecision)
+    participacion = generic.GenericRelation(ParticipacionPublica)
+    incidencia = generic.GenericRelation(IncidenciaPolitica)
+    calidad_atencion = generic.GenericRelation(CalidadAtencion)
+    corresponsabilidad = generic.GenericRelation(Corresponsabilidad)
+    comunicacion = generic.GenericRelation(ComunicacionAsertiva)
+
+    class Meta:
+        verbose_name = 'Encuesta Hombre'
+        verbose_name_plural = 'Encuestas Hombres'
+
+    def __unicode__(self):
+        return 'Encuesta Hombres %s' % self.id
+
+class InformacionSocioEconomicaLider(BaseInfoSocioEconomica):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField(db_index=True)
+    content_object = generic.GenericForeignKey()
+
+    trabaja_fuera = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Trabaja usted fuera del hogar?')
+    donde_trabaja = models.ManyToManyField(LugarDeTrabajo, verbose_name='Donde trabaja?', blank=True, null=True)
+
+    def __unicode__(self):
+        return 'Info SocioEconomica lideres %s' % self.id
+
+    class Meta:
+        verbose_name = 'Información socio-económica'
+        verbose_name_plural = 'Información socio-económica'
+
+SI_NO_SIMPLE2 = ((1, 'Si'), (2, 'No'))
+
+class AccionPrevencion(models.Model):
+    nombre = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = u'Acción para prevenir VBG'
+        verbose_name_plural = u'Acciones para prevenir VBG'
+
+class AccionVBGLider(BaseAccionVBG):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField(db_index=True)
+    content_object = generic.GenericForeignKey()
+
+    ud_previene = models.IntegerField(choices=SI_NO_SIMPLE2, verbose_name=u'¿En su organización, escuela o usted realizan algunas acciones dirigidas a prevenir la VBG?')
+    accion_prevenir = models.ManyToManyField(AccionPrevencion, blank=True, null=True, verbose_name=u'¿Cuáles son las acciones de prevención de violencia que su organización/escuela o usted ha desarrollado?')
+    porque_no = models.TextField(blank=True, default='', verbose_name=u'¿Por qué no han realizado acciones dirigidas a prevenir la VBG?')
+
+    def __unicode__(self):
+        return 'Accion ante VBG %s' % self.id
+
+    class Meta:
+        verbose_name = 'Acción ante situación de VBG'
+        verbose_name_plural = 'Acciones ante situación de VBG'
+
+class PrevalenciaVBGLider(models.Model):
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.IntegerField(db_index=True)
+    content_object = generic.GenericForeignKey()
+
+    piensa_existe = models.IntegerField(choices=SI_NO_SIMPLE2, verbose_name='¿Piensa Ud que en su comunidad existen mujeres que alguna vez han vivido VBG?')
+    ha_vivido_vbg = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='¿Considera Ud que alguna ha vivido VBG?')
+    que_tipo = models.IntegerField(choices=TIPO_VBG, verbose_name='¿Qué tipo de VBG ha ejercido?', blank=True, null=True)
+    frecuencia = models.IntegerField(choices=FRECUENCIA, verbose_name='En este último año, con qué frecuencia ha vivido situaciones de VBG?', blank=True, null=True)
+    quien = models.ManyToManyField(Quien, verbose_name=u'¿Quién es la persona que ha ejercido VBG sobre Ud?', blank=True, null=True)
+
+    def __unicode__(self):
+        return 'Prevalencia de VBG %s' % self.id
+
+    class Meta:
+        verbose_name = 'Prevalencia de la VBG lider'
+        verbose_name_plural = 'Prevalencias de la VBG lider'
+
+class Organizacion(models.Model):
+    nombre = models.CharField(max_length=250)
+    
+    def __unicode__(self):
+        return self.nombre
+    
+    class Meta:
+        verbose_name_plural = 'Organizaciones'
+
+class Lider(Base):
+    encuestador = models.ForeignKey(Encuestador)
+    contraparte = models.ForeignKey(Contraparte)
+    organizacion = models.ForeignKey(Organizacion)
+    cargo = models.CharField(max_length=150)
+    informacion_socio = generic.GenericRelation(InformacionSocioEconomicaLider)
+    concepto_violencia = generic.GenericRelation(ConceptoViolencia)
+    expresion_violencia = generic.GenericRelation(ExpresionVBG)
+    creencia = generic.GenericRelation(Creencia)
+    justificacion = generic.GenericRelation(JustificacionVBG)
+    causa = generic.GenericRelation(CausaVBG)
+    situacion = generic.GenericRelation(SituacionVBG)
+    accionvbg = generic.GenericRelation(AccionVBGLider)
+    prevalencia = generic.GenericRelation(PrevalenciaVBGLider)
+    asunto_publico = generic.GenericRelation(AsuntoPublicoVBG)
+    efecto = generic.GenericRelation(EfectoVBG)
+    conocimiento = generic.GenericRelation(ConocimientoLey)
+    toma_decision = generic.GenericRelation(TomaDecision)
+    incidencia = generic.GenericRelation(IncidenciaPolitica)
+    calidad_atencion = generic.GenericRelation(CalidadAtencion)
+    corresponsabilidad = generic.GenericRelation(Corresponsabilidad)
+    comunicacion = generic.GenericRelation(ComunicacionAsertiva)
+
+    class Meta:
+        verbose_name = 'Encuesta Líder/Lideresa/Docente'
+        verbose_name_plural = 'Encuesta Líderes/Lideresas/Docentes'
+
+    def __unicode__(self):
+        return 'Encuesta Lideres %s' % self.id
