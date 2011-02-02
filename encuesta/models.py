@@ -636,8 +636,8 @@ class Corresponsabilidad(models.Model):
         return 'Corresponsabilidad %s' % self.id
 
     class Meta:
-        verbose_name = 'Actividad que realiza en el hogar'
-        verbose_name_plural = 'Actividades que realiza en el hogar'
+        verbose_name = 'Corresponsabilidad en el hogar'
+        verbose_name_plural = 'Corresponsabilidad en el hogar'
 
 class SolucionConflicto(models.Model):
     nombre = models.CharField(max_length=200)
