@@ -243,7 +243,7 @@ class InformacionSocioEconomicaLiderInline(generic.GenericStackedInline):
 
 class AccionVBGLiderInline(generic.GenericStackedInline):
     model = AccionVBGLider
-    pregunta = '¿Qié hace Ud cuando existe una situación de VBG en su comunidad?'
+    pregunta = '¿Qué hace Ud cuando existe una situación de VBG en su comunidad?'
     fieldsets = [
         (None, {'fields': ['ha_ayudado']}),
         (pregunta, {'fields': ['se_acerca', 'invita_actividad', 'no_hace_nada', 'no_hace_problema', 'busca_alternativa', 'no_sabe']}),
@@ -299,3 +299,103 @@ class LiderAdmin(admin.ModelAdmin):
         ]
 
 admin.site.register(Lider, LiderAdmin)
+
+class InformacionSocioEconomicaFuncionarioInline(generic.GenericTabularInline):
+    model = InformacionSocioEconomicaFuncionario
+    max_num = 1
+
+class AccesoInformacionInline(generic.GenericTabularInline):
+    model = AccesoInformacion
+    max_num = 1
+
+class RutaCriticaInline(generic.GenericStackedInline):
+    model = RutaCritica
+    max_num = 1
+    pregunta = '¿Puede mencionar ed manera ordenada los pasos de la ruta crítica de la violencia?'
+    pregunta2 = 'Puede mencionarme algunos de los diferentes intrumentos jurídicos que se utilizan en su institución en la atención a los casos de violencia'
+    fieldsets = [
+        (None, {'fields': ['pasos']}),
+        (pregunta, {'fields': ['centro_mujeres', 'centro_salud', 'comisaria', 'juzgado', 'ministerio_publico']}),
+        (pregunta2, {'fields': ['instrumentos']}),
+    ]
+
+    radio_fields = {
+        'centro_mujeres': admin.HORIZONTAL,
+        'centro_salud': admin.HORIZONTAL,
+        'comisaria': admin.HORIZONTAL,
+        'juzgado': admin.HORIZONTAL,
+        'ministerio_publico': admin.HORIZONTAL,
+    }
+
+    filter_horizontal = ['instrumentos']
+
+class AccionVBGFuncionarioInline(generic.GenericStackedInline):
+    model = AccionVBGFuncionario
+    filter_horizontal = ['donde_buscar', 'accion_tomar']
+    max_num = 1
+
+class RegistroDatoInline(generic.GenericStackedInline):
+    model = RegistroDato
+    pregunta = '¿Qué cantidad de casos de VBG han registrado?'
+    fieldsets = [
+        (None, {'fields': ['lleva_registro', 'cuantos']}),
+        (pregunta, {'fields': [('fisica', 'sexual', 'emocional'), ('sicologica', 'otro')]}),
+    ]
+    max_num = 1
+
+class CalidadAtencionFuncionarioInline(generic.GenericTabularInline):
+    model = CalidadAtencionFuncionario    
+    max_num = 1
+
+class AccionMejorarAtencionInline(generic.GenericStackedInline):
+    model = AccionMejorarAtencion
+    filter_horizontal = ['cuales', 'recursos']
+    max_num = 1
+
+class AccionPrevVBGInline(generic.GenericStackedInline):
+    model = AccionPrevVBG
+    filter_horizontal = ['accion_prevenir']
+    max_num = 1
+
+class IncidenciaPoliticaFuncionarioInline(generic.GenericStackedInline):
+    model = IncidenciaPoliticaFuncionario
+    filter_horizontal = ['que_comunidades', 'tipo_propuestas', 'que_propuestas']    
+    fields = ['ha_recibido', 'que_comunidades', 'tipo_propuestas', 'ud_negociado', 'que_propuestas']
+    max_num = 1
+
+class FuncionarioAdmin(admin.ModelAdmin):
+    class Media:
+        css = {
+            "all": ("/files/css/especial.css", )
+        }
+
+        """js = ('/files/js/tiny_mce/tiny_mce.js',
+              '/files/js/tiny_mce/tconfig.js')"""
+
+    save_on_top = True
+    actions_on_top = True
+    inlines = [InformacionSocioEconomicaFuncionarioInline,
+        ConceptoViolenciaInline,
+        ExpresionVBGInline,
+        CreenciaInline,
+        JustificacionVBGInline,
+        CausaVBGInline,
+        AsuntoPublicoVBGInline,
+        EfectoVBGInline,
+        ComunicacionAsertivaInline,
+        AccesoInformacionInline,
+        ConocimientoLeyInline,
+        RutaCriticaInline,
+        AccionVBGFuncionarioInline,
+        RegistroDatoInline,
+        CalidadAtencionFuncionarioInline,
+        AccionMejorarAtencionInline,
+        AccionPrevVBGInline,
+        IncidenciaPoliticaFuncionarioInline,
+        ]
+
+admin.site.register(Funcionario, FuncionarioAdmin)
+admin.site.register(Accion)
+admin.site.register(RecursoCuentaIns)
+admin.site.register(AccionPrevencion)
+admin.site.register(TipoPropuesta)
