@@ -179,20 +179,6 @@ class MujeresAdmin(admin.ModelAdmin):
         ]
 
 admin.site.register(Mujer, MujeresAdmin)
-admin.site.register(ViveCon)
-admin.site.register(LugarDeTrabajo)
-admin.site.register(Recurso)
-admin.site.register(Comunidad)
-admin.site.register(Encuestador)
-admin.site.register(Contraparte)
-admin.site.register(Quien)
-admin.site.register(ResolverVBG)
-admin.site.register(ComoAfecta)
-admin.site.register(TomaDecision)
-admin.site.register(Espacio)
-admin.site.register(MotivoParticipacion)
-admin.site.register(SolucionConflicto)
-admin.site.register(NegociacionExitosa)
 
 class PrevalenciaVBGHombreInline(generic.GenericStackedInline):
     verbose_name_plural = 'Prevalencia de la Violencia Basada en Género'
@@ -401,5 +387,18 @@ admin.site.register(AccionPrevencion)
 admin.site.register(TipoPropuesta)
 
 #temporales para agregar en el admin
-admin.site.register(Aporta)
+admin.site.register(ViveCon)
+admin.site.register(LugarDeTrabajo)
 admin.site.register(Recurso)
+admin.site.register(Comunidad)
+admin.site.register(Encuestador)
+admin.site.register(Contraparte)
+admin.site.register(Quien)
+admin.site.register(ResolverVBG)
+admin.site.register(ComoAfecta)
+admin.site.register(TomaDecision)
+admin.site.register(Espacio)
+admin.site.register(MotivoParticipacion)
+admin.site.register(SolucionConflicto)
+admin.site.register(NegociacionExitosa)
+admin.site.register(Aporta)
