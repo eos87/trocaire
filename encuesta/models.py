@@ -1007,8 +1007,8 @@ class RecursoCuentaIns(models.Model):
         return self.nombre
 
     class Meta:
-        verbose_name = 'Recurso de Institución'
-        verbose_name = 'Recursos de Institución'
+        verbose_name = 'Recurso de la Institución'
+        verbose_name_plural = 'Recursos de la Institución'
 
 class AccionMejorarAtencion(models.Model):
     content_type = models.ForeignKey(ContentType)

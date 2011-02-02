@@ -399,3 +399,7 @@ admin.site.register(Accion)
 admin.site.register(RecursoCuentaIns)
 admin.site.register(AccionPrevencion)
 admin.site.register(TipoPropuesta)
+
+#temporales para agregar en el admin
+admin.site.register(Aporta)
+admin.site.register(Recurso)
