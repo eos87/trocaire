@@ -145,7 +145,7 @@ class ComunicacionAsertivaInline(generic.GenericStackedInline):
     filter_horizontal = ['identifico', 'negociacion_exitosa']
     max_num = 1
 
-class MujeresAdmin(admin.ModelAdmin):
+class MujeresAdmin(admin.ModelAdmin):    
     class Media:
         css = {
             "all": ("/files/css/especial.css", )
@@ -156,6 +156,7 @@ class MujeresAdmin(admin.ModelAdmin):
 
     save_on_top = True
     actions_on_top = True
+    list_display = ['contraparte', 'encuestador', 'fecha']
     inlines = [ComposicionHogarInline,
         InfoSocioEconomicaInline,
         AccesoControlRecursoInline,
@@ -198,6 +199,7 @@ class HombresAdmin(admin.ModelAdmin):
 
     save_on_top = True
     actions_on_top = True
+    list_display = ['contraparte', 'encuestador', 'fecha']
     inlines = [ComposicionHogarInline,
         InfoSocioEconomicaInline,
         AccesoControlRecursoInline,
@@ -265,6 +267,7 @@ class LiderAdmin(admin.ModelAdmin):
 
     save_on_top = True
     actions_on_top = True
+    list_display = ['contraparte', 'encuestador', 'organizacion', 'fecha']
     inlines = [InformacionSocioEconomicaLiderInline,        
         ConceptoViolenciaInline,
         ExpresionVBGInline,
@@ -360,6 +363,7 @@ class FuncionarioAdmin(admin.ModelAdmin):
 
     save_on_top = True
     actions_on_top = True
+    list_display = ['contraparte', 'encuestador', 'institucion', 'fecha']
     inlines = [InformacionSocioEconomicaFuncionarioInline,
         ConceptoViolenciaInline,
         ExpresionVBGInline,

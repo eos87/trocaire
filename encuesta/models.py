@@ -137,6 +137,7 @@ HABLAN_DE = ((1, 'Agresión física'),
              (7, 'Otros'))
 
 class Base(models.Model):
+    fecha = models.DateField(verbose_name='Fecha de aplicación')
     sexo = models.CharField(max_length=30, choices=SEXOS)
     edad = models.IntegerField(help_text='Edad en años')
     comunidad = models.ForeignKey(Comunidad)
@@ -831,7 +832,7 @@ class Organizacion(models.Model):
     nombre = models.CharField(max_length=250)
     
     def __unicode__(self):
-        return self.nombre
+        return u'%s' % self.nombre
     
     class Meta:
         verbose_name_plural = 'Organizaciones'
@@ -870,7 +871,7 @@ class Institucion(models.Model):
     nombre = models.CharField(max_length=250)
 
     def __unicode__(self):
-        return self.nombre
+        return u'%s' % self.nombre
 
     class Meta:
         verbose_name_plural = 'Instituciones'
