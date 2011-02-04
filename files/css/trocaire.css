@@ -1,0 +1,154 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: "Trebuchet MS", sans-serif;
+    margin-bottom: 20px;
+}
+.degradado { 
+    height: 8px;
+    width: 100%;
+    background: url(/files/img/degradado.png) repeat-x;
+}
+.header{
+    width: 100%;
+    background: url(/files/img/back.jpg) repeat-x;
+    height: 70px;
+    border-bottom: 1px #fff solid;
+}
+.wrapper{
+    width: 960px;
+    margin: 0 auto;
+    /*border: 1px solid;*/
+}
+.clean{
+    clear: both;
+}
+img{
+    border: none;
+}
+a{
+    outline: none;
+}
+.logo{
+    float: left;
+    margin-left: 5px;
+    margin-top: 10px;
+}
+.nav{
+    float: right;
+    margin-right: 30px;
+    margin-top: 20px;
+}
+.admin_sprite{
+    background: url(/files/img/admin_sprite.png) no-repeat;
+    display: inline-block;
+    width: 99px;
+    height: 28px;
+}
+.admin_sprite:hover{
+    background-position: 0 -28px;
+}
+.banner{
+    background: url(/files/img/banner.png) repeat-x;
+    height: 286px;    
+}
+.intro{
+    width: 320px;
+    float: left;
+    padding-top: 25px;
+    height: 261px;
+    font-size: 12px;        
+}
+.intro .title{    
+    font-size: 20px;
+    font-weight: bold;
+    color: #333333;
+    padding-left: 5px;
+}
+.intro .desc{
+    color: #000;
+    text-align: justify;
+    padding-left: 5px;
+}
+.salidas{
+    float: left;
+    width: 600px;
+    margin-top: 15px;
+    padding-left: 40px;
+}
+.salidas a{
+    display: inline-block;
+    height: 246px;
+    width: 185px;
+    margin-left: 10px;
+}
+.mapeo{    
+    background: url(/files/img/mapeo.png) no-repeat;
+    -moz-box-shadow: 0px 2px 7px #9e7707;
+    -webkit-box-shadow: 0px 2px 7px #9e7707;
+}
+.salidas a:hover{
+    -moz-box-shadow: 0px 2px 7px #000;
+    -webkit-box-shadow: 0px 2px 7px #000;
+}
+.monitoreo{    
+    background: url(/files/img/monitoreo.png) no-repeat;
+    -moz-box-shadow: 0px 2px 7px #942406;
+    -webkit-box-shadow: 0px 2px 7px #942406;
+}
+.recursos{    
+    background: url(/files/img/recursos.png) no-repeat;
+    -moz-box-shadow: 0px 2px 7px #4e0726;
+    -webkit-box-shadow: 0px 2px 7px #4e0726;
+}
+.title_bar{
+    height: 46px;
+    width: 100%;
+    background: url(/files/img/title_bar.png) repeat-x;    
+}
+.content .wrapper{
+    border-left: 1px #d7d7d7 solid;
+    border-right: 1px #d7d7d7 solid;
+    border-bottom: 1px #d7d7d7 solid;
+}
+.orglink{
+    display: block;
+    float: left;
+    background: url(/files/img/orgs.png) no-repeat;
+    height: 35px;
+    width: 192px;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+.orglink:hover{
+    background-position: 0px -35px;
+}
+.contraparts{
+    background: url(/files/img/contraparts.png) repeat-x top;
+}
+.logos{
+    margin-left: 20px;    
+    margin-right: 20px;
+    padding-top: 30px;
+    padding-bottom: 20px;
+}
+.logos img.cp{
+    float: left;
+    margin-right: 12px;
+    margin-left: 12px;
+}
+.logos img.line{
+    float: left;    
+}
+.footer{
+    text-align: center;
+    font-size: 11px;
+    color: #3f3f3f;
+    padding-top: 8px;
+    background: url(/files/img/footer_back.png) no-repeat center;
+}
+.footer a{
+    font-weight: bold;
+    text-decoration: none;
+    color: #3f3f3f;
+}
