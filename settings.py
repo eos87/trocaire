@@ -72,3 +72,4 @@ INSTALLED_APPS = (
     'trocaire.encuesta',
     'south',
 )
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True

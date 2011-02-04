@@ -15,6 +15,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^$', direct_to_template, {'template': 'index.html'}),
+    (r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html'}),
     (r'^admin/', include(admin.site.urls)),
 )
 

@@ -48,6 +48,15 @@ a{
 .admin_sprite:hover{
     background-position: 0 -28px;
 }
+.salir_sprite{
+    background: url(/files/img/salir_sprite.png) no-repeat;
+    display: inline-block;
+    width: 70px;
+    height: 28px;
+}
+.salir_sprite:hover{
+    background-position: 0 -28px;
+}
 .banner{
     background: url(/files/img/banner.png) repeat-x;
     height: 286px;    
@@ -69,6 +78,7 @@ a{
     color: #000;
     text-align: justify;
     padding-left: 5px;
+    font-size: 12px;
 }
 .salidas{
     float: left;
