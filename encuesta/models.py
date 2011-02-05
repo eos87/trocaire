@@ -26,7 +26,7 @@ class Contraparte(models.Model):
 
 #Definiendo los choices
 SEXOS = (('femenino', 'Femenino'), ('masculino', 'Masculino'))
-ESTADO_CIVIL = (('soltero', 'Soltero/a'), ('casado', 'Casado/a'), ('no-aplica', 'No aplica'))
+ESTADO_CIVIL = (('soltero', 'Soltero/a'), ('casado', 'Casado/a'), ('acompanado', 'Unión de hecho estable'), ('no-aplica', 'No aplica'))
 SI_NO = (('si', 'Si'), ('no', 'No'), ('no-aplica', 'No Aplica'))
 SI_NO_SIMPLE = (('si', 'Si'), ('no', 'No'))
 SI_NO_RESPONDE = ((1, 'Si'), (2, 'No'), (3, 'No sabe'), (4, 'No responde'))
@@ -218,8 +218,8 @@ class InformacionSocioEconomica(BaseInfoSocioEconomica):
     content_object = generic.GenericForeignKey()
     
     trabaja_fuera = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Trabaja usted fuera del hogar?')
-    donde_trabaja = models.ManyToManyField(LugarDeTrabajo, verbose_name='Donde trabaja?')
-    hace_dinero = models.IntegerField(choices=QUE_HACE_DINERO, verbose_name='Qué hace usted con el dinero que gana?')
+    donde_trabaja = models.ManyToManyField(LugarDeTrabajo, verbose_name='Donde trabaja?', blank=True, null=True)
+    hace_dinero = models.IntegerField(choices=QUE_HACE_DINERO, verbose_name='Qué hace usted con el dinero que gana?', blank=True, null=True)
     aportan = models.ManyToManyField(Aporta, verbose_name='Quienes aportan ingresos en su hogar?')
 
     def __unicode__(self):
@@ -336,7 +336,7 @@ class SituacionVBG(models.Model):
     conoce_mujeres = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Conoce usted si en su comunidad hay mujeres que alguna vez han vivido VBG?')
 
     def __unicode__(self):
-        return 'Situación de VBG %s' % self.id
+        return u'Situación de VBG %s' % self.id
 
     class Meta:
         verbose_name = 'Identificación de situación de VBG'
@@ -395,7 +395,7 @@ class AccionVBG(BaseAccionVBG):
     content_object = generic.GenericForeignKey()
 
     def __unicode__(self):
-        return 'Accion ante VBG %s' % self.id
+        return u'Accion ante VBG %s' % self.id
 
     class Meta:
         verbose_name = 'Acción ante situación de VBG'
@@ -447,7 +447,7 @@ class AsuntoPublicoVBG(models.Model):
     resolverse_con = models.ManyToManyField(ResolverVBG, verbose_name=u'¿Considera usted que la VBG es un asunto que debe ser resuelto con la participación de')
 
     def __unicode__(self):
-        return 'VBG asunto público %s' % self.id
+        return u'VBG asunto público %s' % self.id
 
     class Meta:
         verbose_name = 'VBG como asunto público'
@@ -524,7 +524,7 @@ class TomaDecision(models.Model):
     decision = models.ManyToManyField(Decision, verbose_name=u'¿Cuando una mujer vive VBG cuales acciones deberia realizar?')
 
     def __unicode__(self):
-        return 'Decisión %s' % self.id
+        return u'Decisión %s' % self.id
 
     class Meta:
         verbose_name = 'Toma de decisión'
@@ -558,7 +558,7 @@ class ParticipacionPublica(models.Model):
     motivo = models.ManyToManyField(MotivoParticipacion, verbose_name=u'¿Qué le motiva a participar en esta organización?')
 
     def __unicode__(self):
-        return 'Participación publica %s' % self.id
+        return u'Participación publica %s' % self.id
 
     class Meta:
         verbose_name = 'Participación Pública'
@@ -573,7 +573,7 @@ class IncidenciaPolitica(models.Model):
     satisfecha = models.IntegerField(choices=SATISFECHAS, verbose_name='¿Qué tan satisfechas cree Ud que están las mujeres de su comunidad con quienes las representan en esos espacios?', blank=True, null=True)
 
     def __unicode__(self):
-        return 'Incidencia Política %s' % self.id
+        return u'Incidencia Política %s' % self.id
 
     class Meta:
         verbose_name_plural = 'Incidencia Política'
@@ -669,7 +669,7 @@ class ComunicacionAsertiva(models.Model):
     negociacion_exitosa = models.ManyToManyField(NegociacionExitosa, verbose_name=u'¿Qué se debe hacer para que una negociación de pareja sea exitosa?')
 
     def __unicode__(self):
-        return 'Comunicación asertiva %s' % self.id
+        return u'Comunicación asertiva %s' % self.id
 
     class Meta:
         verbose_name = 'Comunicación asertiva'
@@ -705,7 +705,7 @@ class Mujer(Base):
         verbose_name_plural = 'Encuestas Mujeres'
 
     def __unicode__(self):
-        return 'Encuesta Mujeres %s' % self.id
+        return u'Encuesta Mujeres %s' % self.id
 
 class Quien2(models.Model):
     nombre = models.CharField(max_length=50)
