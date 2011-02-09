@@ -128,14 +128,6 @@ COMUNICACION = ((1, 'De acuerdo'),
                 (3, 'No sabe'),
                 (4, 'No responde'))
 
-HABLAN_DE = ((1, 'Agresión física'),
-             (2, 'Daño psicológico'),
-             (3, 'Violencia sexual'),
-             (4, 'Abuso de poder'),
-             (5, 'Irrespeto al derecho de mujeres, niñas y adolescentes'),
-             (6, 'Violencia verbal'),
-             (7, 'Otros'))
-
 class Base(models.Model):
     fecha = models.DateField(verbose_name='Fecha de aplicación')
     sexo = models.CharField(max_length=30, choices=SEXOS)
@@ -167,17 +159,21 @@ class ComposicionHogar(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    tiene_pareja = models.CharField(max_length=10, choices=SI_NO, verbose_name='Actualmente usted tiene esposo/a o compañero/a?')
+    tiene_pareja = models.CharField(max_length=10, choices=SI_NO, verbose_name='1. Actualmente usted tiene esposo/a o compañero/a?')
     vive_con = models.ManyToManyField(ViveCon, verbose_name='En su hogar vive con:')
-    cuantos_viven = models.IntegerField('Cuantas personas habitan en la casa donde usted vive?', default=0)
-    entre0y6 = models.IntegerField('Número de niños entre 0 y 6 años que viven en la casa', default=0)
-    entre7y17 = models.IntegerField('Número de niños entre 0 y 17 años que viven en la casa', default=0)
-    entre18ymas = models.IntegerField('Número de personas de 18 y más años que viven en la casa', default=0)
+    cuantos_viven = models.IntegerField('Cuantas personas habitan en la casa donde usted vive?')
+    entre0y6 = models.IntegerField('Número de niños entre 0 y 6 años que viven en la casa', blank=True, null=True)
+    entre7y17 = models.IntegerField('Número de niños entre 0 y 17 años que viven en la casa', blank=True, null=True)
+    entre18ymas = models.IntegerField('Número de personas de 18 y más años que viven en la casa', blank=True, null=True)
     tiene_hijos = models.CharField(max_length=10, choices=SI_NO)
-    cuantos_hijos = models.IntegerField(verbose_name='¿Cuántos hijos tiene?', default=0)
-    hijos0y6 = models.IntegerField('Hijos entre 0 y 6 años', default=0)
-    hijos7y17 = models.IntegerField('Hijos entre 0 y 17 años', default=0)
-    hijos18ymas = models.IntegerField('Hijos entre  18 y más', default=0)
+    cuantos_hijos = models.IntegerField(verbose_name='¿Cuántos hijos tiene?', blank=True, null=True)
+    #Hijos entre 0 y 6 años
+    hijos0y6_mujeres = models.IntegerField('Mujeres', blank=True, null=True, default=0)
+    hijos0y6_hombres = models.IntegerField('Hombres', blank=True, null=True, default=0)
+    hijos7y17_mujeres = models.IntegerField('Mujeres', blank=True, null=True, default=0)
+    hijos7y17_hombres = models.IntegerField('Hombres', blank=True, null=True, default=0)
+    hijos18ymas_mujeres = models.IntegerField('Mujeres', blank=True, null=True, default=0)
+    hijos18ymas_hombres = models.IntegerField('Hombres', blank=True, null=True, default=0)
 
     class Meta:
         verbose_name = 'Composición del Hogar'
@@ -243,8 +239,8 @@ class AccesoControlRecurso(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    recursos = models.ManyToManyField(Recurso, related_name='recursos', verbose_name='Mencione los recursos de los cuales ud. es dueno/a')
-    recursos_decide = models.ManyToManyField(Recurso, related_name='recursos_decide', verbose_name='Mencione los recursos de los cuales ud. decide sobre el uso que les da')
+    recursos = models.ManyToManyField(Recurso, related_name='recursos', verbose_name='Mencione los recursos de los cuales ud. es dueno/a', help_text=u'<b class=\'naranja\'>Si el encuestado no aplica a alguna opción, dejarla sin marcar.</b><br>', blank=True, null=True)
+    recursos_decide = models.ManyToManyField(Recurso, related_name='recursos_decide', verbose_name='Mencione los recursos de los cuales ud. decide sobre el uso que les da', help_text=u'<b class=\'naranja\'>Si el encuestado no aplica a alguna opción, dejarla sin marcar.</b><br>', blank=True)
 
     def __unicode__(self):
         return 'Acceso y control %s' % self.id
@@ -253,14 +249,23 @@ class AccesoControlRecurso(models.Model):
         verbose_name = 'Acceso y control de recursos'
         verbose_name_plural = 'Accesos y control de recursos'
 
+class HablanDe(models.Model):
+    nombre = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = 'Le hablan de'
+        verbose_name_plural = 'Le hablan de'
+
 class ConceptoViolencia(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
-
-    #conocimientoVBG = models.ManyToManyField(VBG, verbose_name='Cuando alguien le habla de VBG, usted cree que están hablando de:')
-    sobre = models.IntegerField(choices=HABLAN_DE, verbose_name='Cuando alguien le habla de VBG, usted cree que están hablando de:', blank=True, null=True)
-    respuesta = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Seleccione la respuesta', blank=True, null=True)
+    
+    hablande = models.ForeignKey(HablanDe, verbose_name='Cuando alguien le habla de VBG, usted cree que están hablando de:', null=True)
+    respuesta = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Seleccione la respuesta', null=True)
 
     def __unicode__(self):
         return 'Conocimiento de Violencia %s' % self.id
@@ -411,13 +416,23 @@ class Quien(models.Model):
         verbose_name = 'Quien ejerció VBG'
         verbose_name_plural = 'Quienes ejercieron VBG'
 
+class TipoVBG(models.Model):
+    nombre = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = 'Tipo de VBG'
+        verbose_name_plural = 'Tipo de VBG'
+
 class PrevalenciaVBG(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
     ha_vivido_vbg = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='¿Considera Ud que alguna vez ha vivido VBG?')
-    que_tipo = models.IntegerField(choices=TIPO_VBG, verbose_name='¿Qué tipo de VBG ha vivido?', blank=True, null=True)
+    que_tipo = models.ManyToManyField(TipoVBG, verbose_name='¿Qué tipo de VBG ha vivido?', blank=True, null=True)
     frecuencia = models.IntegerField(choices=FRECUENCIA, verbose_name='En este último año, con qué frecuencia ha vivido situaciones de VBG', blank=True, null=True)
     quien = models.ManyToManyField(Quien, verbose_name=u'¿Quién es la persona que ha ejercido VBG sobre usted?', blank=True, null=True)
 
@@ -660,12 +675,20 @@ class NegociacionExitosa(models.Model):
         verbose_name = 'Negociación exitosa'
         verbose_name_plural = 'Negociaciones exitosa'
 
+DES_AC = ((1, 'De acuerdo'), (2, 'En desacuerdo'))
+
 class ComunicacionAsertiva(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    identifico = models.ManyToManyField(SolucionConflicto, verbose_name=u'¿Qué debo hacer para que la solución a un conflicto sea exitosa?')
+    #identifico = models.ManyToManyField(SolucionConflicto, verbose_name=u'¿Qué debo hacer para que la solución a un conflicto sea exitosa?')
+    identificar = models.IntegerField(choices=DES_AC, verbose_name='Identifico claramente el conflicto y me pregunto porque ha pasado esto', null=True)
+    analizar = models.IntegerField(choices=DES_AC, verbose_name='Analizo mis sentimientos y cuáles son los motivos de mi enojo', null=True)
+    identificar_prioridad = models.IntegerField(choices=DES_AC, verbose_name='Identifico cuales son mis prioridades y que quiero conseguir', null=True)
+    pido = models.IntegerField(choices=DES_AC, verbose_name='Le pido a la otra persona conversar sobre el tema manteniendo una actitud propositiva y no agresiva', null=True)
+    actitud_pasiva = models.IntegerField(choices=DES_AC, verbose_name='Mantener una actitud pasiva y con contradecir o provocar a la otra persona', null=True)
+
     negociacion_exitosa = models.ManyToManyField(NegociacionExitosa, verbose_name=u'¿Qué se debe hacer para que una negociación de pareja sea exitosa?')
 
     def __unicode__(self):

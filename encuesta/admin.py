@@ -11,30 +11,54 @@ class ComposicionHogarInline(generic.GenericStackedInline):
     max_num = 1
     fieldsets = [
         (None, {'fields': [('tiene_pareja', 'vive_con')]}),
-        ('Habitantes del hogar', {'fields': ['cuantos_viven', ('entre0y6', 'entre7y17', 'entre18ymas')]}),
-        ('Hijos', {'fields': [('tiene_hijos', 'cuantos_hijos'), ('hijos0y6', 'hijos7y17', 'hijos18ymas')]})
+        (u'Habitantes del hogar', {'fields': ['cuantos_viven', ('entre0y6', 'entre7y17', 'entre18ymas'), 'tiene_hijos', 'cuantos_hijos']}),
+        (u'7. Qué edad tienen los hijos e hijas que viven con usted', {
+            'classes': ('clase_propia',),
+            'description': u'<b>Número de niños entre 0 y 6 años</b>',
+            'fields': [('hijos0y6_mujeres', 'hijos0y6_hombres')]
+        }),
+        (None, {
+            'description': u'<b>Número de niños entre 7 y 17 años</b>',            
+            'fields': [('hijos7y17_mujeres', 'hijos7y17_hombres'),]
+        }),
+        (None, {
+            'description': u'<b>Número de personas entre 18 y más años</b>',
+            'fields': [('hijos18ymas_mujeres', 'hijos18ymas_hombres'),]
+        }),
     ]
 
 class InfoSocioEconomicaInline(generic.GenericStackedInline):    
     filter_horizontal = ['donde_trabaja', 'aportan']
     model = InformacionSocioEconomica
     max_num = 1
+    verbose_name = u'Información SocioEconómica'
+    verbose_name_plural = u'V. Información SocioEconómica'
 
-class AccesoControlRecursoInline(generic.GenericTabularInline):    
+class AccesoControlRecursoInline(generic.GenericStackedInline):
     model = AccesoControlRecurso    
     max_num = 1
 
 class ConceptoViolenciaInline(generic.GenericTabularInline):
     model = ConceptoViolencia
     extra = 1
+    radio_fields = {
+        'respuesta': admin.HORIZONTAL,
+    }
 
 class ExpresionVBGInline(generic.GenericTabularInline):
     model = ExpresionVBG
     extra = 1
+    radio_fields = {
+        'respuesta': admin.HORIZONTAL,
+    }
 
 class CreenciaInline(generic.GenericTabularInline):
     model = Creencia
     extra = 1
+
+    radio_fields = {
+        'respuesta': admin.HORIZONTAL,
+    }
 
 class JustificacionVBGInline(generic.GenericTabularInline):
     model = JustificacionVBG
@@ -73,6 +97,8 @@ class PrevalenciaVBGInline(generic.GenericStackedInline):
     model = PrevalenciaVBG
     filter_horizontal = ['quien',]
     max_num = 1
+
+admin.site.register(TipoVBG)
 
 class AsuntoPublicoVBGInline(generic.GenericStackedInline):
     model = AsuntoPublicoVBG
@@ -142,8 +168,22 @@ class CorresponsabilidadInline(generic.GenericStackedInline):
 
 class ComunicacionAsertivaInline(generic.GenericStackedInline):
     model = ComunicacionAsertiva
-    filter_horizontal = ['identifico', 'negociacion_exitosa']
+    filter_horizontal = ['negociacion_exitosa',]
     max_num = 1
+    pregunta = u'¿Qué se debe hacer para que una solución a un conflicto entre pareja sea exitoso?'
+
+    fieldsets = [
+        (pregunta, {'fields': ['identificar', 'analizar', 'identificar_prioridad', 'pido', 'actitud_pasiva']}),
+        (None, {'fields': ['negociacion_exitosa',]}),
+    ]
+
+    radio_fields = {
+        'identificar': admin.HORIZONTAL,
+        'analizar': admin.HORIZONTAL,
+        'identificar_prioridad': admin.HORIZONTAL,
+        'pido': admin.HORIZONTAL,
+        'actitud_pasiva': admin.HORIZONTAL,
+    }
 
 class MujeresAdmin(admin.ModelAdmin):    
     class Media:
@@ -157,6 +197,9 @@ class MujeresAdmin(admin.ModelAdmin):
     save_on_top = True
     actions_on_top = True
     list_display = ['contraparte', 'encuestador', 'fecha']
+    #list_display_links = ['contraparte', 'encuestador', 'fecha']
+    #list_editable = ['encuestador', 'fecha']    
+
     inlines = [ComposicionHogarInline,
         InfoSocioEconomicaInline,
         AccesoControlRecursoInline,
@@ -391,6 +434,7 @@ admin.site.register(AccionPrevencion)
 
 #temporales para agregar en el admin
 admin.site.register(ViveCon)
+admin.site.register(HablanDe)
 admin.site.register(LugarDeTrabajo)
 admin.site.register(Recurso)
 admin.site.register(Comunidad)
