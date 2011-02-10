@@ -2,6 +2,7 @@
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.contrib.auth.models import User
 from trocaire.lugar.models import *
 
 class Encuestador(models.Model):
@@ -16,7 +17,13 @@ class Encuestador(models.Model):
 
 class Contraparte(models.Model):
     nombre = models.CharField(max_length=250)
-    nombre_corto = models.CharField(max_length=50, blank=True, default='')
+    nombre_corto = models.CharField(max_length=50, blank=True, default='', verbose_name='SIGLAS')
+    direccion = models.CharField(max_length=200, blank=True, default='')
+    correo = models.EmailField(blank=True, default='')
+    website = models.URLField(blank=True, default='')
+    telefono = models.CharField(max_length=20, blank=True, default='')
+    contacto = models.CharField(max_length=150, blank=True, default='')
+    usuario = models.ForeignKey(User)
 
     def __unicode__(self):
         return self.nombre
@@ -121,7 +128,7 @@ SATISFECHAS = ((1, 'Bastante satisfechas'), (2, 'Poco satisfechas'), (3, 'Nada s
 
 SERVICIOS = ((1, 'Buenos'), (2, 'Regulares'), (3, 'Deficientes'))
 
-HOGAR = ((1, 'Siempre'), (2, 'Frecuentemente'), (3, 'A veces'), (4, 'Nunca'))
+HOGAR = ((1, 'Siempre'), (2, 'Frecuentemente'), (3, 'A veces'), (4, 'Nunca'), (5, 'No aplica'))
 
 COMUNICACION = ((1, 'De acuerdo'),
                 (2, 'En desacuerdo'),
@@ -129,6 +136,8 @@ COMUNICACION = ((1, 'De acuerdo'),
                 (4, 'No responde'))
 
 class Base(models.Model):
+    codigo = models.CharField(max_length=100)
+    usuario = models.ForeignKey(User)
     fecha = models.DateField(verbose_name='Fecha de aplicación')
     sexo = models.CharField(max_length=30, choices=SEXOS)
     edad = models.IntegerField(help_text='Edad en años')
@@ -746,8 +755,8 @@ class PrevalenciaVBGHombre(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    ha_vivido_vbg = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='¿Considera Ud que alguna ha ejercido violencia hacia una mujer en el último año?')
-    que_tipo = models.IntegerField(choices=TIPO_VBG, verbose_name='¿Qué tipo de VBG ha ejercido?', blank=True, null=True)
+    ha_vivido_vbg = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='¿Considera Ud que alguna vez ha ejercido violencia hacia una mujer en el último año?')
+    que_tipo = models.ManyToManyField(TipoVBG, verbose_name='¿Qué tipo de VBG ha ejercido?', blank=True, null=True)
     frecuencia = models.IntegerField(choices=FRECUENCIA, verbose_name='En este último año, con qué frecuencia ha ejercido violencia hacia mujer?', blank=True, null=True)
     quien = models.ManyToManyField(Quien2, verbose_name=u'¿Qué relación o parentesco tiene Ud con la mujer o mujeres contra las cuales ha ejercido violencia?', blank=True, null=True)
 
@@ -839,8 +848,8 @@ class PrevalenciaVBGLider(models.Model):
     content_object = generic.GenericForeignKey()
 
     piensa_existe = models.IntegerField(choices=SI_NO_SIMPLE2, verbose_name='¿Piensa Ud que en su comunidad existen mujeres que alguna vez han vivido VBG?')
-    ha_vivido_vbg = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='¿Considera Ud que alguna ha vivido VBG?')
-    que_tipo = models.IntegerField(choices=TIPO_VBG, verbose_name='¿Qué tipo de VBG ha ejercido?', blank=True, null=True)
+    ha_vivido_vbg = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='¿Considera Ud que alguna vez ha vivido VBG?')
+    que_tipo = models.ManyToManyField(TipoVBG, verbose_name='¿Qué tipo de VBG ha vivido?', blank=True, null=True)
     frecuencia = models.IntegerField(choices=FRECUENCIA, verbose_name='En este último año, con qué frecuencia ha vivido situaciones de VBG?', blank=True, null=True)
     quien = models.ManyToManyField(Quien, verbose_name=u'¿Quién es la persona que ha ejercido VBG sobre Ud?', blank=True, null=True)
 

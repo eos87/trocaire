@@ -427,6 +427,20 @@ class FuncionarioAdmin(admin.ModelAdmin):
         IncidenciaPoliticaFuncionarioInline,
         ]
 
+class ContraparteAdmin(admin.ModelAdmin):
+    def queryset(self, request):
+        if request.user.is_superuser:
+            return Contraparte.objects.all()
+        return Contraparte.objects.filter(usuario=request.user)
+
+    def get_form(self, request, obj=None, ** kwargs):
+        if request.user.is_superuser:
+            form = super(ContraparteAdmin, self).get_form(self, request, ** kwargs)
+        else:
+            form = super(ContraparteAdmin, self).get_form(self, request, ** kwargs)
+            form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
+        return form
+
 admin.site.register(Funcionario, FuncionarioAdmin)
 admin.site.register(Accion)
 admin.site.register(RecursoCuentaIns)
@@ -439,7 +453,7 @@ admin.site.register(LugarDeTrabajo)
 admin.site.register(Recurso)
 admin.site.register(Comunidad)
 admin.site.register(Encuestador)
-admin.site.register(Contraparte)
+admin.site.register(Contraparte, ContraparteAdmin)
 admin.site.register(Quien)
 admin.site.register(Quien2)
 admin.site.register(ResolverVBG)
