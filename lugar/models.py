@@ -20,7 +20,7 @@ class Departamento(models.Model):
     extension = models.DecimalField("Extension Territorials", max_digits=10, decimal_places=2, null=True)
 
     def __unicode__(self):
-        return self.nombre
+        return '%s - %s' % (self.pais, self.nombre)
 
     class Meta:
         verbose_name_plural = "Departamentos/Provincias"
