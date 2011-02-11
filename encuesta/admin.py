@@ -293,8 +293,9 @@ class HombresAdmin(admin.ModelAdmin):
               '/files/js/tiny_mce/tconfig.js')"""
 
     save_on_top = True
+    search_fields = ['codigo']
     actions_on_top = True
-    list_display = ['contraparte', 'encuestador', 'fecha']
+    list_display = ['contraparte', 'codigo', 'encuestador', 'fecha']
     inlines = [ComposicionHogarInline,
         InfoSocioEconomicaInline,
         AccesoControlRecursoInline,
@@ -362,7 +363,8 @@ class LiderAdmin(admin.ModelAdmin):
 
     save_on_top = True
     actions_on_top = True
-    list_display = ['contraparte', 'encuestador', 'organizacion', 'fecha']
+    search_fields = ['codigo']
+    list_display = ['contraparte', 'codigo', 'encuestador', 'organizacion', 'fecha']
     inlines = [InformacionSocioEconomicaLiderInline,        
         ConceptoViolenciaInline,
         ExpresionVBGInline,
@@ -458,7 +460,8 @@ class FuncionarioAdmin(admin.ModelAdmin):
 
     save_on_top = True
     actions_on_top = True
-    list_display = ['contraparte', 'encuestador', 'institucion', 'fecha']
+    search_fields = ['codigo']
+    list_display = ['contraparte', 'codigo', 'encuestador', 'institucion', 'fecha']
     inlines = [InformacionSocioEconomicaFuncionarioInline,
         ConceptoViolenciaInline,
         ExpresionVBGInline,
