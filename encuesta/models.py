@@ -17,25 +17,29 @@ class Encuestador(models.Model):
 
 class Contraparte(models.Model):
     nombre = models.CharField(max_length=250)
-    nombre_corto = models.CharField(max_length=50, blank=True, default='', verbose_name='SIGLAS')
+    nombre_corto = models.CharField(max_length=50, default='', verbose_name='Siglas/Nombre Corto')
     direccion = models.CharField(max_length=200, blank=True, default='')
     correo = models.EmailField(blank=True, default='')
     website = models.URLField(blank=True, default='')
     telefono = models.CharField(max_length=20, blank=True, default='')
     contacto = models.CharField(max_length=150, blank=True, default='')
     usuario = models.ForeignKey(User)
+    pais = models.ForeignKey(Pais)
+    departamento = models.ForeignKey(Departamento)
+    municipio = models.ForeignKey(Municipio)
+    logo = models.ImageField(upload_to='logos/', blank=True, null=True)
 
     def __unicode__(self):
-        return self.nombre
+        return self.nombre_corto
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_contraparte'
+        #app_label = '1-principal'
+        #db_table = 'encuesta_contraparte'
         verbose_name_plural = 'Contrapartes'
 
 #Definiendo los choices
 SEXOS = (('femenino', 'Femenino'), ('masculino', 'Masculino'))
-ESTADO_CIVIL = (('soltero', 'Soltero/a'), ('casado', 'Casado/a'), ('acompanado', 'Unión de hecho estable'), ('no-aplica', 'No aplica'))
+ESTADO_CIVIL = (('soltero', 'Soltero/a'), ('casado', 'Casado/a'), ('acompanado', 'Unión de hecho estable'), ('viuda', 'Viuda/o'), ('no-aplica', 'No aplica'))
 SI_NO = (('si', 'Si'), ('no', 'No'), ('no-aplica', 'No Aplica'))
 SI_NO_SIMPLE = (('si', 'Si'), ('no', 'No'))
 SI_NO_RESPONDE = ((1, 'Si'), (2, 'No'), (3, 'No sabe'), (4, 'No responde'))
@@ -56,57 +60,10 @@ QUE_HACE_DINERO = ((1, 'Lo guarda y decide como utilizarlo'),
                    (4, 'Da todo a su mama'),
                    (5, 'Da todo a su papa'))
 
-MANERAS_VBG = ((1, 'Golpes a las Mujeres'),
-               (2, 'Palabras y miradas que humillan, ridiculización, palabras groseras y gritos hacia las mujeres'),
-               (3, 'Amenazas y Chantajes'),
-               (4, 'Cuando la mujer tiene que pedir permiso para visitar a su familiares'),
-               (5, 'Cuando hay preferencias para que estudie el varón'),
-               (6, 'Cuando la mujer tiene que obedecer a su marido'),
-               (7, 'Cuando la mujer aunque no tenga deseos, es obligada por su pareja a tener relaciones sexuales'),
-               (8, 'Cuando solo el hombre quiere progresar y no se lo permite a la mujer'),
-               (9, 'Cuando el hombre no valora los logros de la mujer'),
-               (10, 'Cuando la mujer es celada por su pareja'),
-               (11, 'Cuando el marido empuja a su esposa por no estar de acuerdo con ella'),
-               (12, 'Obligar a la mujer a tener relaciones sexuales sin protección anticonceptiva o contra ITS'),
-               (13, 'Hacer que la mujer tenga que pedirle dinero a su marido y rendirle cuenta sobre como lo gastó'),
-               (14, 'Cuando el hombre tiene a su nombre las propiedades obtenidas durante el matrimonio o decide a quien dársela'),
-               (15, 'Cuando el hombre no permite que la mujer salga a divertirse con sus amigos/as sin hijos/as'),
-               (16, 'Cuando el hombre no le permite a la mujer que se organice y participe en actividades comunitarias'),
-               (17, 'Cuando tu papa o mama no te permite organizarte y participar en actividades comunitarias'))
-
-CREENCIAS_VBG = ((1, 'Una buena esposa obedece a su esposo aunque ella tenga otra opción'),
-                 (2, 'Los problemas familiares solo deben discutirse con miembros de la familia'),
-                 (3, 'Es importante para el hombre demostrarle a su pareja quien manda'),
-                 (4, 'Una mujer debe estar en capacidad de escoger a sus amistades aunque su esposo esté en desacuerdo'),
-                 (5, 'Es obligación de la esposa tener relaciones sexuales con su esposo aunque no sienta deseos'),
-                 (6, 'Si un hombre maltrata a su esposa, otras personas ajenas a la familia deben intervenir'))
-
 CREENCIAS_VBG_RESP = ((1, 'De acuerdo'),
                       (2, 'En desacuerdo'),
                       (3, 'No sabe'),
                       (4, 'No responde'))
-
-JUSTIFICACIONES = ((1, 'Beben Licor'),
-                   (2, 'La addicción a las drogas'),
-                   (3, 'El estrés por estar desempleados'),
-                   (4, 'La pobreza'),
-                   (5, 'El hombre ha sido víctima de malos tratos en la niñez'),
-                   (6, 'Ya nace violento'),
-                   (7, 'Por que las mujeres no le hacen caso a su marido'),
-                   (8, 'El bajo nivel educativo de los hombres'),
-                   (9, 'La influencia de la familia'),
-                   (10, 'Las creencias religiosas'),
-                   (11, 'El comportamiento provocador de las mujeres'),
-                   (12, 'Otros'))
-
-CAUSAS_VBG = ((1, 'Que las mujeres son consideradas como un objeto'),
-              (2, 'La crianza y el tipo de educación que han recibido'),
-              (3, 'Al machismo'),
-              (4, 'Que los hombres tienen ese derecho'),
-              (5, 'La influencia de los medios de comunicación'),
-              (6, 'La influencia religiosa que promueve la obediencia de la mujer al hombre'),
-              (7, 'Al desconocimiento de las mujeres de sus derechos'),
-              (8, 'Que culturalmente es aceptado que los hombres controlen y dominen a las mujeres'))
 
 QUE_HACE = ((1, 'Se acerca a la persona, la escucha y le brinda orientaciones sobre qué hacer'),
             (2, 'La invita a una actividad colectiva en la que se habla sobre las causas y consecuencias de la VBG'),
@@ -289,8 +246,25 @@ class ExpresionVBG(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    maneras = models.IntegerField(choices=MANERAS_VBG, verbose_name='De que manera considera que se expresa la VBG?')
-    respuesta = models.CharField(max_length=20, choices=SI_NO, verbose_name='Seleccione la respuesta')
+    #maneras = models.IntegerField(choices=MANERAS_VBG, verbose_name='De que manera considera que se expresa la VBG?')
+    #respuesta = models.CharField(max_length=20, choices=SI_NO, verbose_name='Seleccione la respuesta')
+    golpe_mujeres = models.CharField(max_length=20, choices=SI_NO, verbose_name='Golpes a las Mujeres')
+    palabras_miradas = models.CharField(max_length=20, choices=SI_NO, verbose_name='Palabras y miradas que humillan, ridiculización, palabras groseras y gritos hacia las mujeres')
+    amenaza_chantajes = models.CharField(max_length=20, choices=SI_NO, verbose_name='Amenazas y Chantajes')
+    pedir_permiso = models.CharField(max_length=20, choices=SI_NO, verbose_name='Cuando la mujer tiene que pedir permiso para visitar a su familiares')
+    estudio_varon = models.CharField(max_length=20, choices=SI_NO, verbose_name='Cuando hay preferencias para que estudie el varón')
+    obedecer_marido = models.CharField(max_length=20, choices=SI_NO, verbose_name='Cuando la mujer tiene que obedecer a su marido')
+    sexo_obligada = models.CharField(max_length=20, choices=SI_NO, verbose_name='Cuando la mujer aunque no tenga deseos, es obligada por su pareja a tener relaciones sexuales')
+    progreso_hombre = models.CharField(max_length=20, choices=SI_NO, verbose_name='Cuando solo el hombre quiere progresar y no se lo permite a la mujer')
+    marido_no_valora = models.CharField(max_length=20, choices=SI_NO, verbose_name='Cuando el hombre no valora los logros de la mujer')
+    hombre_celoso = models.CharField(max_length=20, choices=SI_NO, verbose_name='Cuando la mujer es celada por su pareja')
+    marido_empuja = models.CharField(max_length=20, choices=SI_NO, verbose_name='Cuando el marido empuja a su esposa por no estar de acuerdo con ella')
+    sexo_sin_proteccion = models.CharField(max_length=20, choices=SI_NO, verbose_name='Obligar a la mujer a tener relaciones sexuales sin protección anticonceptiva o contra ITS')
+    pedir_dinero = models.CharField(max_length=20, choices=SI_NO, verbose_name='Hacer que la mujer tenga que pedirle dinero a su marido y rendirle cuenta sobre como lo gastó')
+    propiedades_hombre = models.CharField(max_length=20, choices=SI_NO, verbose_name='Cuando el hombre tiene a su nombre las propiedades obtenidas durante el matrimonio o decide a quien dársela')
+    mujer_divertirse = models.CharField(max_length=20, choices=SI_NO, verbose_name='Cuando el hombre no permite que la mujer salga a divertirse con sus amigos/as sin hijos/as')
+    mujer_participe = models.CharField(max_length=20, choices=SI_NO, verbose_name='Cuando el hombre no le permite a la mujer que se organice y participe en actividades comunitarias')
+    no_organizarte = models.CharField(max_length=20, choices=SI_NO, verbose_name='Cuando tu papa o mama no te permite organizarte y participar en actividades comunitarias')
 
     def __unicode__(self):
         return 'Expresion de VBG %s' % self.id
@@ -304,8 +278,12 @@ class Creencia(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    creencia = models.IntegerField(choices=CREENCIAS_VBG, verbose_name='Creencias sobre cómo deben comportarse hombres y mujeres')
-    respuesta = models.IntegerField(choices=CREENCIAS_VBG_RESP)
+    esposa_obedece = models.IntegerField(choices=CREENCIAS_VBG_RESP, verbose_name='Una buena esposa obedece a su esposo aunque ella tenga otra opción', null=True)
+    problema_familiar = models.IntegerField(choices=CREENCIAS_VBG_RESP, verbose_name='Los problemas familiares solo deben discutirse con miembros de la familia', null=True)
+    quien_manda = models.IntegerField(choices=CREENCIAS_VBG_RESP, verbose_name='Es importante para el hombre demostrarle a su pareja quien manda', null=True)
+    escoger_amistades = models.IntegerField(choices=CREENCIAS_VBG_RESP, verbose_name='Una mujer debe estar en capacidad de escoger a sus amistades aunque su esposo esté en desacuerdo', null=True)
+    sexo_obligacion = models.IntegerField(choices=CREENCIAS_VBG_RESP, verbose_name='Es obligación de la esposa tener relaciones sexuales con su esposo aunque no sienta deseos', null=True)
+    hombre_maltrata = models.IntegerField(choices=CREENCIAS_VBG_RESP, verbose_name='Si un hombre maltrata a su esposa, otras personas ajenas a la familia deben intervenir', null=True)
 
     def __unicode__(self):
         return 'Creencias %s' % self.id
@@ -317,9 +295,19 @@ class JustificacionVBG(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
-
-    justificacion = models.IntegerField(choices=JUSTIFICACIONES, verbose_name='Para Ud los hombres ejercen violencia hacia las mujeres porque:')
-    respuesta = models.CharField(choices=SI_NO_SIMPLE, verbose_name='Seleccione la respuesta', max_length=10)
+    
+    licor = models.CharField(choices=SI_NO_SIMPLE, verbose_name='Beben Licor', max_length=10, default='')
+    drogas = models.CharField(choices=SI_NO_SIMPLE, verbose_name='La addicción a las drogas', max_length=10, default='')
+    estres = models.CharField(choices=SI_NO_SIMPLE, verbose_name='El estrés por estar desempleados', max_length=10, default='')
+    pobreza = models.CharField(choices=SI_NO_SIMPLE, verbose_name='La pobreza', max_length=10, default='')
+    victima = models.CharField(choices=SI_NO_SIMPLE, verbose_name='El hombre ha sido víctima de malos tratos en la niñez', max_length=10, default='')
+    nace_asi = models.CharField(choices=SI_NO_SIMPLE, verbose_name='Ya nace violento', max_length=10, default='')
+    mujer_no_caso = models.CharField(choices=SI_NO_SIMPLE, verbose_name='Por que las mujeres no le hacen caso a su marido', max_length=10, default='')
+    nivel_educativo = models.CharField(choices=SI_NO_SIMPLE, verbose_name='El bajo nivel educativo de los hombres', max_length=10, default='')
+    influencia_familiar = models.CharField(choices=SI_NO_SIMPLE, verbose_name='La influencia de la familia', max_length=10, default='')
+    creencias = models.CharField(choices=SI_NO_SIMPLE, verbose_name='Las creencias religiosas', max_length=10, default='')
+    comportamiento = models.CharField(choices=SI_NO_SIMPLE, verbose_name='El comportamiento provocador de las mujeres', max_length=10, default='')
+    otros = models.CharField(choices=SI_NO_SIMPLE, verbose_name='Otros', max_length=10, default='')
 
     def __unicode__(self):
         return 'Justificacion VBG %s' % self.id
@@ -333,15 +321,23 @@ class CausaVBG(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    causa = models.IntegerField(choices=CAUSAS_VBG, verbose_name='Cree usted que los hombres son violentos debido a:')
-    respuesta = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Seleccione la respuesta')
+    #causa = models.IntegerField(choices=CAUSAS_VBG, verbose_name='Cree usted que los hombres son violentos debido a:')
+    #respuesta = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Seleccione la respuesta')
+    mujer_objeto = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Que las mujeres son consideradas como un objeto', default='')
+    tipo_educacion = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='La crianza y el tipo de educación que han recibido', default='')
+    machismo = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Al machismo', default='')
+    tiene_derecho = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Que los hombres tienen ese derecho', default='')
+    influencia_medios = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='La influencia de los medios de comunicación', default='')
+    influencia_religion = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='La influencia religiosa que promueve la obediencia de la mujer al hombre', default='')
+    desconocimiento = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Al desconocimiento de las mujeres de sus derechos', default='')
+    cultura = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='Que culturalmente es aceptado que los hombres controlen y dominen a las mujeres', default='')
 
     def __unicode__(self):
         return 'Causa de la VBG %s' % self.id
 
     class Meta:
-        verbose_name = 'Causa de la VBG'
-        verbose_name_plural = 'Causas de la VBG'
+        verbose_name = u'Causa de la Violencia Basada en Género'
+        verbose_name_plural = u'Causas de la Violencia Basada en Género'
 
 class SituacionVBG(models.Model):
     content_type = models.ForeignKey(ContentType)
@@ -738,8 +734,8 @@ class Mujer(Base):
         return u'Encuesta Mujeres %s' % self.id
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_mujer'
+        #app_label = '1-principal'
+        #db_table = 'encuesta_mujer'
         verbose_name = 'Encuesta Mujer'
         verbose_name_plural = 'Encuestas Mujeres'
 
@@ -797,8 +793,8 @@ class Hombre(Base):
     comunicacion = generic.GenericRelation(ComunicacionAsertiva)
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_hombre'
+        #app_label = '1-principal'
+        #db_table = 'encuesta_hombre'
         verbose_name = 'Encuesta Hombre'
         verbose_name_plural = 'Encuestas Hombres'
 
@@ -899,8 +895,8 @@ class Lider(Base):
     comunicacion = generic.GenericRelation(ComunicacionAsertiva)
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_lider'
+        #app_label = '1-principal'
+        #db_table = 'encuesta_lider'
         verbose_name = 'Encuesta Líder/Lideresa/Docente'
         verbose_name_plural = 'Encuesta Líderes/Lideresas/Docentes'
 
@@ -1125,8 +1121,8 @@ class Funcionario(Base):
     accion_prevencion = generic.GenericRelation(IncidenciaPoliticaFuncionario)
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_funcionario'
+        #app_label = '1-principal'
+        #db_table = 'encuesta_funcionario'
         verbose_name = 'Encuesta Funcionaria/o'
         verbose_name_plural = 'Encuesta Funcionarias/os'
 

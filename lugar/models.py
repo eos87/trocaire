@@ -48,6 +48,7 @@ class Comunidad(models.Model):
 
     class Meta:
         verbose_name_plural="Comunidad"
+        ordering = ['nombre']
 
     def __unicode__(self):
         return self.nombre

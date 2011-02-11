@@ -46,34 +46,76 @@ class ConceptoViolenciaInline(generic.GenericTabularInline):
         'respuesta': admin.HORIZONTAL,
     }
 
-class ExpresionVBGInline(generic.GenericTabularInline):
+class ExpresionVBGInline(generic.GenericStackedInline):
     model = ExpresionVBG
-    extra = 1
+    max_num = 1
+    verbose_name = '¿De qué manera considera usted que se expresa la Violencia Basada en Género?'
     radio_fields = {
-        'respuesta': admin.HORIZONTAL,
+        'golpe_mujeres': admin.HORIZONTAL,
+        'palabras_miradas': admin.HORIZONTAL,
+        'amenaza_chantajes': admin.HORIZONTAL,
+        'pedir_permiso': admin.HORIZONTAL,
+        'estudio_varon': admin.HORIZONTAL,
+        'obedecer_marido': admin.HORIZONTAL,
+        'sexo_obligada': admin.HORIZONTAL,
+        'progreso_hombre': admin.HORIZONTAL,
+        'marido_no_valora': admin.HORIZONTAL,
+        'hombre_celoso': admin.HORIZONTAL,
+        'marido_empuja': admin.HORIZONTAL,
+        'sexo_sin_proteccion': admin.HORIZONTAL,
+        'pedir_dinero': admin.HORIZONTAL,
+        'propiedades_hombre': admin.HORIZONTAL,
+        'mujer_divertirse': admin.HORIZONTAL,
+        'mujer_participe': admin.HORIZONTAL,
+        'no_organizarte': admin.HORIZONTAL,
     }
 
-class CreenciaInline(generic.GenericTabularInline):
+class CreenciaInline(generic.GenericStackedInline):
     model = Creencia
-    extra = 1
-
+    max_num = 1
+    verbose_name = u'Creencias sobre cómo deben comportarse hombres y mujeres'
     radio_fields = {
-        'respuesta': admin.HORIZONTAL,
+        'esposa_obedece': admin.HORIZONTAL,
+        'problema_familiar': admin.HORIZONTAL,
+        'quien_manda': admin.HORIZONTAL,
+        'escoger_amistades': admin.HORIZONTAL,
+        'sexo_obligacion': admin.HORIZONTAL,
+        'hombre_maltrata': admin.HORIZONTAL,
     }
 
-class JustificacionVBGInline(generic.GenericTabularInline):
+class JustificacionVBGInline(generic.GenericStackedInline):
     model = JustificacionVBG
+    verbose_name = u'Para usted, los hombres ejercen Violencia hacia las mujeres porque?'
     radio_fields = {
-        'respuesta': admin.HORIZONTAL,
+        'licor': admin.HORIZONTAL,
+        'drogas': admin.HORIZONTAL,
+        'estres': admin.HORIZONTAL,
+        'pobreza': admin.HORIZONTAL,
+        'victima': admin.HORIZONTAL,
+        'nace_asi': admin.HORIZONTAL,
+        'mujer_no_caso': admin.HORIZONTAL,
+        'nivel_educativo': admin.HORIZONTAL,
+        'influencia_familiar': admin.HORIZONTAL,
+        'creencias': admin.HORIZONTAL,
+        'comportamiento': admin.HORIZONTAL,
+        'otros': admin.HORIZONTAL,
     }
-    extra = 1
+    max_num = 1
 
-class CausaVBGInline(generic.GenericTabularInline):
+class CausaVBGInline(generic.GenericStackedInline):
     model = CausaVBG
+    verbose_name = u'Cree usted que los hombres son violentos debido a?'
     radio_fields = {
-        'respuesta': admin.HORIZONTAL,
+        'mujer_objeto': admin.HORIZONTAL,
+        'tipo_educacion': admin.HORIZONTAL,
+        'machismo': admin.HORIZONTAL,
+        'tiene_derecho': admin.HORIZONTAL,
+        'influencia_medios': admin.HORIZONTAL,
+        'influencia_religion': admin.HORIZONTAL,
+        'desconocimiento': admin.HORIZONTAL,
+        'cultura': admin.HORIZONTAL,
     }
-    extra = 1
+    max_num = 1
 
 class SituacionVBGInline(generic.GenericTabularInline):
     model = SituacionVBG
@@ -205,8 +247,10 @@ class MujeresAdmin(admin.ModelAdmin):
     save_on_top = True
     actions_on_top = True
     list_display = ['contraparte', 'codigo', 'encuestador', 'fecha']
+    fields = ['codigo', 'contraparte', 'encuestador', 'usuario', 'fecha', 'sexo', 'edad', 'comunidad', 'municipio', 'estado_civil', 'lugar_origen', 'asiste_iglesia', 'cual_iglesia']
     #list_display_links = ['contraparte', 'encuestador', 'fecha']
     #list_editable = ['encuestador', 'fecha']    
+    search_fields = ['codigo']
 
     inlines = [ComposicionHogarInline,
         InfoSocioEconomicaInline,
