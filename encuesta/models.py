@@ -316,7 +316,7 @@ class JustificacionVBG(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    justificacion = models.IntegerField(choices=JUSTIFICACIONES, verbose_name='Para Ud los hombres efercen violencia hacia las mujeres porque:')
+    justificacion = models.IntegerField(choices=JUSTIFICACIONES, verbose_name='Para Ud los hombres ejercen violencia hacia las mujeres porque:')
     respuesta = models.CharField(choices=SI_NO_SIMPLE, verbose_name='Seleccione la respuesta', max_length=10)
 
     def __unicode__(self):
@@ -732,12 +732,12 @@ class Mujer(Base):
     corresponsabilidad = generic.GenericRelation(Corresponsabilidad)
     comunicacion = generic.GenericRelation(ComunicacionAsertiva)
     
-    class Meta:
-        verbose_name = 'Encuesta Mujer'
-        verbose_name_plural = 'Encuestas Mujeres'
-
     def __unicode__(self):
         return u'Encuesta Mujeres %s' % self.id
+
+    class Meta:        
+        verbose_name = 'Encuesta Mujer'
+        verbose_name_plural = 'Encuestas Mujeres'
 
 class Quien2(models.Model):
     nombre = models.CharField(max_length=50)

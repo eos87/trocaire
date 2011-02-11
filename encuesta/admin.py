@@ -30,6 +30,7 @@ class ComposicionHogarInline(generic.GenericStackedInline):
 class InfoSocioEconomicaInline(generic.GenericStackedInline):    
     filter_horizontal = ['donde_trabaja', 'aportan']
     model = InformacionSocioEconomica
+    fields = ['trabaja_fuera', 'donde_trabaja', 'hace_dinero', 'aportan']
     max_num = 1
     verbose_name = u'Información SocioEconómica'
     verbose_name_plural = u'V. Información SocioEconómica'
@@ -62,10 +63,16 @@ class CreenciaInline(generic.GenericTabularInline):
 
 class JustificacionVBGInline(generic.GenericTabularInline):
     model = JustificacionVBG
+    radio_fields = {
+        'respuesta': admin.HORIZONTAL,
+    }
     extra = 1
 
 class CausaVBGInline(generic.GenericTabularInline):
     model = CausaVBG
+    radio_fields = {
+        'respuesta': admin.HORIZONTAL,
+    }
     extra = 1
 
 class SituacionVBGInline(generic.GenericTabularInline):
@@ -96,6 +103,7 @@ class PrevalenciaVBGInline(generic.GenericStackedInline):
     verbose_name = 'Prevalencia de la VBG'
     model = PrevalenciaVBG
     filter_horizontal = ['quien',]
+    fields = ['ha_vivido_vbg', 'que_tipo', 'frecuencia', 'quien']
     max_num = 1
 
 admin.site.register(TipoVBG)
@@ -196,7 +204,7 @@ class MujeresAdmin(admin.ModelAdmin):
 
     save_on_top = True
     actions_on_top = True
-    list_display = ['contraparte', 'encuestador', 'fecha']
+    list_display = ['contraparte', 'codigo', 'encuestador', 'fecha']
     #list_display_links = ['contraparte', 'encuestador', 'fecha']
     #list_editable = ['encuestador', 'fecha']    
 

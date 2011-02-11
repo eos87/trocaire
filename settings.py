@@ -69,7 +69,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',    
     'django.contrib.admin',
     'trocaire.lugar',
-    'trocaire.encuesta',
+    'trocaire.encuesta',    
     'south',
 )
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
