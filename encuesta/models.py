@@ -856,7 +856,7 @@ class PrevalenciaVBGLider(models.Model):
     quien = models.ManyToManyField(Quien, verbose_name=u'¿Quién es la persona que ha ejercido VBG sobre Ud?', blank=True, null=True)
 
     def __unicode__(self):
-        return 'Prevalencia de VBG %s' % self.id
+        return u'Prevalencia de VBG %s' % self.id
 
     class Meta:
         verbose_name = 'Prevalencia de la VBG lider'
@@ -918,7 +918,7 @@ class InformacionSocioEconomicaFuncionario(BaseInfoSocioEconomica):
     content_object = generic.GenericForeignKey()
 
     def __unicode__(self):
-        return 'Info SocioEconomica %s' % self.id
+        return u'Info SocioEconomica %s' % self.id
 
     class Meta:
         verbose_name = 'Información socio-económica'
@@ -963,7 +963,7 @@ class RutaCritica(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    pasos = models.BooleanField(verbose_name='¿Conoce los pasos de la ruta crítica de la violencia?')
+    pasos = models.BooleanField(verbose_name=u'¿Conoce los pasos de la ruta crítica de la violencia?')
     centro_mujeres = models.IntegerField(choices=CERO_CINCO, verbose_name='Centro de Mujeres en atención a Violencia', blank=True, null=True)
     centro_salud = models.IntegerField(choices=CERO_CINCO, verbose_name='Centro de salud / Medicina Legal', blank=True, null=True)
     comisaria = models.IntegerField(choices=CERO_CINCO, verbose_name='Comisaría de la mujer o policía', blank=True, null=True)
@@ -972,7 +972,7 @@ class RutaCritica(models.Model):
     instrumentos = models.ManyToManyField(Instrumento, verbose_name=u'Intrumentos')
 
     def __unicode__(self):
-        return 'Ruta Crítica %s' % self.id
+        return u'Ruta Crítica %s' % self.id
 
     class Meta:
         verbose_name_plural = 'Rutas Críticas'
@@ -986,7 +986,7 @@ class AccionVBGFuncionario(models.Model):
     accion_tomar = models.ManyToManyField(QueDebeHacer, verbose_name=u'Si un hombre le pega a su pareja, cuál de las siguientes acciones ella debería tomar?')
 
     def __unicode__(self):
-        return 'Accion ante VBG %s' % self.id
+        return u'Accion ante VBG %s' % self.id
 
     class Meta:
         verbose_name = 'Acción ante una situación de VBG'
@@ -1007,7 +1007,7 @@ class RegistroDato(models.Model):
     otro = models.IntegerField(blank=True, default=0)
     
     def __unicode__(self):
-        return 'Registro %s' % self.id
+        return u'Registro %s' % self.id
 
     class Meta:
         verbose_name = 'Registro de VBG'
@@ -1021,7 +1021,7 @@ class CalidadAtencionFuncionario(models.Model):
     valor_servicio = models.IntegerField(choices=SERVICIOS, verbose_name='¿Como valora Ud los servicios que las intituciones ofrecen a las mujeres que viven situaciones de VBG')
 
     def __unicode__(self):
-        return 'Calidad de atencion %s' % self.id
+        return u'Calidad de atencion %s' % self.id
 
     class Meta:
         verbose_name_plural = u'Calidad de Atención'
@@ -1057,7 +1057,7 @@ class AccionMejorarAtencion(models.Model):
     recursos = models.ManyToManyField(RecursoCuentaIns, blank=True, null=True, verbose_name=u'¿Con que recursos cuenta su institución para realizar la atención que brinda a las mujeres que viven VBG?')
 
     def __unicode__(self):
-        return 'Acción para mejorar atención %s' % self.id
+        return u'Acción para mejorar atención %s' % self.id
 
     class Meta:
         verbose_name = 'Acción para mejorar atención'
@@ -1072,7 +1072,7 @@ class AccionPrevVBG(models.Model):
     accion_prevenir = models.ManyToManyField(AccionPrevencion, blank=True, null=True, verbose_name=u'¿Cuáles son las acciones de prevención de violencia que su organización/escuela o usted ha desarrollado?')
 
     def __unicode__(self):
-        return 'Accion para prevención de VBG %s' % self.id
+        return u'Accion para prevención de VBG %s' % self.id
 
     class Meta:
         verbose_name = 'Acción para prevención de VBG'
@@ -1090,7 +1090,7 @@ class IncidenciaPoliticaFuncionario(models.Model):
     que_propuestas = models.ManyToManyField(TipoPropuesta, related_name='propuesta_negociada', blank=True, null=True, verbose_name=u'¿Qué tipo de propuestas han negociado?')
 
     def __unicode__(self):
-        return 'Incidencia política %s' % self.id
+        return u'Incidencia política %s' % self.id
 
     class Meta:
         verbose_name = 'Incidencia Política Funcionarios'
