@@ -9,8 +9,7 @@ class DepartamentoAdmin(admin.ModelAdmin):
 
 class MunicipioAdmin(admin.ModelAdmin):
     list_display = ['nombre', 'departamento', 'id']
-    list_filter = ['departamento',]
-    list_editable = ['departamento']
+    list_filter = ['departamento',]    
     search_fields = ['nombre']
     prepopulated_fields = {"slug": ("nombre", )}
 

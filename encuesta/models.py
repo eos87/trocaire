@@ -25,8 +25,8 @@ class Contraparte(models.Model):
     contacto = models.CharField(max_length=150, blank=True, default='')
     usuario = models.ForeignKey(User)
     pais = models.ForeignKey(Pais)
-    departamento = models.ForeignKey(Departamento)
-    municipio = models.ForeignKey(Municipio)
+    departamento = models.ForeignKey(Departamento, verbose_name='Departamento/Provincia')
+    municipio = models.ForeignKey(Municipio, verbose_name='Municipio/Cantón')
     logo = models.ImageField(upload_to='logos/', blank=True, null=True)
 
     def __unicode__(self):
