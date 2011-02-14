@@ -8,3 +8,6 @@
 #encuesta-justificacionvbg-content_type-object_id-group label, #encuesta-causavbg-content_type-object_id-group label{
     width: 350px !important;
 }
+#contraparte_form label{
+    width: 300px;
+}
