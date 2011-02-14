@@ -13,18 +13,18 @@ class ComposicionHogarInline(generic.GenericStackedInline):
         (None, {'fields': [('tiene_pareja', 'vive_con')]}),
         (u'Habitantes del hogar', {'fields': ['cuantos_viven', ('entre0y6', 'entre7y17', 'entre18ymas'), 'tiene_hijos', 'cuantos_hijos']}),
         (u'7. Qué edad tienen los hijos e hijas que viven con usted', {
-            'classes': ('clase_propia',),
-            'description': u'<b>Número de niños entre 0 y 6 años</b>',
-            'fields': [('hijos0y6_mujeres', 'hijos0y6_hombres')]
-        }),
+         'classes': ('clase_propia', ),
+         'description': u'<b>Número de niños entre 0 y 6 años</b>',
+         'fields': [('hijos0y6_mujeres', 'hijos0y6_hombres')]
+         }),
         (None, {
-            'description': u'<b>Número de niños entre 7 y 17 años</b>',            
-            'fields': [('hijos7y17_mujeres', 'hijos7y17_hombres'),]
-        }),
+         'description': u'<b>Número de niños entre 7 y 17 años</b>',
+         'fields': [('hijos7y17_mujeres', 'hijos7y17_hombres'), ]
+         }),
         (None, {
-            'description': u'<b>Número de personas entre 18 y más años</b>',
-            'fields': [('hijos18ymas_mujeres', 'hijos18ymas_hombres'),]
-        }),
+         'description': u'<b>Número de personas entre 18 y más años</b>',
+         'fields': [('hijos18ymas_mujeres', 'hijos18ymas_hombres'), ]
+         }),
     ]
 
 class InfoSocioEconomicaInline(generic.GenericStackedInline):    
@@ -144,7 +144,7 @@ class PrevalenciaVBGInline(generic.GenericStackedInline):
     verbose_name_plural = 'Prevalencia de la Violencia Basada en Género'
     verbose_name = 'Prevalencia de la VBG'
     model = PrevalenciaVBG
-    filter_horizontal = ['quien',]
+    filter_horizontal = ['quien', ]
     fields = ['ha_vivido_vbg', 'que_tipo', 'frecuencia', 'quien']
     max_num = 1
 
@@ -152,12 +152,12 @@ admin.site.register(TipoVBG)
 
 class AsuntoPublicoVBGInline(generic.GenericStackedInline):
     model = AsuntoPublicoVBG
-    filter_horizontal = ['resolverse_con',]
+    filter_horizontal = ['resolverse_con', ]
     max_num = 1
 
 class EfectoVBGInline(generic.GenericStackedInline):
     model = EfectoVBG
-    filter_horizontal = ['como_afecta',]
+    filter_horizontal = ['como_afecta', ]
     max_num = 1
 
 class ConocimientoLeyInline(generic.GenericStackedInline):
@@ -171,7 +171,7 @@ class ConocimientoLeyInline(generic.GenericStackedInline):
 
 class TomaDecisionInline(generic.GenericStackedInline):
     model = TomaDecision
-    filter_horizontal = ['decision',]
+    filter_horizontal = ['decision', ]
     max_num = 1
 
 class ParticipacionPublicaInline(generic.GenericStackedInline):
@@ -193,10 +193,10 @@ class CorresponsabilidadInline(generic.GenericStackedInline):
     pregunta = '¿Cuáles de las siguientes actividades realiza Ud en su hogar?'
     fieldsets = [
         (pregunta, {'fields': ['lavar', 'plancar', 'limpiar',
-                                'jalar_agua', 'cuidar_ninos', 'hacer_mandados',
-                                'llevar_lena', 'lavar_trastes', 'arreglar_cama',
-                                'ir_reuniones', 'acompanar', 'hacer_compras',
-                                'pagar_servicios', 'llevar_enfermos', 'cuidar_enfermos']}),
+         'jalar_agua', 'cuidar_ninos', 'hacer_mandados',
+         'llevar_lena', 'lavar_trastes', 'arreglar_cama',
+         'ir_reuniones', 'acompanar', 'hacer_compras',
+         'pagar_servicios', 'llevar_enfermos', 'cuidar_enfermos']}),
     ]
     radio_fields = {
         'lavar': admin.HORIZONTAL,
@@ -218,13 +218,13 @@ class CorresponsabilidadInline(generic.GenericStackedInline):
 
 class ComunicacionAsertivaInline(generic.GenericStackedInline):
     model = ComunicacionAsertiva
-    filter_horizontal = ['negociacion_exitosa',]
+    filter_horizontal = ['negociacion_exitosa', ]
     max_num = 1
     pregunta = u'¿Qué se debe hacer para que una solución a un conflicto entre pareja sea exitoso?'
 
     fieldsets = [
         (pregunta, {'fields': ['identificar', 'analizar', 'identificar_prioridad', 'pido', 'actitud_pasiva']}),
-        (None, {'fields': ['negociacion_exitosa',]}),
+        (None, {'fields': ['negociacion_exitosa', ]}),
     ]
 
     radio_fields = {
@@ -238,7 +238,7 @@ class ComunicacionAsertivaInline(generic.GenericStackedInline):
 class MujeresAdmin(admin.ModelAdmin):    
     class Media:
         css = {
-            "all": ("/files/css/especial.css", )
+            "all": ("/files/css/especial.css",)
         }
 
         """js = ('/files/js/tiny_mce/tiny_mce.js',
@@ -280,13 +280,13 @@ class PrevalenciaVBGHombreInline(generic.GenericStackedInline):
     verbose_name_plural = 'Prevalencia de la Violencia Basada en Género'
     verbose_name = 'Prevalencia de la VBG'
     model = PrevalenciaVBGHombre
-    filter_horizontal = ['quien',]
+    filter_horizontal = ['quien', ]
     max_num = 1
 
 class HombresAdmin(admin.ModelAdmin):
     class Media:
         css = {
-            "all": ("/files/css/especial.css", )
+            "all": ("/files/css/especial.css",)
         }
 
         """js = ('/files/js/tiny_mce/tiny_mce.js',
@@ -349,13 +349,13 @@ class PrevalenciaVBGLiderInline(generic.GenericStackedInline):
     verbose_name_plural = 'Prevalencia de la Violencia Basada en Género'
     verbose_name = 'Prevalencia de la VBG'
     model = PrevalenciaVBGLider
-    filter_horizontal = ['quien',]
+    filter_horizontal = ['quien', ]
     max_num = 1
 
 class LiderAdmin(admin.ModelAdmin):
     class Media:
         css = {
-            "all": ("/files/css/especial.css", )
+            "all": ("/files/css/especial.css",)
         }
 
         """js = ('/files/js/tiny_mce/tiny_mce.js',
@@ -365,7 +365,7 @@ class LiderAdmin(admin.ModelAdmin):
     actions_on_top = True
     search_fields = ['codigo']
     list_display = ['contraparte', 'codigo', 'encuestador', 'organizacion', 'fecha']
-    inlines = [InformacionSocioEconomicaLiderInline,        
+    inlines = [InformacionSocioEconomicaLiderInline, 
         ConceptoViolenciaInline,
         ExpresionVBGInline,
         CreenciaInline,
@@ -377,7 +377,7 @@ class LiderAdmin(admin.ModelAdmin):
         AsuntoPublicoVBGInline,
         EfectoVBGInline,
         ConocimientoLeyInline,
-        TomaDecisionInline,        
+        TomaDecisionInline, 
         IncidenciaPoliticaInline,
         CalidadAtencionInline,
         CorresponsabilidadInline,
@@ -452,7 +452,7 @@ class IncidenciaPoliticaFuncionarioInline(generic.GenericStackedInline):
 class FuncionarioAdmin(admin.ModelAdmin):
     class Media:
         css = {
-            "all": ("/files/css/especial.css", )
+            "all": ("/files/css/especial.css",)
         }
 
         """js = ('/files/js/tiny_mce/tiny_mce.js',
@@ -483,6 +483,11 @@ class FuncionarioAdmin(admin.ModelAdmin):
         ]
 
 class ContraparteAdmin(admin.ModelAdmin):
+    class Media:
+        css = {
+            "all": ("/files/css/especial.css",)
+        }
+
     def queryset(self, request):
         if request.user.is_superuser:
             return Contraparte.objects.all()
