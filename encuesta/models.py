@@ -131,7 +131,7 @@ class ComposicionHogar(models.Model):
     vive_con = models.ManyToManyField(ViveCon, verbose_name='En su hogar vive con:')
     cuantos_viven = models.IntegerField('Cuantas personas habitan en la casa donde usted vive?')
     entre0y6 = models.IntegerField('Número de niños entre 0 y 6 años que viven en la casa', blank=True, null=True)
-    entre7y17 = models.IntegerField('Número de niños entre 0 y 17 años que viven en la casa', blank=True, null=True)
+    entre7y17 = models.IntegerField('Número de niños entre 7 y 17 años que viven en la casa', blank=True, null=True)
     entre18ymas = models.IntegerField('Número de personas de 18 y más años que viven en la casa', blank=True, null=True)
     tiene_hijos = models.CharField(max_length=10, choices=SI_NO)
     cuantos_hijos = models.IntegerField(verbose_name='¿Cuántos hijos tiene?', blank=True, null=True)

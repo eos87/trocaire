@@ -17,6 +17,9 @@ urlpatterns = patterns('',
     (r'^$', direct_to_template, {'template': 'index.html'}),
     (r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html'}),
     (r'^admin/', include(admin.site.urls)),
+    (r'^ajax/depa/$', 'trocaire.views.get_depas'),
+    (r'^ajax/muni/$', 'trocaire.views.get_munis'),
+    (r'^ajax/data/$', 'trocaire.views.__get_data'),
 )
 
 if DEBUG:

@@ -487,6 +487,8 @@ class ContraparteAdmin(admin.ModelAdmin):
         css = {
             "all": ("/files/css/especial.css",)
         }
+        js = ('http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js',
+              '/files/js/filter.js')
 
     def queryset(self, request):
         if request.user.is_superuser:
