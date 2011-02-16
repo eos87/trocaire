@@ -483,6 +483,7 @@ class FuncionarioAdmin(admin.ModelAdmin):
         ]
 
 class ContraparteAdmin(admin.ModelAdmin):
+    list_display = ['nombre_corto', 'correo', 'telefono', 'contacto']
     class Media:
         css = {
             "all": ("/files/css/especial.css",)
