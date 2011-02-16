@@ -263,6 +263,7 @@ class MujeresAdmin(admin.ModelAdmin):
         else:
             form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
             form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
+            form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
         return form
 
     inlines = [ComposicionHogarInline,
