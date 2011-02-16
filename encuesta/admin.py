@@ -412,6 +412,20 @@ class LiderAdmin(admin.ModelAdmin):
         ComunicacionAsertivaInline,
         ]
 
+    def queryset(self, request):
+        if request.user.is_superuser:
+            return Lider.objects.all()
+        return Lider.objects.filter(usuario=request.user)
+
+    def get_form(self, request, obj=None, ** kwargs):
+        if request.user.is_superuser:
+            form = super(LiderAdmin, self).get_form(self, request, ** kwargs)
+        else:
+            form = super(LiderAdmin, self).get_form(self, request, ** kwargs)
+            form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
+            form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
+        return form
+
 admin.site.register(Lider, LiderAdmin)
 
 class InformacionSocioEconomicaFuncionarioInline(generic.GenericTabularInline):
@@ -509,6 +523,20 @@ class FuncionarioAdmin(admin.ModelAdmin):
         AccionPrevVBGInline,
         IncidenciaPoliticaFuncionarioInline,
         ]
+
+    def queryset(self, request):
+        if request.user.is_superuser:
+            return Funcionario.objects.all()
+        return Funcionario.objects.filter(usuario=request.user)
+
+    def get_form(self, request, obj=None, ** kwargs):
+        if request.user.is_superuser:
+            form = super(FuncionarioAdmin, self).get_form(self, request, ** kwargs)
+        else:
+            form = super(FuncionarioAdmin, self).get_form(self, request, ** kwargs)
+            form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
+            form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
+        return form
 
 class ContraparteAdmin(admin.ModelAdmin):
     list_display = ['nombre_corto', 'correo', 'telefono', 'contacto']
