@@ -332,6 +332,20 @@ class HombresAdmin(admin.ModelAdmin):
         ComunicacionAsertivaInline,
         ]
 
+    def queryset(self, request):
+        if request.user.is_superuser:
+            return Hombre.objects.all()
+        return Hombre.objects.filter(usuario=request.user)
+
+    def get_form(self, request, obj=None, ** kwargs):
+        if request.user.is_superuser:
+            form = super(HombresAdmin, self).get_form(self, request, ** kwargs)
+        else:
+            form = super(HombresAdmin, self).get_form(self, request, ** kwargs)
+            form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
+            form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
+        return form
+
 admin.site.register(Hombre, HombresAdmin)
 
 class InformacionSocioEconomicaLiderInline(generic.GenericStackedInline):
