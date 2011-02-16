@@ -252,6 +252,11 @@ class MujeresAdmin(admin.ModelAdmin):
     #list_editable = ['encuestador', 'fecha']    
     search_fields = ['codigo']
 
+    def queryset(self, request):
+        if request.user.is_superuser:
+            return Mujer.objects.all()
+        return Mujer.objects.filter(usuario=request.user)
+
     inlines = [ComposicionHogarInline,
         InfoSocioEconomicaInline,
         AccesoControlRecursoInline,
