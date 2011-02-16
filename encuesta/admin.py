@@ -259,9 +259,9 @@ class MujeresAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, ** kwargs):
         if request.user.is_superuser:
-            form = super(MujerAdmin, self).get_form(self, request, ** kwargs)
+            form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
         else:
-            form = super(MujerAdmin, self).get_form(self, request, ** kwargs)
+            form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
             form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
         return form
 
