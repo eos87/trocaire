@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from trocaire.lugar.models import *
 from trocaire.encuesta.models import *
-import simplejson
+from django.utils import simplejson
 
 def get_depas(request):
     id = request.GET.get('id', '')
