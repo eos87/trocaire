@@ -30,7 +30,7 @@ class ComposicionHogarInline(generic.GenericStackedInline):
 class InfoSocioEconomicaInline(generic.GenericStackedInline):    
     filter_horizontal = ['donde_trabaja', 'aportan']
     model = InformacionSocioEconomica
-    fields = ['trabaja_fuera', 'donde_trabaja', 'hace_dinero', 'aportan']
+    fields = ['estudia', 'nivel_educativo', 'trabaja_fuera', 'donde_trabaja', 'hace_dinero', 'aportan']
     max_num = 1
     verbose_name = u'Información SocioEconómica'
     verbose_name_plural = u'V. Información SocioEconómica'
