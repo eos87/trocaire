@@ -1135,8 +1135,8 @@ class Funcionario(Base):
     accion_prevencion = generic.GenericRelation(IncidenciaPoliticaFuncionario)
 
     class Meta:
-#        app_label = '1-principal'
-#        db_table = 'encuesta_funcionario'
+        app_label = '1-principal'
+        db_table = 'encuesta_funcionario'
         verbose_name = 'Encuesta Funcionaria/o'
         verbose_name_plural = 'Encuesta Funcionarias/os'
 
