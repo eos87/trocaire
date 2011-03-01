@@ -33,8 +33,8 @@ class Contraparte(models.Model):
         return self.nombre_corto
 
     class Meta:
-#        app_label = '1-principal'
-#        db_table = 'encuesta_contraparte'
+        app_label = '1-principal'
+        db_table = 'encuesta_contraparte'
         verbose_name_plural = 'Contrapartes'
 
 #Definiendo los choices
@@ -735,8 +735,8 @@ class Mujer(Base):
         return u'Encuesta Mujeres %s' % self.id
 
     class Meta:
-#        app_label = '1-principal'
-#        db_table = 'encuesta_mujer'
+        app_label = '1-principal'
+        db_table = 'encuesta_mujer'
         verbose_name = 'Encuesta Mujer'
         verbose_name_plural = 'Encuestas Mujeres'
 
@@ -795,8 +795,8 @@ class Hombre(Base):
     comunicacion = generic.GenericRelation(ComunicacionAsertiva)
 
     class Meta:
-#        app_label = '1-principal'
-#        db_table = 'encuesta_hombre'
+        app_label = '1-principal'
+        db_table = 'encuesta_hombre'
         verbose_name = 'Encuesta Hombre'
         verbose_name_plural = 'Encuestas Hombres'
 
@@ -898,8 +898,8 @@ class Lider(Base):
     comunicacion = generic.GenericRelation(ComunicacionAsertiva)
 
     class Meta:
-#        app_label = '1-principal'
-#        db_table = 'encuesta_lider'
+        app_label = '1-principal'
+        db_table = 'encuesta_lider'
         verbose_name = 'Encuesta Líder/Lideresa/Docente'
         verbose_name_plural = 'Encuesta Líderes/Lideresas/Docentes'
 
