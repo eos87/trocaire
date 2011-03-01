@@ -33,8 +33,8 @@ class Contraparte(models.Model):
         return self.nombre_corto
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_contraparte'
+#        app_label = '1-principal'
+#        db_table = 'encuesta_contraparte'
         verbose_name_plural = 'Contrapartes'
 
 #Definiendo los choices
@@ -706,6 +706,7 @@ class ComunicacionAsertiva(models.Model):
         verbose_name_plural = 'Comunicaciones asertivas'
 
 class Mujer(Base):
+    cuanto_tiempo = models.IntegerField(verbose_name='¿Cuánto tiempo tiene usted de vivir en esta comunidad? (años/meses)', null=True)
     encuestador = models.ForeignKey(Encuestador)
     contraparte = models.ForeignKey(Contraparte)
     composicion_hogar = generic.GenericRelation(ComposicionHogar)
@@ -734,8 +735,8 @@ class Mujer(Base):
         return u'Encuesta Mujeres %s' % self.id
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_mujer'
+#        app_label = '1-principal'
+#        db_table = 'encuesta_mujer'
         verbose_name = 'Encuesta Mujer'
         verbose_name_plural = 'Encuestas Mujeres'
 
@@ -768,6 +769,7 @@ class PrevalenciaVBGHombre(models.Model):
         verbose_name_plural = 'Prevalencias de la VBG hombres'
 
 class Hombre(Base):
+    cuanto_tiempo = models.IntegerField(verbose_name='¿Cuánto tiempo tiene usted de vivir en esta comunidad? (años/meses)', null=True)
     encuestador = models.ForeignKey(Encuestador)
     contraparte = models.ForeignKey(Contraparte)
     composicion_hogar = generic.GenericRelation(ComposicionHogar)
@@ -793,8 +795,8 @@ class Hombre(Base):
     comunicacion = generic.GenericRelation(ComunicacionAsertiva)
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_hombre'
+#        app_label = '1-principal'
+#        db_table = 'encuesta_hombre'
         verbose_name = 'Encuesta Hombre'
         verbose_name_plural = 'Encuestas Hombres'
 
@@ -872,6 +874,7 @@ class Organizacion(models.Model):
         verbose_name_plural = 'Organizaciones'
 
 class Lider(Base):
+    cuanto_tiempo = models.IntegerField(verbose_name='¿Cuánto tiempo tiene usted de vivir en esta comunidad? (años/meses)', null=True)
     encuestador = models.ForeignKey(Encuestador)
     contraparte = models.ForeignKey(Contraparte)
     organizacion = models.ForeignKey(Organizacion)
@@ -895,8 +898,8 @@ class Lider(Base):
     comunicacion = generic.GenericRelation(ComunicacionAsertiva)
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_lider'
+#        app_label = '1-principal'
+#        db_table = 'encuesta_lider'
         verbose_name = 'Encuesta Líder/Lideresa/Docente'
         verbose_name_plural = 'Encuesta Líderes/Lideresas/Docentes'
 
@@ -927,6 +930,16 @@ class InformacionSocioEconomicaFuncionario(BaseInfoSocioEconomica):
 FRECUENCIA_CAPAC = ((1, 'Una vez al año'), (2, 'Dos veces al año'), (3, 'Nunca'), (4, 'Otros'))
 QUIEN_BRINDA = ((1, 'Estado'), (2, 'Sociedad Civil'), (3, 'Otros'))
 
+class BrindanCapacitacion(models.Model):
+    nombre = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return u'%s' % self.nombre
+
+    class Meta:
+        verbose_name = u'Brindan Capacitación'
+        verbose_name_plural = u'Brindan Capacitaciones'
+
 class AccesoInformacion(models.Model):
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField(db_index=True)
@@ -934,7 +947,7 @@ class AccesoInformacion(models.Model):
 
     recibe_capacitacion = models.IntegerField(choices=SI_NO_SIMPLE2, verbose_name='¿Los funcionarios de la institución donde usted trabaja han recibido capacitación relacionada con la VBG?')
     frecuencia = models.IntegerField(choices=FRECUENCIA_CAPAC, verbose_name='¿Con que frecuencia han recibido estas capacitaciones?', blank=True, null=True)
-    quien_brinda = models.IntegerField(choices=QUIEN_BRINDA, verbose_name='¿Quienes les brindan estas capacitaciones?', blank=True, null=True)
+    quien_brinda = models.ManyToManyField(BrindanCapacitacion, verbose_name='¿Quienes les brindan estas capacitaciones?', blank=True, null=True)
 
     def __unicode__(self):
         return u'Acceso a información %s' % self.id
@@ -1097,6 +1110,7 @@ class IncidenciaPoliticaFuncionario(models.Model):
         verbose_name_plural = 'Incidencias Políticas Funcionarios'
 
 class Funcionario(Base):
+    cuanto_tiempo = models.IntegerField(verbose_name='¿Cuánto tiempo tiene usted de estar en este cargo? (años/meses)', null=True)
     encuestador = models.ForeignKey(Encuestador)
     contraparte = models.ForeignKey(Contraparte)
     institucion = models.ForeignKey(Institucion)
@@ -1121,8 +1135,8 @@ class Funcionario(Base):
     accion_prevencion = generic.GenericRelation(IncidenciaPoliticaFuncionario)
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_funcionario'
+#        app_label = '1-principal'
+#        db_table = 'encuesta_funcionario'
         verbose_name = 'Encuesta Funcionaria/o'
         verbose_name_plural = 'Encuesta Funcionarias/os'
 

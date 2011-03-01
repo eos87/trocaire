@@ -247,7 +247,7 @@ class MujeresAdmin(admin.ModelAdmin):
     save_on_top = True
     actions_on_top = True
     list_display = ['contraparte', 'codigo', 'encuestador', 'fecha']
-    fields = ['codigo', 'contraparte', 'encuestador', 'usuario', 'fecha', 'sexo', 'edad', 'comunidad', 'municipio', 'estado_civil', 'lugar_origen', 'asiste_iglesia', 'cual_iglesia']
+    fields = ['codigo', 'contraparte', 'encuestador', 'usuario', 'fecha', 'cuanto_tiempo', 'sexo', 'edad', 'comunidad', 'municipio', 'estado_civil', 'lugar_origen', 'asiste_iglesia', 'cual_iglesia']
     #list_display_links = ['contraparte', 'encuestador', 'fecha']
     #list_editable = ['encuestador', 'fecha']    
     search_fields = ['codigo']
@@ -432,7 +432,7 @@ class InformacionSocioEconomicaFuncionarioInline(generic.GenericTabularInline):
     model = InformacionSocioEconomicaFuncionario
     max_num = 1
 
-class AccesoInformacionInline(generic.GenericTabularInline):
+class AccesoInformacionInline(generic.GenericStackedInline):
     model = AccesoInformacion
     max_num = 1
 
