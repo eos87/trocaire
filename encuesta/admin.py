@@ -247,6 +247,7 @@ class MujeresAdmin(admin.ModelAdmin):
     save_on_top = True
     actions_on_top = True
     list_display = ['contraparte', 'codigo', 'encuestador', 'fecha']
+    list_filter = ['contraparte', ]
     fields = ['codigo', 'contraparte', 'encuestador', 'usuario', 'fecha', 'cuanto_tiempo', 'sexo', 'edad', 'comunidad', 'municipio', 'estado_civil', 'lugar_origen', 'asiste_iglesia', 'cual_iglesia']
     #list_display_links = ['contraparte', 'encuestador', 'fecha']
     #list_editable = ['encuestador', 'fecha']    
@@ -308,6 +309,7 @@ class HombresAdmin(admin.ModelAdmin):
 
     save_on_top = True
     search_fields = ['codigo']
+    list_filter = ['contraparte', ]
     actions_on_top = True
     list_display = ['contraparte', 'codigo', 'encuestador', 'fecha']
     inlines = [ComposicionHogarInline,
@@ -392,6 +394,7 @@ class LiderAdmin(admin.ModelAdmin):
     save_on_top = True
     actions_on_top = True
     search_fields = ['codigo']
+    list_filter = ['contraparte', ]
     list_display = ['contraparte', 'codigo', 'encuestador', 'organizacion', 'fecha']
     inlines = [InformacionSocioEconomicaLiderInline, 
         ConceptoViolenciaInline,
@@ -503,6 +506,7 @@ class FuncionarioAdmin(admin.ModelAdmin):
     save_on_top = True
     actions_on_top = True
     search_fields = ['codigo']
+    list_filter = ['contraparte', ]
     list_display = ['contraparte', 'codigo', 'encuestador', 'institucion', 'fecha']
     inlines = [InformacionSocioEconomicaFuncionarioInline,
         ConceptoViolenciaInline,
