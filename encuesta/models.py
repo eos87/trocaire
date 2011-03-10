@@ -512,7 +512,7 @@ class ConocimientoLey(models.Model):
     object_id = models.IntegerField(db_index=True)
     content_object = generic.GenericForeignKey()
 
-    existe_ley = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='¿Sabe usted si en Nicaragua existe alguna ley que penaliza la violencia contra las mujeres')
+    existe_ley = models.IntegerField(choices=SI_NO_RESPONDE, verbose_name='¿Sabe usted si en Nicaragua/Costa Rica existe alguna ley que penaliza la violencia contra las mujeres')
     mencione = models.CharField(max_length=200, verbose_name='Puede mencionar el nombre de la ley que penaliza la Violencia contra las mujeres', blank=True, default='')
 
     #CAMPOS QUE VAN DENTRO DE UN FIELDSET
