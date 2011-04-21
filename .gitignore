@@ -7,4 +7,4 @@ media/
 *.py~
 *.js~
 *.css~
-
+*.db

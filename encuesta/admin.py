@@ -253,19 +253,19 @@ class MujeresAdmin(admin.ModelAdmin):
     #list_editable = ['encuestador', 'fecha']    
     search_fields = ['codigo']
 
-    def queryset(self, request):
-        if request.user.is_superuser:
-            return Mujer.objects.all()
-        return Mujer.objects.filter(usuario=request.user)
+    # def queryset(self, request):
+        # if request.user.is_superuser:
+            # return Mujer.objects.all()
+        # return Mujer.objects.filter(usuario=request.user)
 
-    def get_form(self, request, obj=None, ** kwargs):
-        if request.user.is_superuser:
-            form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
-        else:
-            form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
-            form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
-            form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
-        return form
+    # def get_form(self, request, obj=None, ** kwargs):
+        # if request.user.is_superuser:
+            # form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
+        # else:
+            # form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
+            # form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
+            # form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
+        # return form
 
     inlines = [ComposicionHogarInline,
         InfoSocioEconomicaInline,
