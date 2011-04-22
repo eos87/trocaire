@@ -155,7 +155,8 @@ a{
     font-size: 11px;
     color: #3f3f3f;
     padding-top: 8px;
-    background: url(/files/img/footer_back.png) no-repeat center;
+	padding-bottom: 30px;
+    background: url(/files/img/footer_back.png) no-repeat center -70px;
 }
 .footer a{
     font-weight: bold;

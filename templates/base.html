@@ -3,6 +3,7 @@
     <head>
         <title>Programa contra Violencia Basada en G&eacute;nero | {% block extratitle %}{% endblock %}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
         <link type="text/css" rel="stylesheet"  href="/files/css/trocaire.css" >
         <link rel="icon" href="/files/img/favicon.ico" type="image/x-icon">
         {% block extrahead %}
@@ -24,24 +25,8 @@
                 <div class="clean"></div>
             </div>            
         </div>
-        <div class="banner">
-            <div class="wrapper">
-                <div class="intro">
-                    <div class="title">
-                        Programa contra la Violencia basada en G&eacute;nero
-                    </div><br>
-                    <div class="desc">
-                        Tortor integer sed in, enim ac pulvinar augue etiam scelerisque, lorem quis porta urna cum, in elit ut, nisi, elementum pid? Ut quis scelerisque? Integer. Platea tristique! In, pid eros! In, odio elementum pellentesque proin, parturient, dolor turpis mid eros, pulvinar lacus et quis amet est, dictumst integer. Dolor arcu, aliquet egestas sit ut ut facilisis, massa, augue porttitor egestas porta scelerisque magna. Scelerisque? Amet purus? Ac dignissim habitasse tincidunt augue, sed urna odio auctor sociis.
-                    </div>
-                </div>
-                <div class="salidas">
-                    <a href="#" class="mapeo"></a>
-                    <a href="#" class="monitoreo"></a>
-                    <a href="#" class="recursos"></a>
-                </div>
-                <div class="clean"></div>
-            </div>
-        </div>
+        {% block banner %}
+		{% endblock %}
         <div class="content">
             <div class="wrapper">
                 {% block contenido %}

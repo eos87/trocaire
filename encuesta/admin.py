@@ -246,26 +246,26 @@ class MujeresAdmin(admin.ModelAdmin):
 
     save_on_top = True
     actions_on_top = True
-    list_display = ['contraparte', 'codigo', 'encuestador', 'fecha']
+    list_display = ['contraparte', 'edad', 'codigo', 'encuestador', 'fecha']
     list_filter = ['contraparte', ]
     fields = ['codigo', 'contraparte', 'encuestador', 'usuario', 'fecha', 'cuanto_tiempo', 'sexo', 'edad', 'comunidad', 'municipio', 'estado_civil', 'lugar_origen', 'asiste_iglesia', 'cual_iglesia']
     #list_display_links = ['contraparte', 'encuestador', 'fecha']
     #list_editable = ['encuestador', 'fecha']    
     search_fields = ['codigo']
 
-    # def queryset(self, request):
-        # if request.user.is_superuser:
-            # return Mujer.objects.all()
-        # return Mujer.objects.filter(usuario=request.user)
+    def queryset(self, request):
+        if request.user.is_superuser:
+            return Mujer.objects.all()
+        return Mujer.objects.filter(usuario=request.user)
 
-    # def get_form(self, request, obj=None, ** kwargs):
-        # if request.user.is_superuser:
-            # form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
-        # else:
-            # form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
-            # form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
-            # form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
-        # return form
+    def get_form(self, request, obj=None, ** kwargs):
+        if request.user.is_superuser:
+            form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
+        else:
+            form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
+            form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
+            form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
+        return form
 
     inlines = [ComposicionHogarInline,
         InfoSocioEconomicaInline,
@@ -551,18 +551,18 @@ class ContraparteAdmin(admin.ModelAdmin):
         js = ('http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js',
               '/files/js/filter.js')
 
-    def queryset(self, request):
-        if request.user.is_superuser:
-            return Contraparte.objects.all()
-        return Contraparte.objects.filter(usuario=request.user)
+    # def queryset(self, request):
+        # if request.user.is_superuser:
+            # return Contraparte.objects.all()
+        # return Contraparte.objects.filter(usuario=request.user)
 
-    def get_form(self, request, obj=None, ** kwargs):
-        if request.user.is_superuser:
-            form = super(ContraparteAdmin, self).get_form(self, request, ** kwargs)
-        else:
-            form = super(ContraparteAdmin, self).get_form(self, request, ** kwargs)
-            form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
-        return form
+    # def get_form(self, request, obj=None, ** kwargs):
+        # if request.user.is_superuser:
+            # form = super(ContraparteAdmin, self).get_form(self, request, ** kwargs)
+        # else:
+            # form = super(ContraparteAdmin, self).get_form(self, request, ** kwargs)
+            # form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
+        # return form
 
 admin.site.register(Funcionario, FuncionarioAdmin)
 admin.site.register(Accion)
