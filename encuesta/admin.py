@@ -311,7 +311,7 @@ class HombresAdmin(admin.ModelAdmin):
     search_fields = ['codigo']
     list_filter = ['contraparte', ]
     actions_on_top = True
-    list_display = ['contraparte', 'codigo', 'encuestador', 'fecha']
+    list_display = ['contraparte', 'edad', 'codigo', 'encuestador', 'fecha']
     inlines = [ComposicionHogarInline,
         InfoSocioEconomicaInline,
         AccesoControlRecursoInline,

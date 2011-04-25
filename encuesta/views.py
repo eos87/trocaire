@@ -24,7 +24,8 @@ def consultar(request):
 	
 def hablan_de(request):
     """Vista sobre: Cuando alguien le habla de VBG usted cree que estan hablando de:"""
-    encuestas = _query_set_filtrado(request)
+    m10_13, m14_18, m18_mas = _query_set_filtrado(request)
+    h10_13, h14_18, h18_mas = _query_set_filtrado(request, 'hombre')
     return render_to_response("monitoreo/hablan_de.html", RequestContext(request, locals()))
 	
 
@@ -47,13 +48,21 @@ def _query_set_filtrado(request, tipo='mujer'):
                 params['contraparte__in'] = request.session['organizacion']
             if request.session['municipio']:
                 params['municipio__in'] = request.session['municipio']
+            if not request.session['organizacion'] and not request.session['municipio']:
+                params['municipio__in'] = Municipio.objects.filter(departamento__in=request.session['departamento'])
         else:
             params['municipio__in'] = Municipio.objects.filter(departamento__in=Departamento.objects.filter(pais__in=request.session['pais']))
 			
     if tipo == 'mujer':
-        return Mujer.objects.filter( ** params)
-    else:
-        pass
+        m10_13 = Mujer.objects.filter(edad__range=(10, 13), ** params)
+        m14_18 = Mujer.objects.filter(edad__range=(14, 18), ** params)
+        m18_mas = Mujer.objects.filter(edad__gt=18, ** params)
+        return m10_13, m14_18, m18_mas
+    elif tipo == 'hombre':
+        h10_13 = Hombre.objects.filter(edad__range=(10, 13), ** params)
+        h14_18 = Hombre.objects.filter(edad__range=(14, 18), ** params)
+        h18_mas = Hombre.objects.filter(edad__gt=18, ** params)
+        return h10_13, h14_18, h18_mas
 	
 #obtener la vista adecuada para los indicadores
 def _get_view(request, vista):
