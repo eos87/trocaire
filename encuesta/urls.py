@@ -1,9 +1,10 @@
 from django.conf.urls.defaults import *
+from django.views.generic.simple import direct_to_template
 
 urlpatterns = patterns('trocaire.encuesta.views',
     (r'^consultar/$', 'consultar'),
-    # (r'^indicadores/$', 'indicadores'),
-    # (r'^familia/(?P<vista>[-\w]+)/$', '_get_view'),
+    (r'^mujeres-hombres/$', direct_to_template, {'template': 'monitoreo/mujeres-hombres.html'}),
+    (r'^mujeres-hombres/(?P<vista>[-\w]+)/$', '_get_view'),
     # (r'^conocimiento/(?P<vista>[-\w]+)/$', '_get_view'),
     
 #    (r'^indicadores/$', 'indicadores'),

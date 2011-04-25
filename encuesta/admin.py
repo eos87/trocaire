@@ -395,7 +395,7 @@ class LiderAdmin(admin.ModelAdmin):
     actions_on_top = True
     search_fields = ['codigo']
     list_filter = ['contraparte', ]
-    list_display = ['contraparte', 'codigo', 'encuestador', 'organizacion', 'fecha']
+    list_display = ['contraparte', 'codigo', 'encuestador', 'organizacion', 'fecha', 'edad']
     inlines = [InformacionSocioEconomicaLiderInline, 
         ConceptoViolenciaInline,
         ExpresionVBGInline,
@@ -507,7 +507,7 @@ class FuncionarioAdmin(admin.ModelAdmin):
     actions_on_top = True
     search_fields = ['codigo']
     list_filter = ['contraparte', ]
-    list_display = ['contraparte', 'codigo', 'encuestador', 'institucion', 'fecha']
+    list_display = ['contraparte', 'codigo', 'encuestador', 'institucion', 'fecha', 'edad']
     inlines = [InformacionSocioEconomicaFuncionarioInline,
         ConceptoViolenciaInline,
         ExpresionVBGInline,

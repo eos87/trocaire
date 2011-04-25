@@ -10,7 +10,16 @@
 {% endblock %}
 
 {% block contenido %}
+<form action="." method="POST">{% csrf_token %}
 <table>
 {{form.as_table}}
 </table>
+<input type="submit" value="Consultar"/>
+</form>
+{% if centinela == 1 %}
+<div><br>
+	<a href="/monitoreo/mujeres-hombres/">Mujeres y Hombres</a> | <a href="/monitoreo/lideres/">Lideres, Lideresas y Docentes</a> | <a href="/monitoreo/funcionarios/">Funcionarios</a>
+	<br>
+</div>
+{% endif %}
 {% endblock %}

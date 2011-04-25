@@ -1,5 +1,8 @@
+var orgs;
+var municipio;
+
 $(document).ready(function(){
-	$("#id_departamento, #id_municipio").html('');        
+	$("#id_departamento, #id_municipio, #id_organizacion").html('');        
     var pais = $("#id_pais").multiselect({
         noneSelectedText: 'Seleccione el pais',
         selectedText: '# seleccionados',
@@ -54,26 +57,40 @@ $(document).ready(function(){
                                 });                                
                                 municipio.multiselect('refresh');                                
                             });
+							municipio.multiselect("enable");
                         }
                     });
 					$.getJSON('/ajax/orgs/?ids='+selectos.join(","), function(data){
-                        $('#id_organizacion').html('');
+						$("#id_organizacion").html('');
                         if(data){
                             $.each(data, function(i, item){                                
-                                $('<option></option>').val(item.id).html(item.nombre_corto).appendTo(orgs)
-                                orgs.multiselect('refresh');
-                            });
+                                $('<option></option>').val(item.id).html(item.nombre_corto).appendTo(orgs)                                								
+                            });							
+							orgs.multiselect('refresh');
+							orgs.multiselect("enable");
                         }
-                    });
-                    municipio.multiselect("enable");  
-					orgs.multiselect("enable");					
+                    });				
                 }else{                    
                     orgs.multiselect("disable");
                     municipio.multiselect("disable");
                 }
             }
     });
-	var orgs = $("#id_organizacion").multiselect({
+	
+	municipio = $("#id_municipio").multiselect({
+        noneSelectedText: 'Todos los municipios',
+        selectedText: '# seleccionados',
+        minWidth: 200
+    });
+	EnableOrganizacion();
+	departamento.multiselect("disable");
+	orgs.multiselect("disable");
+    municipio.multiselect("disable");	
+});
+
+function EnableOrganizacion(){
+	$("#id_organizacion").html("");
+	orgs = $("#id_organizacion").multiselect({
         noneSelectedText: 'Todas las organizaciones',
         selectedText: '# seleccionados',
         minWidth: 200,
@@ -119,13 +136,4 @@ $(document).ready(function(){
 				}
             }
     });
-	var municipio = $("#id_municipio").multiselect({
-        noneSelectedText: 'Todos los municipios',
-        selectedText: '# seleccionados',
-        minWidth: 200
-    });
-	departamento.multiselect("disable");
-	orgs.multiselect("disable");
-    municipio.multiselect("disable");
-	
-});
+}
