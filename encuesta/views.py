@@ -5,6 +5,9 @@ from forms import ConsultarForm
 from models import *
 from trocaire.lugar.models import *
 
+#funcion lambda que calcula los totales a partir de la consulta filtrada
+get_total = lambda x: [v.count() for k, v in x.items()]
+
 def consultar(request):
     if request.method == 'POST':
         form = ConsultarForm(request.POST)
@@ -44,13 +47,32 @@ def hablan_de(request):
     for key, value in tabla.items():        
         if checkvalue(value) == 0:
             del tabla[key]
-
-    get_total = lambda x: [v.count() for k, v in x.items()]
+            
     totales = get_total(resultados)    
     tabla = get_prom_lista(tabla, totales)
 
     return render_to_response("monitoreo/hablan_de.html", RequestContext(request, locals()))
-	
+
+def expresion_vbg(request):
+    """Vista sobre: De que manera cree usted que se expresa la VBG"""
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    campos = [field for field in ExpresionVBG._meta.fields if field.get_internal_type()=='CharField']
+    for field in campos:
+        tabla[field.verbose_name] = []
+    
+    for key, grupo in resultados.items():
+        lista = []
+        for encuesta in grupo:
+            for expresion in encuesta.expresion_violencia.all():
+                lista.append(expresion.pk)    
+        for field in campos:
+            tabla[field.verbose_name].append(ExpresionVBG.objects.filter(pk__in=lista, ** {field.name: 'si'}).count())       
+    
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+
+    return render_to_response("monitoreo/expresion_vbg.html", RequestContext(request, locals()))
 
 #funcion destinada a devolver las encuestas en rangos de edad
 def _query_set_filtrado(request, tipo='mujer'):
@@ -95,7 +117,8 @@ def _get_view(request, vista):
         raise ViewDoesNotExist("Tried %s in module %s Error: View not define in VALID_VIEWS." % (vista, 'encuesta.views'))
 
 VALID_VIEWS = {
-    'hablan-de': hablan_de, 
+    'hablan-de': hablan_de,
+    'expresion-vbg': expresion_vbg,
     }
 
 #funcion encargada de sacar promedio con los valores enviados
