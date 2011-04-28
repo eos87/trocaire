@@ -3,6 +3,7 @@
 from django.contrib import admin
 from django.contrib.contenttypes import generic
 from django.forms import CheckboxSelectMultiple
+from django.contrib.auth.models import Group
 from models import *
 from trocaire.lugar.models import *
 
@@ -254,12 +255,16 @@ class MujeresAdmin(admin.ModelAdmin):
     search_fields = ['codigo']
 
     def queryset(self, request):
-        if request.user.is_superuser:
+        grupos = request.user.groups.all()
+        trocaire = Group.objects.get(name='Trocaire')
+        if request.user.is_superuser or trocaire in grupos:
             return Mujer.objects.all()
         return Mujer.objects.filter(usuario=request.user)
 
     def get_form(self, request, obj=None, ** kwargs):
-        if request.user.is_superuser:
+        grupos = request.user.groups.all()
+        trocaire = Group.objects.get(name='Trocaire')
+        if request.user.is_superuser or trocaire in grupos:
             form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
         else:
             form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
@@ -335,12 +340,16 @@ class HombresAdmin(admin.ModelAdmin):
         ]
 
     def queryset(self, request):
-        if request.user.is_superuser:
+        grupos = request.user.groups.all()
+        trocaire = Group.objects.get(name='Trocaire')
+        if request.user.is_superuser or trocaire in grupos:
             return Hombre.objects.all()
         return Hombre.objects.filter(usuario=request.user)
 
     def get_form(self, request, obj=None, ** kwargs):
-        if request.user.is_superuser:
+        grupos = request.user.groups.all()
+        trocaire = Group.objects.get(name='Trocaire')
+        if request.user.is_superuser or trocaire in grupos:
             form = super(HombresAdmin, self).get_form(self, request, ** kwargs)
         else:
             form = super(HombresAdmin, self).get_form(self, request, ** kwargs)
@@ -416,12 +425,16 @@ class LiderAdmin(admin.ModelAdmin):
         ]
 
     def queryset(self, request):
-        if request.user.is_superuser:
+        grupos = request.user.groups.all()
+        trocaire = Group.objects.get(name='Trocaire')
+        if request.user.is_superuser or trocaire in grupos:
             return Lider.objects.all()
         return Lider.objects.filter(usuario=request.user)
 
     def get_form(self, request, obj=None, ** kwargs):
-        if request.user.is_superuser:
+        grupos = request.user.groups.all()
+        trocaire = Group.objects.get(name='Trocaire')
+        if request.user.is_superuser or trocaire in grupos:
             form = super(LiderAdmin, self).get_form(self, request, ** kwargs)
         else:
             form = super(LiderAdmin, self).get_form(self, request, ** kwargs)
@@ -529,12 +542,16 @@ class FuncionarioAdmin(admin.ModelAdmin):
         ]
 
     def queryset(self, request):
-        if request.user.is_superuser:
+        grupos = request.user.groups.all()
+        trocaire = Group.objects.get(name='Trocaire')
+        if request.user.is_superuser or trocaire in grupos:
             return Funcionario.objects.all()
         return Funcionario.objects.filter(usuario=request.user)
 
     def get_form(self, request, obj=None, ** kwargs):
-        if request.user.is_superuser:
+        grupos = request.user.groups.all()
+        trocaire = Group.objects.get(name='Trocaire')
+        if request.user.is_superuser or trocaire in grupos:
             form = super(FuncionarioAdmin, self).get_form(self, request, ** kwargs)
         else:
             form = super(FuncionarioAdmin, self).get_form(self, request, ** kwargs)
@@ -552,12 +569,16 @@ class ContraparteAdmin(admin.ModelAdmin):
               '/files/js/filter.js')
 
     def queryset(self, request):
-        if request.user.is_superuser:
+        grupos = request.user.groups.all()
+        trocaire = Group.objects.get(name='Trocaire')
+        if request.user.is_superuser or trocaire in grupos:
             return Contraparte.objects.all()
         return Contraparte.objects.filter(usuario=request.user)
 
     def get_form(self, request, obj=None, ** kwargs):
-        if request.user.is_superuser:
+        grupos = request.user.groups.all()
+        trocaire = Group.objects.get(name='Trocaire')
+        if request.user.is_superuser or trocaire in grupos:
             form = super(ContraparteAdmin, self).get_form(self, request, ** kwargs)
         else:
             form = super(ContraparteAdmin, self).get_form(self, request, ** kwargs)

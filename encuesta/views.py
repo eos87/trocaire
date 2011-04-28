@@ -21,11 +21,34 @@ def consultar(request):
         form = ConsultarForm()
         centinela = 0
     return render_to_response("monitoreo/consultar.html", RequestContext(request, locals()))
-	
+
 def hablan_de(request):
-    """Vista sobre: Cuando alguien le habla de VBG usted cree que estan hablando de:"""
-    m10_13, m14_18, m18_mas = _query_set_filtrado(request)
-    h10_13, h14_18, h18_mas = _query_set_filtrado(request, 'hombre')
+    """Vista sobre: Cuando alguien le habla de VBG usted cree que estan hablando de:"""    
+    resultados = _query_set_filtrado(request)
+    print resultados.keys()
+    
+    tabla = {}    
+    for op in HablanDe.objects.all():
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        for encuesta in grupo:
+            for concepto in encuesta.concepto_violencia.all():
+                lista.append(concepto.pk)
+        for opcion in HablanDe.objects.all():
+            query = ConceptoViolencia.objects.filter(pk__in=lista, hablande=opcion, respuesta='si')
+            tabla[opcion].append(query.count())
+
+    checkvalue = lambda x: sum(x)
+    for key, value in tabla.items():        
+        if checkvalue(value) == 0:
+            del tabla[key]
+
+    get_total = lambda x: [v.count() for k, v in x.items()]
+    totales = get_total(resultados)    
+    tabla = get_prom_lista(tabla, totales)
+
     return render_to_response("monitoreo/hablan_de.html", RequestContext(request, locals()))
 	
 
@@ -52,17 +75,17 @@ def _query_set_filtrado(request, tipo='mujer'):
                 params['municipio__in'] = Municipio.objects.filter(departamento__in=request.session['departamento'])
         else:
             params['municipio__in'] = Municipio.objects.filter(departamento__in=Departamento.objects.filter(pais__in=request.session['pais']))
-			
+
+    dicc = {}
     if tipo == 'mujer':
-        m10_13 = Mujer.objects.filter(edad__range=(10, 13), ** params)
-        m14_18 = Mujer.objects.filter(edad__range=(14, 18), ** params)
-        m18_mas = Mujer.objects.filter(edad__gt=18, ** params)
-        return m10_13, m14_18, m18_mas
-    elif tipo == 'hombre':
-        h10_13 = Hombre.objects.filter(edad__range=(10, 13), ** params)
-        h14_18 = Hombre.objects.filter(edad__range=(14, 18), ** params)
-        h18_mas = Hombre.objects.filter(edad__gt=18, ** params)
-        return h10_13, h14_18, h18_mas
+        dicc[1] = Mujer.objects.filter(edad__range=(10, 13), ** params)
+        dicc[2] = Mujer.objects.filter(edad__range=(14, 18), ** params)
+        dicc[3] = Mujer.objects.filter(edad__gt=18, ** params)
+    
+        dicc[4] = Hombre.objects.filter(edad__range=(10, 13), ** params)
+        dicc[5] = Hombre.objects.filter(edad__range=(14, 18), ** params)
+        dicc[6] = Hombre.objects.filter(edad__gt=18, ** params)
+        return dicc
 	
 #obtener la vista adecuada para los indicadores
 def _get_view(request, vista):
@@ -74,3 +97,22 @@ def _get_view(request, vista):
 VALID_VIEWS = {
     'hablan-de': hablan_de, 
     }
+
+#funcion encargada de sacar promedio con los valores enviados
+def get_prom(cantidad, total):
+    if total == None or cantidad == None or total == 0:
+        x = 0
+    else:
+        x = (cantidad * 100) / float(total)
+    return round(x, 2)
+
+def get_prom_lista(tabla, total):
+    tabla2 = {}
+    for key, value in tabla.items():
+        tabla2[key] = [[value[0], get_prom(value[0], total[0])],
+            [value[1], get_prom(value[1], total[1])],
+            [value[2], get_prom(value[2], total[2])],
+            [value[3], get_prom(value[3], total[3])],
+            [value[4], get_prom(value[4], total[4])],
+            [value[5], get_prom(value[5], total[5])]]
+    return tabla2

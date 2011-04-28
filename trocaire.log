@@ -1,0 +1,12 @@
+2011-04-28 09:48:41,692 INFO la puta madre
+
+
+import logging
+logger = logging.getLogger('trocaire')
+hdlr = logging.FileHandler('trocaire.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr) 
+logger.setLevel(logging.INFO)
+
+logger.info('la concha de la lora')
