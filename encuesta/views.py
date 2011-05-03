@@ -74,6 +74,9 @@ def expresion_vbg(request):
 
     return render_to_response("monitoreo/expresion_vbg.html", RequestContext(request, locals()))
 
+def hombres_vbg(request):
+    pass
+
 #funcion destinada a devolver las encuestas en rangos de edad
 def _query_set_filtrado(request, tipo='mujer'):
     params = {}
@@ -82,7 +85,7 @@ def _query_set_filtrado(request, tipo='mujer'):
         params['fecha__year'] = request.session['year']
 		
     if request.session['nivel_educativo']:
-        params['informacionsocio__in'] = InformacionSocioEconomica.objects.filter(nivel_educativo=request.session['nivel_educativo'])
+        params['informacion_socio__in'] = InformacionSocioEconomica.objects.filter(nivel_educativo=request.session['nivel_educativo'])
 		
     if request.session['iglesia'] and request.session['iglesia'] == 1:
         params['asiste_iglesia'] = True
@@ -119,6 +122,7 @@ def _get_view(request, vista):
 VALID_VIEWS = {
     'hablan-de': hablan_de,
     'expresion-vbg': expresion_vbg,
+    'hombres-que-ejercen-vbg': hombres_vbg,
     }
 
 #funcion encargada de sacar promedio con los valores enviados
