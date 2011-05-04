@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block extratitle %}¿Conoce usted si en su comunidad existen hombres que ejercen VBG?{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript" src="/files/js/highcharts.js"></script>
+<script type="text/javascript" src="/files/js/exporting.js"></script>
+<script type="text/javascript">
+    var plotOptions = {
+         pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+               enabled: false
+            },
+            showInLegend: true
+         }
+    }
+    var tooltip = {
+        formatter: function() {
+            return '<b>'+ this.point.name +'</b>: '+ this.y +'%';
+        }
+    }
+    var chart;
+    $(document).ready(function(){
+        $('.grafos').click(function(){
+            var id = $(this).attr('id');
+            var series;
+            var titulo;
+            if(id=='m10_13'){
+                titulo = 'Mujeres de 10-13 años';
+                series = [{data: [{% for key, value in tabla.items %}['{{key}}', {{value.0.1}}],{% endfor %}]}]
+            }else if(id=='m14_18'){
+                titulo = 'Mujeres de 14-18 años';
+                series = [{data: [{% for key, value in tabla.items %}['{{key}}', {{value.1.1}}],{% endfor %}]}]
+            }else if(id=='m18_mas'){
+                titulo = 'Mujeres mayores de 18 años';
+                series = [{data: [{% for key, value in tabla.items %}['{{key}}', {{value.2.1}}],{% endfor %}]}]
+            }else if(id=='h10_13'){
+                titulo = 'Hombres de 10-13 años';
+                series = [{data: [{% for key, value in tabla.items %}['{{key}}', {{value.3.1}}],{% endfor %}]}]
+            }else if(id=='h14_18'){
+                titulo = 'Hombres de 14-18 años';
+                series = [{data: [{% for key, value in tabla.items %}['{{key}}', {{value.4.1}}],{% endfor %}]}]
+            }else if(id=='h18_mas'){
+                titulo = 'Hombres mayores de 18 años';
+                series = [{data: [{% for key, value in tabla.items %}['{{key}}', {{value.5.1}}],{% endfor %}]}]
+            }
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container',
+                    defaultSeriesType: 'pie'
+                },
+                title: {
+                    text: '¿Conoce usted si en su comunidad hay mujeres que alguna vez han vivido VBG?'
+                },
+                subtitle: {
+                    text: titulo
+                },
+                tooltip: tooltip,
+                plotOptions: plotOptions,
+                series: series
+            });
+            return false;
+        });
+    });
+</script>
+{% endblock %}
+
+{% block contenido %}
+<div>Graficos</div>
+<a href="#" id="m10_13" class="grafos">Mujeres 10-13</a> | <a href="#" id="m14_18" class="grafos">Mujeres 14-18</a> | <a href="#" id="m18_mas" class="grafos">Mujeres mayores de 18</a><br>
+<a href="#" id="h10_13" class="grafos">Hombres 10-13</a> | <a href="#" id="h14_18" class="grafos">Hombres 14-18</a> | <a href="#" id="h18_mas" class="grafos">Hombres mayores de 18</a><br>
+<br>
+<div id="container"></div>
+<br>
+
+{{totales}}<br>
+{{tabla}}
+{% endblock %}

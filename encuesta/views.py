@@ -28,10 +28,10 @@ def consultar(request):
 def hablan_de(request):
     """Vista sobre: Cuando alguien le habla de VBG usted cree que estan hablando de:"""    
     resultados = _query_set_filtrado(request)
-    print resultados.keys()
+    tabla = {}
+    opciones = HablanDe.objects.all()
     
-    tabla = {}    
-    for op in HablanDe.objects.all():
+    for op in opciones:
         tabla[op] = []
 
     for key, grupo in resultados.items():
@@ -39,7 +39,7 @@ def hablan_de(request):
         for encuesta in grupo:
             for concepto in encuesta.concepto_violencia.all():
                 lista.append(concepto.pk)
-        for opcion in HablanDe.objects.all():
+        for opcion in opciones:
             query = ConceptoViolencia.objects.filter(pk__in=lista, hablande=opcion, respuesta='si')
             tabla[opcion].append(query.count())
 
@@ -75,7 +75,87 @@ def expresion_vbg(request):
     return render_to_response("monitoreo/expresion_vbg.html", RequestContext(request, locals()))
 
 def hombres_vbg(request):
-    pass
+    """Conoce usted si en su comunidad existen hombres que ejerven VBG"""
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+
+    for op in ['si','no']:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        for encuesta in grupo:
+            for situacion in encuesta.situacion.all():
+                lista.append(situacion.pk)
+        for op in ['si','no']:
+            tabla[op].append(SituacionVBG.objects.filter(pk__in=lista, conoce_hombres=op).count())
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    return render_to_response("monitoreo/hombres_vbg.html", RequestContext(request, locals()))
+
+def mujeres_vbg(request):
+    """Conoce usted si en su comunidad existen mujeres que han vivido VBG"""
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+
+    for op in ['si','no']:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        for encuesta in grupo:
+            for situacion in encuesta.situacion.all():
+                lista.append(situacion.pk)
+        for op in ['si','no']:
+            tabla[op].append(SituacionVBG.objects.filter(pk__in=lista, conoce_mujeres=op).count())
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    return render_to_response("monitoreo/mujeres_vbg.html", RequestContext(request, locals()))
+
+def vbg_resolver_con(request):
+    """Considera usted que la VBG es un asunto que debe ser resuelto con la participacion de"""
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    opciones = ResolverVBG.objects.all()
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        for encuesta in grupo:
+            for resolutor in encuesta.asunto_publico.all():
+                lista.append(resolutor.pk)
+        for op in opciones:
+            tabla[op].append(AsuntoPublicoVBG.objects.filter(pk__in=lista, resolverse_con=op).count())
+            
+    checkvalue = lambda x: sum(x)
+    for key, value in tabla.items():        
+        if checkvalue(value) == 0:
+            del tabla[key]
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    return render_to_response("monitoreo/vbg_resolver_con.html", RequestContext(request, locals()))
+
+def afeccion_vbg(request):
+    """Cree usted que la VBG afecta a las mujeres, la familia y la comunidad?"""
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+
+    for op in ['si','no']:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        for encuesta in grupo:
+            for efecto in encuesta.efecto.all():
+                lista.append(efecto.pk)
+        for op in ['si','no']:
+            tabla[op].append(EfectoVBG.objects.filter(pk__in=lista, afecta_mujeres=op).count())
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+
+    return render_to_response("monitoreo/afeccion_vbg.html", RequestContext(request, locals()))
 
 #funcion destinada a devolver las encuestas en rangos de edad
 def _query_set_filtrado(request, tipo='mujer'):
@@ -101,7 +181,7 @@ def _query_set_filtrado(request, tipo='mujer'):
         else:
             params['municipio__in'] = Municipio.objects.filter(departamento__in=Departamento.objects.filter(pais__in=request.session['pais']))
 
-    dicc = {}
+    dicc = {}    
     if tipo == 'mujer':
         dicc[1] = Mujer.objects.filter(edad__range=(10, 13), ** params)
         dicc[2] = Mujer.objects.filter(edad__range=(14, 18), ** params)
@@ -123,6 +203,9 @@ VALID_VIEWS = {
     'hablan-de': hablan_de,
     'expresion-vbg': expresion_vbg,
     'hombres-que-ejercen-vbg': hombres_vbg,
+    'mujeres-viven-vbg': mujeres_vbg,
+    'vbg-se-resuelve-con': vbg_resolver_con,
+    'afeccion-vbg': afeccion_vbg,
     }
 
 #funcion encargada de sacar promedio con los valores enviados
