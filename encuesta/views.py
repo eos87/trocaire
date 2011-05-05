@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+from django.core.urlresolvers import ViewDoesNotExist
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from forms import ConsultarForm
@@ -24,6 +25,41 @@ def consultar(request):
         form = ConsultarForm()
         centinela = 0
     return render_to_response("monitoreo/consultar.html", RequestContext(request, locals()))
+
+#funcion destinada a devolver las encuestas en rangos de edad
+def _query_set_filtrado(request, tipo='mujer'):
+    params = {}
+    #validar y crear los filtros de la consulta
+    if request.session['year']:
+        params['fecha__year'] = request.session['year']
+
+    if request.session['nivel_educativo']:
+        params['informacion_socio__in'] = InformacionSocioEconomica.objects.filter(nivel_educativo=request.session['nivel_educativo'])
+
+    if request.session['iglesia'] and request.session['iglesia'] == 1:
+        params['asiste_iglesia'] = True
+
+    if request.session['pais']:
+        if request.session['departamento']:
+            if request.session['organizacion']:
+                params['contraparte__in'] = request.session['organizacion']
+            if request.session['municipio']:
+                params['municipio__in'] = request.session['municipio']
+            if not request.session['organizacion'] and not request.session['municipio']:
+                params['municipio__in'] = Municipio.objects.filter(departamento__in=request.session['departamento'])
+        else:
+            params['municipio__in'] = Municipio.objects.filter(departamento__in=Departamento.objects.filter(pais__in=request.session['pais']))
+
+    dicc = {}
+    if tipo == 'mujer':
+        dicc[1] = Mujer.objects.filter(edad__range=(10, 13), ** params)
+        dicc[2] = Mujer.objects.filter(edad__range=(14, 18), ** params)
+        dicc[3] = Mujer.objects.filter(edad__gt=18, ** params)
+
+        dicc[4] = Hombre.objects.filter(edad__range=(10, 13), ** params)
+        dicc[5] = Hombre.objects.filter(edad__range=(14, 18), ** params)
+        dicc[6] = Hombre.objects.filter(edad__gt=18, ** params)
+        return dicc
 
 def hablan_de(request):
     """Vista sobre: Cuando alguien le habla de VBG usted cree que estan hablando de:"""    
@@ -57,7 +93,7 @@ def expresion_vbg(request):
     """Vista sobre: De que manera cree usted que se expresa la VBG"""
     resultados = _query_set_filtrado(request)
     tabla = {}
-    campos = [field for field in ExpresionVBG._meta.fields if field.get_internal_type()=='CharField']
+    campos = [field for field in ExpresionVBG._meta.fields if field.get_internal_type() == 'CharField']
     for field in campos:
         tabla[field.verbose_name] = []
     
@@ -79,7 +115,7 @@ def hombres_vbg(request):
     resultados = _query_set_filtrado(request)
     tabla = {}
 
-    for op in ['si','no']:
+    for op in ['si', 'no']:
         tabla[op] = []
 
     for key, grupo in resultados.items():
@@ -87,7 +123,7 @@ def hombres_vbg(request):
         for encuesta in grupo:
             for situacion in encuesta.situacion.all():
                 lista.append(situacion.pk)
-        for op in ['si','no']:
+        for op in ['si', 'no']:
             tabla[op].append(SituacionVBG.objects.filter(pk__in=lista, conoce_hombres=op).count())
     totales = get_total(resultados)
     tabla = get_prom_lista(tabla, totales)
@@ -98,7 +134,7 @@ def mujeres_vbg(request):
     resultados = _query_set_filtrado(request)
     tabla = {}
 
-    for op in ['si','no']:
+    for op in ['si', 'no']:
         tabla[op] = []
 
     for key, grupo in resultados.items():
@@ -106,7 +142,7 @@ def mujeres_vbg(request):
         for encuesta in grupo:
             for situacion in encuesta.situacion.all():
                 lista.append(situacion.pk)
-        for op in ['si','no']:
+        for op in ['si', 'no']:
             tabla[op].append(SituacionVBG.objects.filter(pk__in=lista, conoce_mujeres=op).count())
     totales = get_total(resultados)
     tabla = get_prom_lista(tabla, totales)
@@ -142,7 +178,7 @@ def afeccion_vbg(request):
     resultados = _query_set_filtrado(request)
     tabla = {}
 
-    for op in ['si','no']:
+    for op in ['si', 'no']:
         tabla[op] = []
 
     for key, grupo in resultados.items():
@@ -150,48 +186,85 @@ def afeccion_vbg(request):
         for encuesta in grupo:
             for efecto in encuesta.efecto.all():
                 lista.append(efecto.pk)
-        for op in ['si','no']:
+        for op in ['si', 'no']:
             tabla[op].append(EfectoVBG.objects.filter(pk__in=lista, afecta_mujeres=op).count())
     totales = get_total(resultados)
     tabla = get_prom_lista(tabla, totales)
 
     return render_to_response("monitoreo/afeccion_vbg.html", RequestContext(request, locals()))
 
-#funcion destinada a devolver las encuestas en rangos de edad
-def _query_set_filtrado(request, tipo='mujer'):
-    params = {}
-    #validar y crear los filtros de la consulta
-    if request.session['year']:
-        params['fecha__year'] = request.session['year']
-		
-    if request.session['nivel_educativo']:
-        params['informacion_socio__in'] = InformacionSocioEconomica.objects.filter(nivel_educativo=request.session['nivel_educativo'])
-		
-    if request.session['iglesia'] and request.session['iglesia'] == 1:
-        params['asiste_iglesia'] = True
-		
-    if request.session['pais']:
-        if request.session['departamento']:
-            if request.session['organizacion']:
-                params['contraparte__in'] = request.session['organizacion']
-            if request.session['municipio']:
-                params['municipio__in'] = request.session['municipio']
-            if not request.session['organizacion'] and not request.session['municipio']:
-                params['municipio__in'] = Municipio.objects.filter(departamento__in=request.session['departamento'])
-        else:
-            params['municipio__in'] = Municipio.objects.filter(departamento__in=Departamento.objects.filter(pais__in=request.session['pais']))
+def como_afecta(request):
+    """Como afecta la VBG a las mujeres, comunidad y la familia"""
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    opciones = ComoAfecta.objects.all()
 
-    dicc = {}    
-    if tipo == 'mujer':
-        dicc[1] = Mujer.objects.filter(edad__range=(10, 13), ** params)
-        dicc[2] = Mujer.objects.filter(edad__range=(14, 18), ** params)
-        dicc[3] = Mujer.objects.filter(edad__gt=18, ** params)
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        for encuesta in grupo:
+            for efecto in encuesta.efecto.all():
+                lista.append(efecto.pk)
+        for op in opciones:
+            tabla[op].append(EfectoVBG.objects.filter(pk__in=lista, como_afecta=op).count())
+
+    checkvalue = lambda x: sum(x)
+    for key, value in tabla.items():
+        if checkvalue(value) == 0:
+            del tabla[key]
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
     
-        dicc[4] = Hombre.objects.filter(edad__range=(10, 13), ** params)
-        dicc[5] = Hombre.objects.filter(edad__range=(14, 18), ** params)
-        dicc[6] = Hombre.objects.filter(edad__gt=18, ** params)
-        return dicc
-	
+    return render_to_response("monitoreo/como_afecta.html", RequestContext(request, locals()))
+
+def conoce_leyes(request):
+    """Conoce alguna ley que penaliza la VBG"""
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+
+    for op in SI_NO_RESPONDE:
+        tabla[op[1]] = []
+    
+    for key, grupo in resultados.items():
+        lista = []
+        for encuesta in grupo:
+            for conocimiento in encuesta.conocimiento.all():
+                lista.append(conocimiento.pk)
+
+        for op in SI_NO_RESPONDE:
+            tabla[op[1]].append(ConocimientoLey.objects.filter(pk__in=lista, existe_ley=op[0]).count())
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    
+    return render_to_response("monitoreo/conoce_leyes.html", RequestContext(request, locals()))
+
+def prohibido_por_ley(request):
+    """Acciones prohibidas por la ley"""
+    from models import SI_NO_RESPONDE
+
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    campos = [field for field in ConocimientoLey._meta.fields if field.get_internal_type() == 'IntegerField' and not (field.name == 'existe_ley' or field.name == 'object_id')]
+    
+    for field in campos:
+        tabla[field.verbose_name] = {}
+        for key, grupo in resultados.items():
+            lista = []
+            for encuesta in grupo:
+                for conocimiento in encuesta.conocimiento.all():
+                    lista.append(conocimiento.pk)
+                    
+            tabla[field.verbose_name][key] = []
+            for op in SI_NO_RESPONDE:
+                tabla[field.verbose_name][key].append(ConocimientoLey.objects.filter(pk__in=lista, ** {field.name: op[0]}).count())
+                
+    totales = get_total(resultados)
+    tabla = get_prom_dead_list(tabla, totales)
+    return render_to_response("monitoreo/prohibido_por_ley.html", RequestContext(request, locals()))
+
 #obtener la vista adecuada para los indicadores
 def _get_view(request, vista):
     if vista in VALID_VIEWS:
@@ -206,6 +279,9 @@ VALID_VIEWS = {
     'mujeres-viven-vbg': mujeres_vbg,
     'vbg-se-resuelve-con': vbg_resolver_con,
     'afeccion-vbg': afeccion_vbg,
+    'como-afecta': como_afecta,
+    'conoce-leyes': conoce_leyes,
+    'prohibido-por-ley': prohibido_por_ley,
     }
 
 #funcion encargada de sacar promedio con los valores enviados
@@ -226,3 +302,12 @@ def get_prom_lista(tabla, total):
             [value[4], get_prom(value[4], total[4])],
             [value[5], get_prom(value[5], total[5])]]
     return tabla2
+
+def get_prom_dead_list(tabla, totales):
+    for k, v in tabla.items():
+        for key, value in v.items():                        
+            tabla[k][key] = [[value[0], get_prom(value[0], totales[key-1])],
+            [value[1], get_prom(value[1], totales[key-1])],
+            [value[2], get_prom(value[2], totales[key-1])],
+            [value[3], get_prom(value[3], totales[key-1])]]
+    return tabla

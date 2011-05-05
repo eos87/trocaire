@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block extratitle %}Acciones prohibidas por la ley{% endblock %}
+
+{% block extrahead %}
+<style type="text/css">
+/*    .tabla-container{
+        overflow: auto;
+        width: 960px;
+    }
+    .tabla-resultados{
+        width: 1500px;
+}*/
+</style>
+{% endblock %}
+
+{% block contenido %}
+{{totales}}<br>
+
+<!-- BEGIN tabla de la MUERTE-->
+<div class="tabla-container">
+    <table class="tabla-resultados">
+        <caption>Sabe usted cuales de las siguientes acciones son prohibidas por la ley</caption>
+        <thead>
+            <tr>
+                <th rowspan="3">Categorias</th>
+                <th colspan="12">Mujeres</th>
+            </tr>
+            <tr>
+                <th colspan="4">10-13</th>
+                <th colspan="4">14-18</th>
+                <th colspan="4">18-mas</th>
+            </tr>
+            <tr>
+                {% for grupo in tabla.items.0.1.items.0.1|slice:":3" %}
+                {% for k in SI_NO_RESPONDE %}
+                <th>{{k.1}}</th>
+                {% endfor %}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, value in tabla.items %}
+            <tr>
+                <td>{{key}}</td>
+                {% for k,v in value.items|slice:":3" %}
+                {% for valor in v %}
+                <td>{{valor.0}} ({{valor.1}}%)</td>
+<!--                            <td>{{valor}}</td>-->
+                {% endfor %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<br><br>
+<table class="tabla-resultados">
+    <caption>Sabe usted cuales de las siguientes acciones son prohibidas por la ley</caption>
+    <thead>
+        <tr>
+            <th rowspan="3">Categorias</th>            
+            <th colspan="12">Hombres</th>
+        </tr>
+        <tr>            
+            <th colspan="4">10-13</th>
+            <th colspan="4">14-18</th>
+            <th colspan="4">18-mas</th>
+        </tr>
+        <tr>
+            {% for grupo in tabla.items.0.1.items.0.1|slice:":3" %}
+            {% for k in SI_NO_RESPONDE %}
+            <th>{{k.1}}</th>
+            {% endfor %}
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in tabla.items %}
+        <tr>
+            <td>{{key}}</td>
+            {% for k,v in value.items|slice:"3:6" %}
+            {% for valor in v %}
+            <td>{{valor.0}} ({{valor.1}}%)</td>
+<!--                        <td>{{valor}}</td>-->
+            {% endfor %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<!--FIN tabla de la MUERTE UNO-->
+{% endblock %}
