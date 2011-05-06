@@ -5,6 +5,7 @@ from django.template import RequestContext
 from forms import ConsultarForm
 from models import *
 from trocaire.lugar.models import *
+from django.contrib.contenttypes.models import ContentType
 
 #funcion lambda que calcula los totales a partir de la consulta filtrada
 get_total = lambda x: [v.count() for k, v in x.items()]
@@ -253,13 +254,17 @@ def prohibido_por_ley(request):
         tabla[field.verbose_name] = {}
         for key, grupo in resultados.items():
             lista = []
-            for encuesta in grupo:
-                for conocimiento in encuesta.conocimiento.all():
-                    lista.append(conocimiento.pk)
+            [lista.append(encuesta.id) for encuesta in grupo]
                     
             tabla[field.verbose_name][key] = []
+            if key < 4:
+                content = ContentType.objects.get(app_label="1-principal", model="mujer")
+            else:
+                content = ContentType.objects.get(app_label="1-principal", model="hombre")
+
             for op in SI_NO_RESPONDE:
-                tabla[field.verbose_name][key].append(ConocimientoLey.objects.filter(pk__in=lista, ** {field.name: op[0]}).count())
+                print ConocimientoLey.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op[0]})
+                tabla[field.verbose_name][key].append(ConocimientoLey.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op[0]}).count())
                 
     totales = get_total(resultados)
     tabla = get_prom_dead_list(tabla, totales)

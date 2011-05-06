@@ -254,23 +254,23 @@ class MujeresAdmin(admin.ModelAdmin):
     #list_editable = ['encuestador', 'fecha']    
     search_fields = ['codigo']
 
-    def queryset(self, request):
-        grupos = request.user.groups.all()
-        trocaire = Group.objects.get(name='Trocaire')
-        if request.user.is_superuser or trocaire in grupos:
-            return Mujer.objects.all()
-        return Mujer.objects.filter(usuario=request.user)
-
-    def get_form(self, request, obj=None, ** kwargs):
-        grupos = request.user.groups.all()
-        trocaire = Group.objects.get(name='Trocaire')
-        if request.user.is_superuser or trocaire in grupos:
-            form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
-        else:
-            form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
-            form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
-            form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
-        return form
+#    def queryset(self, request):
+#        grupos = request.user.groups.all()
+#        trocaire = Group.objects.get(name='Trocaire')
+#        if request.user.is_superuser or trocaire in grupos:
+#            return Mujer.objects.all()
+#        return Mujer.objects.filter(usuario=request.user)
+#
+#    def get_form(self, request, obj=None, ** kwargs):
+#        grupos = request.user.groups.all()
+#        trocaire = Group.objects.get(name='Trocaire')
+#        if request.user.is_superuser or trocaire in grupos:
+#            form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
+#        else:
+#            form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
+#            form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
+#            form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
+#        return form
 
     inlines = [ComposicionHogarInline,
         InfoSocioEconomicaInline,
@@ -616,3 +616,8 @@ admin.site.register(Organizacion)
 admin.site.register(Institucion)
 admin.site.register(Instrumento)
 admin.site.register(BrindanCapacitacion)
+
+admin.site.register(ConocimientoLey)
+
+from django.contrib.contenttypes.models import ContentType
+admin.site.register(ContentType)
