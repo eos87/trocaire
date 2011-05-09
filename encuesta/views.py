@@ -267,8 +267,114 @@ def prohibido_por_ley(request):
                 
     totales = get_total(resultados)
     grafico = convertir_grafico(tabla)
-    #tabla = get_prom_dead_list(tabla, totales)
+    tabla = get_prom_dead_list(tabla, totales)
     return render_to_response("monitoreo/prohibido_por_ley.html", RequestContext(request, locals()))
+
+def hombres_violentos(request):
+    """Cree usted que los hombres son violentos debido a"""
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    campos = [field for field in CausaVBG._meta.fields if field.get_internal_type() == 'CharField']
+
+    for field in campos:
+        tabla[field.verbose_name] = []
+
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+
+            if key < 4:
+                content = ContentType.objects.get(app_label="1-principal", model="mujer")
+            else:
+                content = ContentType.objects.get(app_label="1-principal", model="hombre")
+
+            tabla[field.verbose_name].append(CausaVBG.objects.filter(content_type=content, object_id__in=lista, ** {field.name: 'si'}).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    
+    return render_to_response("monitoreo/hombres_violentos.html", RequestContext(request, locals()))
+
+def hombres_violencia_mujeres(request):
+    """Para usted, los hombres ejercen violencia hacia las mujeres porque"""
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    campos = [field for field in JustificacionVBG._meta.fields if field.get_internal_type() == 'CharField']
+
+    for field in campos:
+        tabla[field.verbose_name] = []
+
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+
+            if key < 4:
+                content = ContentType.objects.get(app_label="1-principal", model="mujer")
+            else:
+                content = ContentType.objects.get(app_label="1-principal", model="hombre")
+
+            tabla[field.verbose_name].append(JustificacionVBG.objects.filter(content_type=content, object_id__in=lista, ** {field.name: 'si'}).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+
+    return render_to_response("monitoreo/hombres_violencia_mujeres.html", RequestContext(request, locals()))
+
+def comportamiento(request):
+    """Como deben comportarse hombres y mujeres"""
+    from models import CREENCIAS_VBG_RESP
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    campos = [field for field in Creencia._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
+
+    for field in campos:
+        tabla[field.verbose_name] = {}
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+
+            tabla[field.verbose_name][key] = []
+            if key < 4:
+                content = ContentType.objects.get(app_label="1-principal", model="mujer")
+            else:
+                content = ContentType.objects.get(app_label="1-principal", model="hombre")
+
+            for op in CREENCIAS_VBG_RESP:
+                tabla[field.verbose_name][key].append(Creencia.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op[0]}).count())
+
+    totales = get_total(resultados)
+    grafico = convertir_grafico(tabla)
+    tabla = get_prom_dead_list(tabla, totales)
+
+    return render_to_response("monitoreo/comportamiento.html", RequestContext(request, locals()))
+
+def ayuda_mujer_violencia(request):
+    """En el ultimo anio ha ayudado usted a alguna mujer que ha vivido VBG"""
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+
+    for op in ['si', 'no']:
+        tabla[op.title()] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
+
+        for op in ['si', 'no']:
+            tabla[op.title()].append(AccionVBG.objects.filter(content_type=content, object_id__in=lista, ha_ayudado=op).count())
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    return render_to_response("monitoreo/ayuda_mujer_violencia.html", RequestContext(request, locals()))
+
+def que_hace_ante_vbg(request):
+    """Que hace usted cuando existe una situación de VBG"""
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    return render_to_response("monitoreo/que_hace_ante_vbg.html", RequestContext(request, locals()))
 
 #obtener la vista adecuada para los indicadores
 def _get_view(request, vista):
@@ -287,6 +393,11 @@ VALID_VIEWS = {
     'como-afecta': como_afecta,
     'conoce-leyes': conoce_leyes,
     'prohibido-por-ley': prohibido_por_ley,
+    'hombres-violentos-por': hombres_violentos,
+    'hombres-violencia-mujeres': hombres_violencia_mujeres,
+    'comportamiento': comportamiento,
+    'ayuda-mujer-violencia': ayuda_mujer_violencia,
+    'que-hace-ante-vbg': que_hace_ante_vbg,
     }
 
 #funcion encargada de sacar promedio con los valores enviados
@@ -322,13 +433,13 @@ def convertir_grafico(tabla):
     los siguientes numeros son las opciones "1 -> Si", "2 -> No", "3 -> No sabe", "No responde"
     """
     dicc = {}
-    for i in range(1,7):
+    for i in range(1, 7):
         dicc[i] = {}
-        for j in range(1,5):
+        for j in range(1, 5):
             dicc[i][j] = []
 
-    for i in range(1,7):
-        for j in range(1,5):
+    for i in range(1, 7):
+        for j in range(1, 5):
             for key, value in tabla.items():
                 dicc[i][j].append(value[i][j-1])
 
