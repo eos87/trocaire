@@ -53,7 +53,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 INTERNAL_IPS = ('127.0.0.1',)
 
@@ -73,6 +73,6 @@ INSTALLED_APPS = (
     'trocaire.lugar',
     'trocaire.encuesta',    
     'south',
-    'debug_toolbar',
+    #'debug_toolbar',
 )
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

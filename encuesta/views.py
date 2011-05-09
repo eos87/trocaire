@@ -1,11 +1,11 @@
 # -*- coding: UTF-8 -*-
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import ViewDoesNotExist
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from forms import ConsultarForm
 from models import *
 from trocaire.lugar.models import *
-from django.contrib.contenttypes.models import ContentType
 
 #funcion lambda que calcula los totales a partir de la consulta filtrada
 get_total = lambda x: [v.count() for k, v in x.items()]
@@ -262,12 +262,12 @@ def prohibido_por_ley(request):
             else:
                 content = ContentType.objects.get(app_label="1-principal", model="hombre")
 
-            for op in SI_NO_RESPONDE:
-                print ConocimientoLey.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op[0]})
+            for op in SI_NO_RESPONDE:                
                 tabla[field.verbose_name][key].append(ConocimientoLey.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op[0]}).count())
                 
     totales = get_total(resultados)
-    tabla = get_prom_dead_list(tabla, totales)
+    grafico = convertir_grafico(tabla)
+    #tabla = get_prom_dead_list(tabla, totales)
     return render_to_response("monitoreo/prohibido_por_ley.html", RequestContext(request, locals()))
 
 #obtener la vista adecuada para los indicadores
@@ -316,3 +316,21 @@ def get_prom_dead_list(tabla, totales):
             [value[2], get_prom(value[2], totales[key-1])],
             [value[3], get_prom(value[3], totales[key-1])]]
     return tabla
+
+def convertir_grafico(tabla):
+    """ funcion donde primeros numeros igual: 1 -> m10-13, 2 -> m14-18....
+    los siguientes numeros son las opciones "1 -> Si", "2 -> No", "3 -> No sabe", "No responde"
+    """
+    dicc = {}
+    for i in range(1,7):
+        dicc[i] = {}
+        for j in range(1,5):
+            dicc[i][j] = []
+
+    for i in range(1,7):
+        for j in range(1,5):
+            for key, value in tabla.items():
+                dicc[i][j].append(value[i][j-1])
+
+    return dicc
+
