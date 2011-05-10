@@ -3,5 +3,44 @@
 {% block title %}Que hace usted cuando existe una situacion VBG en su comunidad{% endblock %}
 
 {% block contenido %}
+{{totales}}<br>
+
+<table class="tabla-resultados">
+    <caption>¿Cree usted que los hombres son violentos debido a?</caption>
+    <thead>
+        <tr>
+            <th rowspan="3">Categorias</th>
+            <th colspan="18">Mujeres</th>
+        </tr>
+        <tr>
+            <th colspan="6">10-13</th>
+            <th colspan="6">14-18</th>
+            <th colspan="6">18-mas</th>
+        </tr>
+        <tr>
+            {% for a in opciones %}
+            <th>{{a}}</th>
+            {% endfor %}
+            {% for a in opciones %}
+            <th>{{a}}</th>
+            {% endfor %}
+            {% for a in opciones %}
+            <th>{{a}}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in tabla.items %}
+        <tr>
+            <td>{{key}}</td>
+            {% for k, valor in value.items|slice:":3" %}
+            {% for a,b in valor.items %}
+            <td {% if k == 1 %}style="background: #ccc;"{% else %}{% if k == 2 %}style="background: #959595;"{% endif %}{% endif %}>{{b}}</td>
+            {% endfor %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}

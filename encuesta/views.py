@@ -374,6 +374,25 @@ def que_hace_ante_vbg(request):
     """Que hace usted cuando existe una situación de VBG"""
     resultados = _query_set_filtrado(request)
     tabla = {}
+    campos = [field for field in AccionVBG._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
+
+    opciones = [1,2,3,4,5,6]
+
+    for field in campos:        
+        tabla[field.verbose_name] = {}
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+            tabla[field.verbose_name][key] = {}            
+                
+            if key < 4:
+                content = ContentType.objects.get(app_label="1-principal", model="mujer")
+            else:
+                content = ContentType.objects.get(app_label="1-principal", model="hombre")
+
+            for op in opciones:
+                tabla[field.verbose_name][key][op] = AccionVBG.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op-1}).count()
+    totales = get_total(resultados)
     return render_to_response("monitoreo/que_hace_ante_vbg.html", RequestContext(request, locals()))
 
 #obtener la vista adecuada para los indicadores
