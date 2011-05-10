@@ -60,10 +60,11 @@ def _query_set_filtrado(request, tipo='mujer'):
         dicc[4] = Hombre.objects.filter(edad__range=(10, 13), ** params)
         dicc[5] = Hombre.objects.filter(edad__range=(14, 18), ** params)
         dicc[6] = Hombre.objects.filter(edad__gt=18, ** params)
-        return dicc
+        return dicc    
 
 def hablan_de(request):
-    """Vista sobre: Cuando alguien le habla de VBG usted cree que estan hablando de:"""    
+    """Vista sobre: Cuando alguien le habla de VBG usted cree que estan hablando de:"""
+    titulo = "¿Cuando alguien le habla de VBG usted cree que le estan hablando de?"
     resultados = _query_set_filtrado(request)
     tabla = {}
     opciones = HablanDe.objects.all()
@@ -73,11 +74,15 @@ def hablan_de(request):
 
     for key, grupo in resultados.items():
         lista = []
-        for encuesta in grupo:
-            for concepto in encuesta.concepto_violencia.all():
-                lista.append(concepto.pk)
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
+
         for opcion in opciones:
-            query = ConceptoViolencia.objects.filter(pk__in=lista, hablande=opcion, respuesta='si')
+            query = ConceptoViolencia.objects.filter(content_type=content, object_id__in=lista, hablande=opcion, respuesta='si')
             tabla[opcion].append(query.count())
 
     checkvalue = lambda x: sum(x)
@@ -88,10 +93,11 @@ def hablan_de(request):
     totales = get_total(resultados)    
     tabla = get_prom_lista(tabla, totales)
 
-    return render_to_response("monitoreo/hablan_de.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
 
 def expresion_vbg(request):
     """Vista sobre: De que manera cree usted que se expresa la VBG"""
+    titulo = '¿Cuando alguien le habla de VBG usted cree que le estan hablando de?'
     resultados = _query_set_filtrado(request)
     tabla = {}
     campos = [field for field in ExpresionVBG._meta.fields if field.get_internal_type() == 'CharField']
@@ -100,57 +106,71 @@ def expresion_vbg(request):
     
     for key, grupo in resultados.items():
         lista = []
-        for encuesta in grupo:
-            for expresion in encuesta.expresion_violencia.all():
-                lista.append(expresion.pk)    
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
+
         for field in campos:
-            tabla[field.verbose_name].append(ExpresionVBG.objects.filter(pk__in=lista, ** {field.name: 'si'}).count())       
+            tabla[field.verbose_name].append(ExpresionVBG.objects.filter(content_type=content, object_id__in=lista, ** {field.name: 'si'}).count())
     
     totales = get_total(resultados)
     tabla = get_prom_lista(tabla, totales)
 
-    return render_to_response("monitoreo/expresion_vbg.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
 
 def hombres_vbg(request):
     """Conoce usted si en su comunidad existen hombres que ejerven VBG"""
+    titulo = '¿Conoce usted si en su comunidad existen hombres que ejercen VBG?'
     resultados = _query_set_filtrado(request)
     tabla = {}
 
     for op in ['si', 'no']:
-        tabla[op] = []
+        tabla[op.title()] = []
 
     for key, grupo in resultados.items():
         lista = []
-        for encuesta in grupo:
-            for situacion in encuesta.situacion.all():
-                lista.append(situacion.pk)
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
+        
         for op in ['si', 'no']:
-            tabla[op].append(SituacionVBG.objects.filter(pk__in=lista, conoce_hombres=op).count())
+            tabla[op.title()].append(SituacionVBG.objects.filter(content_type=content, object_id__in=lista, conoce_hombres=op).count())
     totales = get_total(resultados)
     tabla = get_prom_lista(tabla, totales)
-    return render_to_response("monitoreo/hombres_vbg.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
 def mujeres_vbg(request):
     """Conoce usted si en su comunidad existen mujeres que han vivido VBG"""
+    titulo = '¿Conoce usted si en su comunidad existen mujeres que han vivido VBG?'
     resultados = _query_set_filtrado(request)
     tabla = {}
 
     for op in ['si', 'no']:
-        tabla[op] = []
+        tabla[op.title()] = []
 
     for key, grupo in resultados.items():
         lista = []
-        for encuesta in grupo:
-            for situacion in encuesta.situacion.all():
-                lista.append(situacion.pk)
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
         for op in ['si', 'no']:
-            tabla[op].append(SituacionVBG.objects.filter(pk__in=lista, conoce_mujeres=op).count())
+            tabla[op.title()].append(SituacionVBG.objects.filter(content_type=content, object_id__in=lista, conoce_mujeres=op).count())
     totales = get_total(resultados)
     tabla = get_prom_lista(tabla, totales)
-    return render_to_response("monitoreo/mujeres_vbg.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
 def vbg_resolver_con(request):
     """Considera usted que la VBG es un asunto que debe ser resuelto con la participacion de"""
+    titulo = u'¿Considera que la VBG es un asunto que debe ser resuelto con la participación de?'
     resultados = _query_set_filtrado(request)
     tabla = {}
     opciones = ResolverVBG.objects.all()
@@ -159,11 +179,14 @@ def vbg_resolver_con(request):
 
     for key, grupo in resultados.items():
         lista = []
-        for encuesta in grupo:
-            for resolutor in encuesta.asunto_publico.all():
-                lista.append(resolutor.pk)
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
         for op in opciones:
-            tabla[op].append(AsuntoPublicoVBG.objects.filter(pk__in=lista, resolverse_con=op).count())
+            tabla[op].append(AsuntoPublicoVBG.objects.filter(content_type=content, object_id__in=lista, resolverse_con=op).count())
             
     checkvalue = lambda x: sum(x)
     for key, value in tabla.items():        
@@ -172,30 +195,35 @@ def vbg_resolver_con(request):
 
     totales = get_total(resultados)
     tabla = get_prom_lista(tabla, totales)
-    return render_to_response("monitoreo/vbg_resolver_con.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
 
 def afeccion_vbg(request):
     """Cree usted que la VBG afecta a las mujeres, la familia y la comunidad?"""
+    titulo = u'¿Cree usted que la VBG afecta a las mujeres, la familia y la comunidad?'
     resultados = _query_set_filtrado(request)
     tabla = {}
 
     for op in ['si', 'no']:
-        tabla[op] = []
+        tabla[op.title()] = []
 
     for key, grupo in resultados.items():
         lista = []
-        for encuesta in grupo:
-            for efecto in encuesta.efecto.all():
-                lista.append(efecto.pk)
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
         for op in ['si', 'no']:
-            tabla[op].append(EfectoVBG.objects.filter(pk__in=lista, afecta_mujeres=op).count())
+            tabla[op.title()].append(EfectoVBG.objects.filter(content_type=content, object_id__in=lista, afecta_mujeres=op).count())
     totales = get_total(resultados)
     tabla = get_prom_lista(tabla, totales)
 
-    return render_to_response("monitoreo/afeccion_vbg.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
 def como_afecta(request):
     """Como afecta la VBG a las mujeres, comunidad y la familia"""
+    titulo = u'¿Como afecta la VBG a las mujeres, comunidad y la familia?'
     resultados = _query_set_filtrado(request)
     tabla = {}
     opciones = ComoAfecta.objects.all()
@@ -205,11 +233,14 @@ def como_afecta(request):
 
     for key, grupo in resultados.items():
         lista = []
-        for encuesta in grupo:
-            for efecto in encuesta.efecto.all():
-                lista.append(efecto.pk)
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
         for op in opciones:
-            tabla[op].append(EfectoVBG.objects.filter(pk__in=lista, como_afecta=op).count())
+            tabla[op].append(EfectoVBG.objects.filter(content_type=content, object_id__in=lista, como_afecta=op).count())
 
     checkvalue = lambda x: sum(x)
     for key, value in tabla.items():
@@ -219,10 +250,11 @@ def como_afecta(request):
     totales = get_total(resultados)
     tabla = get_prom_lista(tabla, totales)
     
-    return render_to_response("monitoreo/como_afecta.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
 
 def conoce_leyes(request):
     """Conoce alguna ley que penaliza la VBG"""
+    titulo = u'¿Sabe usted si en Nicaragua existe alguna ley que penaliza la violencia contra las mujeres?'
     resultados = _query_set_filtrado(request)
     tabla = {}
 
@@ -231,16 +263,18 @@ def conoce_leyes(request):
     
     for key, grupo in resultados.items():
         lista = []
-        for encuesta in grupo:
-            for conocimiento in encuesta.conocimiento.all():
-                lista.append(conocimiento.pk)
+        [lista.append(encuesta.id) for encuesta in grupo]
 
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
         for op in SI_NO_RESPONDE:
-            tabla[op[1]].append(ConocimientoLey.objects.filter(pk__in=lista, existe_ley=op[0]).count())
+            tabla[op[1]].append(ConocimientoLey.objects.filter(content_type=content, object_id__in=lista, existe_ley=op[0]).count())
     totales = get_total(resultados)
     tabla = get_prom_lista(tabla, totales)
     
-    return render_to_response("monitoreo/conoce_leyes.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
 def prohibido_por_ley(request):
     """Acciones prohibidas por la ley"""
@@ -297,6 +331,7 @@ def hombres_violentos(request):
 
 def hombres_violencia_mujeres(request):
     """Para usted, los hombres ejercen violencia hacia las mujeres porque"""
+    titulo = '¿Cree usted que los hombres son violentos debido a?'
     resultados = _query_set_filtrado(request)
     tabla = {}
     campos = [field for field in JustificacionVBG._meta.fields if field.get_internal_type() == 'CharField']
@@ -318,7 +353,7 @@ def hombres_violencia_mujeres(request):
     totales = get_total(resultados)
     tabla = get_prom_lista(tabla, totales)
 
-    return render_to_response("monitoreo/hombres_violencia_mujeres.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
 
 def comportamiento(request):
     """Como deben comportarse hombres y mujeres"""
@@ -350,6 +385,7 @@ def comportamiento(request):
 
 def ayuda_mujer_violencia(request):
     """En el ultimo anio ha ayudado usted a alguna mujer que ha vivido VBG"""
+    titulo = u'¿En el último año ha ayudado usted a alguna mujer que ha vivido VBG?'
     resultados = _query_set_filtrado(request)
     tabla = {}
 
@@ -368,7 +404,7 @@ def ayuda_mujer_violencia(request):
             tabla[op.title()].append(AccionVBG.objects.filter(content_type=content, object_id__in=lista, ha_ayudado=op).count())
     totales = get_total(resultados)
     tabla = get_prom_lista(tabla, totales)
-    return render_to_response("monitoreo/ayuda_mujer_violencia.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
 def que_hace_ante_vbg(request):
     """Que hace usted cuando existe una situación de VBG"""
@@ -508,6 +544,164 @@ def participacion_en_espacios(request):
     tabla = get_prom_lista(tabla, totales)
     return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
 
+def ha_vivido_vbg(request):
+    """Considera usted que alguna vez ha vivido VBG"""
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+
+    for op in ['si', 'no']:
+        tabla[op.title()] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
+
+        for op in ['si', 'no']:
+            tabla[op.title()].append(PrevalenciaVBG.objects.filter(content_type=content, object_id__in=lista, ha_vivido_vbg=op).count())
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    return render_to_response("monitoreo/ha_vivido_vbg.html", RequestContext(request, locals()))
+
+def tipo_vbg_vivido(request):
+    titulo = u"¿Qué tipo de VBG ha vivido?"
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    opciones = TipoVBG.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
+        for op in opciones:
+            tabla[op].append(PrevalenciaVBG.objects.filter(content_type=content, object_id__in=lista, que_tipo=op).count())
+
+    checkvalue = lambda x: sum(x)
+    for key, value in tabla.items():
+        if checkvalue(value) == 0:
+            del tabla[key]
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    return render_to_response("monitoreo/tipo_vbg_vivido.html", RequestContext(request, locals()))
+
+def ha_ejercido_vbg(request):
+    """Considera usted que ejercido VBG contra una mujer el ultimo año"""
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+
+    for op in ['si', 'no']:
+        tabla[op.title()] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
+
+        for op in ['si', 'no']:
+            tabla[op.title()].append(PrevalenciaVBGHombre.objects.filter(content_type=content, object_id__in=lista, ha_vivido_vbg=op).count())
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    return render_to_response("monitoreo/ha_ejercido_vbg.html", RequestContext(request, locals()))
+
+def tipo_vbg_ejercido(request):
+    titulo = u"¿Qué tipo de VBG ha ejercido?"
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    opciones = TipoVBG.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
+        for op in opciones:
+            tabla[op].append(PrevalenciaVBGHombre.objects.filter(content_type=content, object_id__in=lista, que_tipo=op).count())
+
+    checkvalue = lambda x: sum(x)
+    for key, value in tabla.items():
+        if checkvalue(value) == 0:
+            del tabla[key]
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    return render_to_response("monitoreo/tipo_vbg_ejercido.html", RequestContext(request, locals()))
+
+def actividades_hogar(request):
+    """Cuales de las siguientes actividades realiza usted en su hogar"""
+    from models import HOGAR
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    campos = [field for field in Corresponsabilidad._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
+
+    for field in campos:
+        tabla[field.verbose_name] = {}
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+
+            tabla[field.verbose_name][key] = []
+            if key < 4:
+                content = ContentType.objects.get(app_label="1-principal", model="mujer")
+            else:
+                content = ContentType.objects.get(app_label="1-principal", model="hombre")
+
+            for op in HOGAR:
+                tabla[field.verbose_name][key].append(Corresponsabilidad.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op[0]}).count())
+
+    totales = get_total(resultados)
+    grafico = convertir_grafico(tabla)
+    tabla = get_prom_dead_list2(tabla, totales)
+    return render_to_response("monitoreo/actividades_hogar.html", RequestContext(request, locals()))
+
+def solucion_problema(request):
+    """Que se debe hacer para que la solucion a un conflicto entre la pareja sea exitoso"""
+    from models import DES_AC
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    campos = [field for field in ComunicacionAsertiva._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
+    for field in campos:
+        tabla[field.verbose_name] = {}
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+
+            tabla[field.verbose_name][key] = []
+            if key < 4:
+                content = ContentType.objects.get(app_label="1-principal", model="mujer")
+            else:
+                content = ContentType.objects.get(app_label="1-principal", model="hombre")
+            
+            for op in HOGAR:
+                tabla[field.verbose_name][key].append(Corresponsabilidad.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op[0]}).count())
+
+    totales = get_total(resultados)
+    grafico = convertir_grafico(tabla)
+    tabla = get_prom_dead_list3(tabla, totales)
+
+    return render_to_response("monitoreo/actividades_hogar.html", RequestContext(request, locals()))
+
 #obtener la vista adecuada para los indicadores
 def _get_view(request, vista):
     if vista in VALID_VIEWS:
@@ -534,6 +728,12 @@ VALID_VIEWS = {
     'que-debe-hacer': que_debe_hacer,
     'que-acciones-realizar': que_acciones_realizar,
     'participacion-en-espacios': participacion_en_espacios,
+    'ha-vivido-vbg': ha_vivido_vbg,
+    'tipo-vbg-vivido': tipo_vbg_vivido,
+    'ha-ejercido-vbg': ha_ejercido_vbg,
+    'tipo-vbg-ejercido': tipo_vbg_ejercido,
+    'actividades-hogar': actividades_hogar,
+    'solucion-problema': solucion_problema,
     }
 
 #funcion encargada de sacar promedio con los valores enviados
@@ -564,18 +764,35 @@ def get_prom_dead_list(tabla, totales):
             [value[3], get_prom(value[3], totales[key-1])]]
     return tabla
 
+def get_prom_dead_list2(tabla, totales):
+    for k, v in tabla.items():
+        for key, value in v.items():
+            tabla[k][key] = [[value[0], get_prom(value[0], totales[key-1])],
+            [value[1], get_prom(value[1], totales[key-1])],
+            [value[2], get_prom(value[2], totales[key-1])],
+            [value[3], get_prom(value[3], totales[key-1])],
+            [value[4], get_prom(value[4], totales[key-1])]]
+    return tabla
+
+def get_prom_dead_list3(tabla, totales):
+    for k, v in tabla.items():
+        for key, value in v.items():
+            tabla[k][key] = [[value[0], get_prom(value[0], totales[key-1])],
+            [value[1], get_prom(value[1], totales[key-1])]]
+    return tabla
+
 def convertir_grafico(tabla):
     """ funcion donde primeros numeros igual: 1 -> m10-13, 2 -> m14-18....
     los siguientes numeros son las opciones "1 -> Si", "2 -> No", "3 -> No sabe", "No responde"
     """
     dicc = {}
-    for i in range(1, 7):
+    for i in range(1, len(tabla.items()[0][1].keys())+1):
         dicc[i] = {}
-        for j in range(1, 5):
+        for j in range(1, len(tabla.items()[0][1][1])+1):
             dicc[i][j] = []
 
-    for i in range(1, 7):
-        for j in range(1, 5):
+    for i in range(1, len(tabla.items()[0][1].keys())+1):
+        for j in range(1, len(tabla.items()[0][1][1])+1):
             for key, value in tabla.items():
                 dicc[i][j].append(value[i][j-1])
 

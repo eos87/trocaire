@@ -113,7 +113,6 @@ a{
 }
 .title_bar{
     height: 46px;
-    width: 100%;
     background: url(/files/img/title_bar.png) repeat-x;    
 }
 .content .wrapper{
@@ -197,3 +196,72 @@ a{
 .tabla-resultados td a:visited{
     color: #003956;
 }
+
+/*Css agregado por Byron */
+
+.der{float:right;}
+.izq{float:left;}
+
+.titulo{
+    border:#ececec 1px solid;
+    padding:4px 10px 4px 10px;
+    float:left;
+    background:#fff;
+    color:#a91051;
+    font-weight:bold;
+    font-size:17px;
+
+    margin:5px;
+    border-radius: 20px;
+    -webkit-border-radius: 20x ;
+    -moz-border-radius: 20px ;
+}
+
+.marco-interior{padding:15px;}
+
+#id_year, #id_iglesia, #id_nivel_educativo{
+    background:#d8e2e6;
+    border-top:#fff 1px solid;
+    border-left:#fff 1px solid;
+    border-right:#90aab6 1px solid;
+    border-bottom:#90aab6 1px solid;
+    width:100%;
+    height:30px;
+}
+
+label #id_year{
+    font-size:12px;
+}
+
+.formseccion{
+    background:url(/files/img/degradadoazul.png) repeat-x;
+    height:24px;
+    color:#fff;
+    padding-left:8px;
+    font-size:14px !important;
+    width:450px;
+    margin-left:10px;
+}
+
+#tabla-form table{
+    margin-left:15px;
+    font-size:12px;
+ table-layout:fixed;
+}
+
+
+#consultar{
+    background:url(/files/img/consultar.png);
+    width:165px;
+    height:34px;
+    border:0;
+    margin-left:15px;
+}
+
+#menufiltros{
+    background:#eef7f7;
+    height:80px;
+    width:100%;
+}
+
+#menufiltros img{ margin:10px;}
