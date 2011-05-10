@@ -8,15 +8,15 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^$', direct_to_template, {'template': 'index.html'}),
-	(r'^monitoreo/', include('trocaire.encuesta.urls')),
+    (r'^monitoreo/', include('trocaire.encuesta.urls')),
     (r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html'}),
     (r'^admin/', include(admin.site.urls)),
 	#urls lista para devolver los depas, munis via ajax
     (r'^ajax/depa/$', 'trocaire.views.get_depas'),
     (r'^ajax/muni/$', 'trocaire.views.get_munis'),
     (r'^ajax/data/$', 'trocaire.views.__get_data'),
-	(r'^ajax/depas-groups/$', 'trocaire.views.get_group_depas'),
-	(r'^ajax/orgs/$', 'trocaire.views.get_orgs'),
+    (r'^ajax/depas-groups/$', 'trocaire.views.get_group_depas'),
+    (r'^ajax/orgs/$', 'trocaire.views.get_orgs'),
 )
 
 if DEBUG:

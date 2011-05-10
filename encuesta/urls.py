@@ -5,6 +5,8 @@ urlpatterns = patterns('trocaire.encuesta.views',
     (r'^consultar/$', 'consultar'),
     (r'^mujeres-hombres/$', direct_to_template, {'template': 'monitoreo/mujeres-hombres.html'}),
     (r'^mujeres-hombres/(?P<vista>[-\w]+)/$', '_get_view'),
+    (r'^funcionarios/$', direct_to_template, {'template': 'monitoreo/funcionarios.html'}),
+    (r'^funcionarios/(?P<vista>[-\w]+)/$', '_get_view'),
     # (r'^conocimiento/(?P<vista>[-\w]+)/$', '_get_view'),
     
 #    (r'^indicadores/$', 'indicadores'),
