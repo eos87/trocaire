@@ -581,3 +581,68 @@ def convertir_grafico(tabla):
 
     return dicc
 
+
+#------------------------LIDERES Y LIDEREZAS------------------------------------
+def _query_set_filtrado_lideres(request):
+    params = {}
+    #validar y crear los filtros de la consulta
+    if request.session['year']:
+        params['fecha__year'] = request.session['year']
+
+    if request.session['nivel_educativo']:
+        params['informacion_socio__in'] = InformacionSocioEconomica.objects.filter(nivel_educativo=request.session['nivel_educativo'])
+
+    if request.session['iglesia'] and request.session['iglesia'] == 1:
+        params['asiste_iglesia'] = True
+
+    if request.session['pais']:
+        if request.session['departamento']:
+            if request.session['organizacion']:
+                params['contraparte__in'] = request.session['organizacion']
+            if request.session['municipio']:
+                params['municipio__in'] = request.session['municipio']
+            if not request.session['organizacion'] and not request.session['municipio']:
+                params['municipio__in'] = Municipio.objects.filter(departamento__in=request.session['departamento'])
+        else:
+            params['municipio__in'] = Municipio.objects.filter(departamento__in=Departamento.objects.filter(pais__in=request.session['pais']))
+
+    return Lider.objects.filter(**params) 
+
+def _get_vista_lideres(request, vista):
+    if vista in VALID_VIEWS_LIDERES:
+        return VALID_VIEWS_LIDERES[vista](request)
+    else:
+        raise ViewDoesNotExist("Tried %s in module %s Error: View not define in VALID_VIEWS." % (vista, 'encuesta.views'))
+
+
+def concepto_violencia(request):
+    resultados = _query_set_filtrado_lideres(request)
+    tabla = {}
+    opciones = HablanDe.objects.all()
+    lista = []
+    titulo = "De que manera se considera que se expresa la VBG"
+
+    for op in opciones:
+        tabla[op] = []
+
+    for encuesta in resultados:
+        for concepto in encuesta.concepto_violencia.all():
+            lista.append(concepto.pk)
+    for opcion in opciones:
+        query = ConceptoViolencia.objects.filter(pk__in=lista, hablande=opcion, respuesta='si')
+        tabla[opcion].append(query.count())
+
+    for key, value in tabla.items():        
+        if sum(value) == 0:
+            del tabla[key]
+            
+    #tabla = get_prom_dead_list(tabla, [v for i, v in tabla.items()])
+
+    return render_to_response("monitoreo/concepto_violencia.html", 
+                              {'tabla': tabla, 'titulo': titulo},
+                              RequestContext(request))
+
+
+VALID_VIEWS_LIDERES = { 'concepto-violencia': concepto_violencia, 
+                      
+                      }
