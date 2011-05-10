@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block extratitle %}¿Cree usted que la VBG afecta a las mujeres, la familia y la comunidad?{% endblock %}
+{% block extratitle %}{{titulo}}{% endblock %}
 
 {% block extrahead %}
 <script type="text/javascript" src="/files/js/highcharts.js"></script>
@@ -14,13 +14,26 @@
                enabled: false
             },
             showInLegend: true
-         }
+         },
+         series: {
+            dataLabels: {
+                enabled: true,
+                align: "center",
+                formatter: function() {
+                    return ''+ this.percentage.toFixed(1) + ' %';
+                },
+                color: '#000',
+                style: {
+                    font: '12px Trebuchet MS, Verdana, sans-serif'
+                }
+            }
+        }
     }
     var tooltip = {
         formatter: function() {
             return '<b>'+ this.point.name +'</b>: '+ this.y +'%';
         }
-    }
+    }    
     var chart;
     $(document).ready(function(){
         $('.grafos').click(function(){
@@ -52,11 +65,11 @@
                     defaultSeriesType: 'pie'
                 },
                 title: {
-                    text: '¿Cree usted que la VBG afecta a las mujeres, la familia y la comunidad?'
+                    text: '{{titulo}}'
                 },
                 subtitle: {
                     text: titulo
-                },
+                },                                
                 tooltip: tooltip,
                 plotOptions: plotOptions,
                 series: series

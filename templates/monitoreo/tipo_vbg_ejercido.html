@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}{{titulo}}{% endblock %}
+
 {% block extrahead %}
 <script type="text/javascript" src="/files/js/highcharts.js"></script>
 <script type="text/javascript" src="/files/js/exporting.js"></script>
@@ -58,7 +60,7 @@
                     defaultSeriesType: 'column'
                 },
                 title: {
-                    text: '¿Considera que la VBG es un asunto que debe ser resuelto con la participación de?'
+                    text: '{{titulo}}'
                 },
                 subtitle: {
                     text: titulo
@@ -87,24 +89,19 @@
 
 {% block contenido %}
 <div>Graficos</div>
-<a href="#" id="m10_13" class="grafos">Mujeres 10-13</a> | <a href="#" id="m14_18" class="grafos">Mujeres 14-18</a> | <a href="#" id="m18_mas" class="grafos">Mujeres mayores de 18</a><br>
 <a href="#" id="h10_13" class="grafos">Hombres 10-13</a> | <a href="#" id="h14_18" class="grafos">Hombres 14-18</a> | <a href="#" id="h18_mas" class="grafos">Hombres mayores de 18</a><br>
 <br>
 <div id="container"></div>
 <br>
 {{totales}}<br><br>
 <table class="tabla-resultados">
-    <caption>¿Considera que la VBG es un asunto que debe ser resuelto con la participaci&oacute;n de?</caption>
+    <caption>{{titulo}}</caption>
     <thead>
         <tr>
             <th rowspan="2">Categorias</th>
-            <th colspan="3">Mujeres</th>
             <th colspan="3">Hombres</th>
         </tr>
         <tr>
-            <th>10-13</th>
-            <th>14-18</th>
-            <th>18-mas</th>
             <th>10-13</th>
             <th>14-18</th>
             <th>18-mas</th>
@@ -114,7 +111,7 @@
         {% for key, value in tabla.items %}
         <tr>
             <td>{{key}}</td>
-            {% for valor in value %}
+            {% for valor in value|slice:"3:6" %}
             <td>{{valor.0}} ({{valor.1}}%)</td>
             {% endfor %}
         </tr>
