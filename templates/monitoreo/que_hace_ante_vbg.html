@@ -1,29 +1,45 @@
 {% extends "base.html" %}
 
-{% block title %}Que hace usted cuando existe una situacion VBG en su comunidad{% endblock %}
+{% block title %}¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad?{% endblock %}
 
 {% block contenido %}
 {{totales}}<br>
 
 <table class="tabla-resultados">
-    <caption>¿Cree usted que los hombres son violentos debido a?</caption>
+    <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Mujeres 10-13 a&ntilde;os)</caption>
     <thead>
         <tr>
-            <th rowspan="3">Categorias</th>
-            <th colspan="18">Mujeres</th>
-        </tr>
-        <tr>
-            <th colspan="6">10-13</th>
-            <th colspan="6">14-18</th>
-            <th colspan="6">18-mas</th>
-        </tr>
+            <th rowspan="2">Categorias</th>
+            <th colspan="6">Mujeres 10-13 a&ntilde;os</th>
+        </tr>        
         <tr>
             {% for a in opciones %}
             <th>{{a}}</th>
+            {% endfor %}            
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in tabla.items %}
+        <tr>
+            <td>{{key}}</td>
+            {% for k, valor in value.items|slice:":1" %}
+            {% for a,b in valor.items %}
+            <td>{{b}}</td>
             {% endfor %}
-            {% for a in opciones %}
-            <th>{{a}}</th>
             {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<table class="tabla-resultados">
+    <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Mujeres 14-18 a&ntilde;os)</caption>
+    <thead>
+        <tr>
+            <th rowspan="2">Categorias</th>
+            <th colspan="6">Mujeres 14-18 a&ntilde;os</th>
+        </tr>
+        <tr>
             {% for a in opciones %}
             <th>{{a}}</th>
             {% endfor %}
@@ -33,14 +49,121 @@
         {% for key, value in tabla.items %}
         <tr>
             <td>{{key}}</td>
-            {% for k, valor in value.items|slice:":3" %}
+            {% for k, valor in value.items|slice:"1:2" %}
             {% for a,b in valor.items %}
-            <td {% if k == 1 %}style="background: #ccc;"{% else %}{% if k == 2 %}style="background: #959595;"{% endif %}{% endif %}>{{b}}</td>
+            <td>{{b}}</td>
             {% endfor %}
             {% endfor %}
         </tr>
         {% endfor %}
     </tbody>
 </table>
-
+<br>
+<table class="tabla-resultados">
+    <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Mujeres 18 a m&aacute;s a&ntilde;os)</caption>
+    <thead>
+        <tr>
+            <th rowspan="2">Categorias</th>
+            <th colspan="6">Mujeres 18 a m&aacute;s</th>
+        </tr>
+        <tr>
+            {% for a in opciones %}
+            <th>{{a}}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in tabla.items %}
+        <tr>
+            <td>{{key}}</td>
+            {% for k, valor in value.items|slice:"2:3" %}
+            {% for a,b in valor.items %}
+            <td>{{b}}</td>
+            {% endfor %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<table class="tabla-resultados">
+    <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Hombres 10-13 a&ntilde;os)</caption>
+    <thead>
+        <tr>
+            <th rowspan="2">Categorias</th>
+            <th colspan="6">Mujeres 10-13 a&ntilde;os</th>
+        </tr>
+        <tr>
+            {% for a in opciones %}
+            <th>{{a}}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in tabla.items %}
+        <tr>
+            <td>{{key}}</td>
+            {% for k, valor in value.items|slice:"3:4" %}
+            {% for a,b in valor.items %}
+            <td>{{b}}</td>
+            {% endfor %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<table class="tabla-resultados">
+    <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Hombres 14-18 a&ntilde;os)</caption>
+    <thead>
+        <tr>
+            <th rowspan="2">Categorias</th>
+            <th colspan="6">Mujeres 14-18 a&ntilde;os</th>
+        </tr>
+        <tr>
+            {% for a in opciones %}
+            <th>{{a}}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in tabla.items %}
+        <tr>
+            <td>{{key}}</td>
+            {% for k, valor in value.items|slice:"4:5" %}
+            {% for a,b in valor.items %}
+            <td>{{b}}</td>
+            {% endfor %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br>
+<table class="tabla-resultados">
+    <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Hombres 18 a m&aacute;s a&ntilde;os)</caption>
+    <thead>
+        <tr>
+            <th rowspan="2">Categorias</th>
+            <th colspan="6">Mujeres 18 a m&aacute;s</th>
+        </tr>
+        <tr>
+            {% for a in opciones %}
+            <th>{{a}}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in tabla.items %}
+        <tr>
+            <td>{{key}}</td>
+            {% for k, valor in value.items|slice:"5:6" %}
+            {% for a,b in valor.items %}
+            <td>{{b}}</td>
+            {% endfor %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

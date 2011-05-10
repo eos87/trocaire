@@ -271,7 +271,7 @@ def prohibido_por_ley(request):
     return render_to_response("monitoreo/prohibido_por_ley.html", RequestContext(request, locals()))
 
 def hombres_violentos(request):
-    """Cree usted que los hombres son violentos debido a"""
+    titulo = "¿Cree usted que los hombres son violentos debido a?"
     resultados = _query_set_filtrado(request)
     tabla = {}
     campos = [field for field in CausaVBG._meta.fields if field.get_internal_type() == 'CharField']
@@ -293,7 +293,7 @@ def hombres_violentos(request):
     totales = get_total(resultados)
     tabla = get_prom_lista(tabla, totales)
     
-    return render_to_response("monitoreo/hombres_violentos.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
 
 def hombres_violencia_mujeres(request):
     """Para usted, los hombres ejercen violencia hacia las mujeres porque"""
@@ -376,7 +376,7 @@ def que_hace_ante_vbg(request):
     tabla = {}
     campos = [field for field in AccionVBG._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
 
-    opciones = [1,2,3,4,5,6]
+    opciones = [1, 2, 3, 4, 5, 6]
 
     for field in campos:        
         tabla[field.verbose_name] = {}
@@ -394,6 +394,119 @@ def que_hace_ante_vbg(request):
                 tabla[field.verbose_name][key][op] = AccionVBG.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op-1}).count()
     totales = get_total(resultados)
     return render_to_response("monitoreo/que_hace_ante_vbg.html", RequestContext(request, locals()))
+
+def donde_buscar_ayuda(request):
+    titulo = '¿Donde debe buscar ayuda una mujer que vive VBG?'
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    opciones = BuscarAyuda.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
+        for op in opciones:
+            tabla[op].append(AccionVBG.objects.filter(content_type=content, object_id__in=lista, donde_buscar=op).count())
+
+    checkvalue = lambda x: sum(x)
+    for key, value in tabla.items():
+        if checkvalue(value) == 0:
+            del tabla[key]
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    
+    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
+
+def que_debe_hacer(request):    
+    titulo = "¿Si hombre le pega a su pareja que acciones deberia de tomar?"
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    opciones = QueDebeHacer.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
+        for op in opciones:
+            tabla[op].append(AccionVBG.objects.filter(content_type=content, object_id__in=lista, accion_tomar=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+
+    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
+
+def que_acciones_realizar(request):
+    titulo = "¿Cuando una mujer vive VBG cuales acciones deberia realizar?"
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    opciones = Decision.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
+        for op in opciones:
+            tabla[op].append(TomaDecision.objects.filter(content_type=content, object_id__in=lista, decision=op).count())
+
+    checkvalue = lambda x: sum(x)
+    for key, value in tabla.items():
+        if checkvalue(value) == 0:
+            del tabla[key]
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
+
+def participacion_en_espacios(request):
+    titulo = u"¿En que organización o espacios comunitarios te encuentras integrada/o actualmente?"
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    opciones = Espacio.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
+        for op in opciones:
+            tabla[op].append(ParticipacionPublica.objects.filter(content_type=content, object_id__in=lista, espacio=op).count())
+
+    checkvalue = lambda x: sum(x)
+    for key, value in tabla.items():
+        if checkvalue(value) == 0:
+            del tabla[key]
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
 
 #obtener la vista adecuada para los indicadores
 def _get_view(request, vista):
@@ -417,6 +530,10 @@ VALID_VIEWS = {
     'comportamiento': comportamiento,
     'ayuda-mujer-violencia': ayuda_mujer_violencia,
     'que-hace-ante-vbg': que_hace_ante_vbg,
+    'donde-buscar-ayuda': donde_buscar_ayuda,
+    'que-debe-hacer': que_debe_hacer,
+    'que-acciones-realizar': que_acciones_realizar,
+    'participacion-en-espacios': participacion_en_espacios,
     }
 
 #funcion encargada de sacar promedio con los valores enviados

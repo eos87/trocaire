@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Cree usted que los hombres son violentos debido a{% endblock %}
+{% block title %}{{titulo}}{% endblock %}
 
 {% block extrahead %}
 <script type="text/javascript" src="/files/js/highcharts.js"></script>
@@ -60,7 +60,7 @@
                     defaultSeriesType: 'column'
                 },
                 title: {
-                    text: '¿Cree usted que los hombres son violentos debido a?'
+                    text: '{{titulo}}'
                 },
                 subtitle: {
                     text: titulo
@@ -96,7 +96,7 @@
 <br>
 {{totales}}<br><br>
 <table class="tabla-resultados">
-    <caption>¿Cree usted que los hombres son violentos debido a?</caption>
+    <caption>{{titulo}}</caption>
     <thead>
         <tr>
             <th rowspan="2">Categorias</th>
