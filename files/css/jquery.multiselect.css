@@ -1,9 +1,14 @@
-.ui-multiselect { padding:2px 0 2px 4px; text-align:left; font-size: 70%; }
+.ui-multiselect { padding:2px 0 2px 4px; text-align:left; font-size: 70%; width:300px !important; background:#d8e2e6;     border-top:#fff 1px solid;
+    border-left:#fff 1px solid;
+    border-right:#90aab6 1px solid;
+    border-bottom:#90aab6 1px solid;
+    height:30px;
+    }
 .ui-multiselect span.ui-icon { float:right }
 .ui-multiselect-single input { position:absolute !important; top: auto !important; left:-9999px; }
 .ui-multiselect-single label { padding:5px !important }
 .ui-multiselect-filter input{ width: 100px; }
-.ui-multiselect-filter{ font-size: 11px;}
+.ui-multiselect-filter{ font-size: 12px;}
 
 .ui-multiselect-header { margin-bottom:3px; padding:3px 0 3px 4px }
 .ui-multiselect-header ul { font-size:11px }
