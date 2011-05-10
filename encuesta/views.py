@@ -62,7 +62,7 @@ def _query_set_filtrado(request, tipo='mujer'):
         dicc[6] = Hombre.objects.filter(edad__gt=18, ** params)
         return dicc
     elif tipo == 'funcionario':
-        return Funcionario.objects.filter(** params)
+        return Funcionario.objects.filter( ** params)
 
 def hablan_de(request):
     """Vista sobre: Cuando alguien le habla de VBG usted cree que estan hablando de:"""
@@ -731,8 +731,15 @@ def negociacion_pareja(request):
     return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
 
 ############## ACA LAS VISTAS PARA FUNCIONARIOS ###########################
+cfunc = ContentType.objects.get(app_label="1-principal", model="funcionario")
 def le_hablan_de(request):
     encuestas = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    opciones = HablanDe.objects.all()
+    for op in opciones:
+        tabla[op] = ConceptoViolencia.objects.filter(content_type=cfunc, object_id__in=[encuesta.id for encuesta in encuestas], \
+                                                     hablande=op, respuesta='si').count()
+
     return render_to_response("monitoreo/funcionarios/le_hablan_de.html", RequestContext(request, locals()))
 
 
@@ -824,13 +831,13 @@ def convertir_grafico(tabla):
     los siguientes numeros son las opciones "1 -> Si", "2 -> No", "3 -> No sabe", "No responde"
     """
     dicc = {}
-    for i in range(1, len(tabla.items()[0][1].keys())+1):
+    for i in range(1, len(tabla.items()[0][1].keys()) + 1):
         dicc[i] = {}
-        for j in range(1, len(tabla.items()[0][1][1])+1):
+        for j in range(1, len(tabla.items()[0][1][1]) + 1):
             dicc[i][j] = []
 
-    for i in range(1, len(tabla.items()[0][1].keys())+1):
-        for j in range(1, len(tabla.items()[0][1][1])+1):
+    for i in range(1, len(tabla.items()[0][1].keys()) + 1):
+        for j in range(1, len(tabla.items()[0][1][1]) + 1):
             for key, value in tabla.items():
                 dicc[i][j].append(value[i][j-1])
 
