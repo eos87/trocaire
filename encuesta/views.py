@@ -60,7 +60,9 @@ def _query_set_filtrado(request, tipo='mujer'):
         dicc[4] = Hombre.objects.filter(edad__range=(10, 13), ** params)
         dicc[5] = Hombre.objects.filter(edad__range=(14, 18), ** params)
         dicc[6] = Hombre.objects.filter(edad__gt=18, ** params)
-        return dicc    
+        return dicc
+    elif tipo == 'funcionario':
+        return Funcionario.objects.filter( ** params)
 
 def hablan_de(request):
     """Vista sobre: Cuando alguien le habla de VBG usted cree que estan hablando de:"""
@@ -677,7 +679,8 @@ def actividades_hogar(request):
 
 def solucion_problema(request):
     """Que se debe hacer para que la solucion a un conflicto entre la pareja sea exitoso"""
-    from models import DES_AC
+    titulo = u'¿Que se debe hacer para que la solucion a un conflicto entre la pareja sea exitoso?'
+    from models import DES_AC    
     resultados = _query_set_filtrado(request)
     tabla = {}
     campos = [field for field in ComunicacionAsertiva._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
@@ -693,14 +696,52 @@ def solucion_problema(request):
             else:
                 content = ContentType.objects.get(app_label="1-principal", model="hombre")
             
-            for op in HOGAR:
-                tabla[field.verbose_name][key].append(Corresponsabilidad.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op[0]}).count())
+            for op in DES_AC:
+                tabla[field.verbose_name][key].append(ComunicacionAsertiva.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op[0]}).count())
 
     totales = get_total(resultados)
     grafico = convertir_grafico(tabla)
     tabla = get_prom_dead_list3(tabla, totales)
 
-    return render_to_response("monitoreo/actividades_hogar.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/solucion_problema.html", RequestContext(request, locals()))
+
+def negociacion_pareja(request):
+    """Que se debe hacer para que una negociacion de pareja sea exitosa"""
+    titulo = u'¿Que se debe hacer para que una negociacion de pareja sea exitosa?'
+    resultados = _query_set_filtrado(request)
+    tabla = {}
+    opciones = NegociacionExitosa.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        if key < 4:
+            content = ContentType.objects.get(app_label="1-principal", model="mujer")
+        else:
+            content = ContentType.objects.get(app_label="1-principal", model="hombre")
+        for op in opciones:
+            tabla[op].append(ComunicacionAsertiva.objects.filter(content_type=content, object_id__in=lista, negociacion_exitosa=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
+
+############## ACA LAS VISTAS PARA FUNCIONARIOS ###########################
+cfunc = ContentType.objects.get(app_label="1-principal", model="funcionario")
+def le_hablan_de(request):
+    encuestas = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    opciones = HablanDe.objects.all()
+    for op in opciones:
+        tabla[op] = ConceptoViolencia.objects.filter(content_type=cfunc, object_id__in=[encuesta.id for encuesta in encuestas], \
+                                                     hablande=op, respuesta='si').count()
+
+    return render_to_response("monitoreo/funcionarios/le_hablan_de.html", RequestContext(request, locals()))
+
 
 #obtener la vista adecuada para los indicadores
 def _get_view(request, vista):
@@ -734,6 +775,10 @@ VALID_VIEWS = {
     'tipo-vbg-ejercido': tipo_vbg_ejercido,
     'actividades-hogar': actividades_hogar,
     'solucion-problema': solucion_problema,
+    'negociacion-pareja': negociacion_pareja,
+
+    #vistas para funcionarios, son un turco pero ni moo :S
+    'le-hablan-de': le_hablan_de,
     }
 
 #funcion encargada de sacar promedio con los valores enviados
@@ -786,13 +831,13 @@ def convertir_grafico(tabla):
     los siguientes numeros son las opciones "1 -> Si", "2 -> No", "3 -> No sabe", "No responde"
     """
     dicc = {}
-    for i in range(1, len(tabla.items()[0][1].keys())+1):
+    for i in range(1, len(tabla.items()[0][1].keys()) + 1):
         dicc[i] = {}
-        for j in range(1, len(tabla.items()[0][1][1])+1):
+        for j in range(1, len(tabla.items()[0][1][1]) + 1):
             dicc[i][j] = []
 
-    for i in range(1, len(tabla.items()[0][1].keys())+1):
-        for j in range(1, len(tabla.items()[0][1][1])+1):
+    for i in range(1, len(tabla.items()[0][1].keys()) + 1):
+        for j in range(1, len(tabla.items()[0][1][1]) + 1):
             for key, value in tabla.items():
                 dicc[i][j].append(value[i][j-1])
 
