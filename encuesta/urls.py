@@ -8,7 +8,7 @@ urlpatterns = patterns('trocaire.encuesta.views',
     (r'^lideres/$', direct_to_template, {'template': 'monitoreo/lideres.html'}),
     (r'^lideres/(?P<vista>[-\w]+)/$', '_get_vista_lideres'),
     (r'^funcionarios/$', direct_to_template, {'template': 'monitoreo/funcionarios.html'}),
-    (r'^funcionarios/(?P<vista>[-\w]+)/$', '_get_view'),
+    (r'^funcionarios/(?P<vista>[-\w]+)/$', '_get_view_funcionario'),
     # (r'^conocimiento/(?P<vista>[-\w]+)/$', '_get_view'),
     
 #    (r'^indicadores/$', 'indicadores'),
