@@ -210,11 +210,20 @@ a{
     color:#a91051;
     font-weight:bold;
     font-size:17px;
-
     margin:5px;
     border-radius: 20px;
     -webkit-border-radius: 20x ;
     -moz-border-radius: 20px ;
+}
+
+.titulo a, 
+.titulo a:visited{
+    color:#4086ad;
+    text-decoration:none;
+}
+
+.titulo a:hover{
+    color:#306480;
 }
 
 .marco-interior{padding:15px;}
