@@ -940,11 +940,26 @@ def registro_datos(request):
         lista = []
         [lista.append(encuesta.id) for encuesta in grupo]
 
-        for opcion in range(1,3):
+        for opcion in range(1, 3):
             cantidad = RegistroDato.objects.filter(content_type=cfunc, object_id__in=lista, lleva_registro=opcion).count()
             tabla[key][opcion] = [cantidad, get_prom(cantidad, grupo.count())]
 
-    return render_to_response("monitoreo/funcionarios/generica_pie_func.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/funcionarios/generica_pie_func.html", 
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
+def casos_registrados(request):
+    from django.db.models import Sum
+    titulo = u'¿Cuántos casos de VBG tienen registrados?'
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    totales = get_total(resultados)
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        tabla[key] = RegistroDato.objects.filter(content_type=cfunc, object_id__in=lista).aggregate(casos=Sum('cuantos'))['casos']
+    return render_to_response("monitoreo/funcionarios/casos_registrados.html", {'tabla': tabla, 'titulo': titulo, 'totales': totales}, RequestContext(request))
 
 #obtener la vista adecuada para los indicadores
 def _get_view_funcionario(request, vista):
@@ -963,6 +978,7 @@ VALID_VIEWS_FUNCIONARIO = {
     'prohibido-por-ley': prohibido_por_ley_func,
     'ruta-critica': ruta_critica,
     'registro-datos': registro_datos,
+    'casos-registrados': casos_registrados,
 }
 
 #funcion encargada de sacar promedio con los valores enviados
@@ -1114,7 +1130,7 @@ def lideres_vbg(request):
     tabla = get_prom_lista_func(tabla, totales)
     return render_to_response("monitoreo/generica_lideres.html",
                               {'tabla': tabla, 'titulo': titulo},
-                              RequestContext(request)) 
+                              RequestContext(request))
 
 def comportamiento_lideres(request):
     """Como deben comportarse hombres y mujeres"""
@@ -1222,11 +1238,11 @@ def donde_buscar_ayuda_lideres(request):
                               {'tabla': tabla, 'titulo': titulo},
                               RequestContext(request))
 
-VALID_VIEWS_LIDERES = { 'concepto-violencia': concepto_violencia, 
-                        'hombres-violentos': lideres_hombres_violentos,
-                        'conoce-vbg': lideres_vbg,
-                        'comportamiento': comportamiento_lideres,
-                        'justificacion': hombres_violencia_mujeres_lideres,
-                        'ayuda-mujer': ayuda_mujer_violencia_lideres,
-                        'donde-busca': donde_buscar_ayuda_lideres,
-                      }
+VALID_VIEWS_LIDERES = {'concepto-violencia': concepto_violencia, 
+    'hombres-violentos': lideres_hombres_violentos,
+    'conoce-vbg': lideres_vbg,
+    'comportamiento': comportamiento_lideres,
+    'justificacion': hombres_violencia_mujeres_lideres,
+    'ayuda-mujer': ayuda_mujer_violencia_lideres,
+    'donde-busca': donde_buscar_ayuda_lideres,
+}

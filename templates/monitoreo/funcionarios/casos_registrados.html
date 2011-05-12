@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block extratitle %}{{titulo}}{% endblock %}
+
+{% block contenido %}
+{{totales}}
+<div class="title_bar">
+    <div class="titulo">{{titulo}}</div>
+    <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
+</div>
+<div class="contraparts"><br>
+    Mujeres: {{tabla.1}}<br>
+    Hombres: {{tabla.2}}
+</div>
+{% endblock %}
