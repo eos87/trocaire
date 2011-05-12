@@ -900,11 +900,37 @@ def concepto_violencia(request):
             
     #tabla = get_prom_dead_list(tabla, [v for i, v in tabla.items()])
 
-    return render_to_response("monitoreo/concepto_violencia.html", 
+    return render_to_response("monitoreo/generica_lideres.html", 
                               {'tabla': tabla, 'titulo': titulo},
                               RequestContext(request))
 
+def lideres_hombres_violentos(request):
+    titulo = "¿Cree usted que los hombres son violentos debido a?"
+    resultados = _query_set_filtrado_lideres(request)
+    tabla = {}
+    campos = [field for field in CausaVBG._meta.fields if field.get_internal_type() == 'CharField']
+
+    for field in campos:
+        tabla[field.verbose_name] = []
+
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+
+            if key < 4:
+                content = ContentType.objects.get(app_label="1-principal", model="mujer")
+            else:
+                content = ContentType.objects.get(app_label="1-principal", model="hombre")
+
+            tabla[field.verbose_name].append(CausaVBG.objects.filter(content_type=content, object_id__in=lista, ** {field.name: 'si'}).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista(tabla, totales)
+    
+    return render_to_response("monitoreo/generica_lideres.html", RequestContext(request, locals()))
+
+
 
 VALID_VIEWS_LIDERES = { 'concepto-violencia': concepto_violencia, 
-                      
+                        'hombres-violentos': lideres_hombres_violentos,
                       }
