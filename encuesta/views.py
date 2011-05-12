@@ -924,6 +924,24 @@ def ruta_critica(request):
 
     return render_to_response("monitoreo/funcionarios/ruta_critica.html", RequestContext(request, locals()))
 
+def registro_datos(request):
+    titulo = u'¿Su institución lleva un registro de datos sobre los casos de VBG?'
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    totales = get_total(resultados)
+    for key in resultados.keys():
+        tabla[key] = {}
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for opcion in range(1,3):
+            cantidad = RegistroDato.objects.filter(content_type=cfunc, object_id__in=lista, lleva_registro=opcion).count()
+            tabla[key][opcion] = [cantidad, get_prom(cantidad, grupo.count())]
+
+    return render_to_response("monitoreo/funcionarios/generica_pie_func.html", RequestContext(request, locals()))
+
 #obtener la vista adecuada para los indicadores
 def _get_view_funcionario(request, vista):
     if vista in VALID_VIEWS_FUNCIONARIO:
@@ -940,6 +958,7 @@ VALID_VIEWS_FUNCIONARIO = {
     'hombres-violencia-mujeres': hombres_violencia_mujeres_func,
     'prohibido-por-ley': prohibido_por_ley_func,
     'ruta-critica': ruta_critica,
+    'registro-datos': registro_datos,
 }
 
 #funcion encargada de sacar promedio con los valores enviados

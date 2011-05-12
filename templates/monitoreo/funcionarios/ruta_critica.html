@@ -50,10 +50,7 @@
             },
             title: {
                 text: '{{key}}'
-            },
-            subtitle: {
-                text: ''
-            },
+            },            
             tooltip: tooltip,
             plotOptions: plotOptions,
             series: [{data: [{% for k, v in value.items|slice:"1" %}{% for a, b in v.items %}['{{a}}', {{b.1}}], {% endfor %}]{% endfor %}}]
@@ -67,10 +64,7 @@
             },
             title: {
                 text: '{{key}}'
-            },
-            subtitle: {
-                text: ''
-            },
+            },            
             tooltip: tooltip,
             plotOptions: plotOptions,
             series: [{data: [{% for k, v in value.items|slice:"1:2" %}{% for a, b in v.items %}['{{a}}', {{b.1}}], {% endfor %}]{% endfor %}}]
