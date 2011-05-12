@@ -732,6 +732,41 @@ def negociacion_pareja(request):
     tabla = get_prom_lista(tabla, totales)
     return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
 
+#obtener la vista adecuada para los indicadores
+def _get_view(request, vista):
+    if vista in VALID_VIEWS:
+        return VALID_VIEWS[vista](request)
+    else:
+        raise ViewDoesNotExist("Tried %s in module %s Error: View not define in VALID_VIEWS." % (vista, 'encuesta.views'))
+
+VALID_VIEWS = {
+    'hablan-de': hablan_de,
+    'expresion-vbg': expresion_vbg,
+    'hombres-que-ejercen-vbg': hombres_vbg,
+    'mujeres-viven-vbg': mujeres_vbg,
+    'vbg-se-resuelve-con': vbg_resolver_con,
+    'afeccion-vbg': afeccion_vbg,
+    'como-afecta': como_afecta,
+    'conoce-leyes': conoce_leyes,
+    'prohibido-por-ley': prohibido_por_ley,
+    'hombres-violentos-por': hombres_violentos,
+    'hombres-violencia-mujeres': hombres_violencia_mujeres,
+    'comportamiento': comportamiento,
+    'ayuda-mujer-violencia': ayuda_mujer_violencia,
+    'que-hace-ante-vbg': que_hace_ante_vbg,
+    'donde-buscar-ayuda': donde_buscar_ayuda,
+    'que-debe-hacer': que_debe_hacer,
+    'que-acciones-realizar': que_acciones_realizar,
+    'participacion-en-espacios': participacion_en_espacios,
+    'ha-vivido-vbg': ha_vivido_vbg,
+    'tipo-vbg-vivido': tipo_vbg_vivido,
+    'ha-ejercido-vbg': ha_ejercido_vbg,
+    'tipo-vbg-ejercido': tipo_vbg_ejercido,
+    'actividades-hogar': actividades_hogar,
+    'solucion-problema': solucion_problema,
+    'negociacion-pareja': negociacion_pareja,
+    }
+
 #---------------------------- ACA LAS VISTAS PARA FUNCIONARIOS -------------------------------#
 cfunc = ContentType.objects.get(app_label="1-principal", model="funcionario")
 
@@ -802,40 +837,92 @@ def comportamiento_funcionario(request):
 
     return render_to_response("monitoreo/funcionarios/comportamiento.html", RequestContext(request, locals()))
 
-#obtener la vista adecuada para los indicadores
-def _get_view(request, vista):
-    if vista in VALID_VIEWS:
-        return VALID_VIEWS[vista](request)
-    else:
-        raise ViewDoesNotExist("Tried %s in module %s Error: View not define in VALID_VIEWS." % (vista, 'encuesta.views'))
+def hombres_violentos_func(request):
+    titulo = '¿Cree usted que los hombres son violentos debido a?'
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    campos = [field for field in CausaVBG._meta.fields if field.get_internal_type() == 'CharField']
 
-VALID_VIEWS = {
-    'hablan-de': hablan_de,
-    'expresion-vbg': expresion_vbg,
-    'hombres-que-ejercen-vbg': hombres_vbg,
-    'mujeres-viven-vbg': mujeres_vbg,
-    'vbg-se-resuelve-con': vbg_resolver_con,
-    'afeccion-vbg': afeccion_vbg,
-    'como-afecta': como_afecta,
-    'conoce-leyes': conoce_leyes,
-    'prohibido-por-ley': prohibido_por_ley,
-    'hombres-violentos-por': hombres_violentos,
-    'hombres-violencia-mujeres': hombres_violencia_mujeres,
-    'comportamiento': comportamiento,
-    'ayuda-mujer-violencia': ayuda_mujer_violencia,
-    'que-hace-ante-vbg': que_hace_ante_vbg,
-    'donde-buscar-ayuda': donde_buscar_ayuda,
-    'que-debe-hacer': que_debe_hacer,
-    'que-acciones-realizar': que_acciones_realizar,
-    'participacion-en-espacios': participacion_en_espacios,
-    'ha-vivido-vbg': ha_vivido_vbg,
-    'tipo-vbg-vivido': tipo_vbg_vivido,
-    'ha-ejercido-vbg': ha_ejercido_vbg,
-    'tipo-vbg-ejercido': tipo_vbg_ejercido,
-    'actividades-hogar': actividades_hogar,
-    'solucion-problema': solucion_problema,
-    'negociacion-pareja': negociacion_pareja,    
-    }
+    for field in campos:
+        tabla[field.verbose_name] = []
+
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+
+            tabla[field.verbose_name].append(CausaVBG.objects.filter(content_type=cfunc, object_id__in=lista, ** {field.name: 'si'}).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+
+    return render_to_response("monitoreo/funcionarios/generica_funcionario.html", RequestContext(request, locals()))
+
+def hombres_violencia_mujeres_func(request):
+    titulo = '¿Cree usted que los hombres son violentos debido a?'
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    campos = [field for field in JustificacionVBG._meta.fields if field.get_internal_type() == 'CharField']
+
+    for field in campos:
+        tabla[field.verbose_name] = []
+
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+
+            tabla[field.verbose_name].append(JustificacionVBG.objects.filter(content_type=cfunc, object_id__in=lista, ** {field.name: 'si'}).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/funcionarios/generica_funcionario.html", RequestContext(request, locals()))
+
+def prohibido_por_ley_func(request):
+    from models import SI_NO_RESPONDE
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    campos = [field for field in ConocimientoLey._meta.fields if field.get_internal_type() == 'IntegerField' and not (field.name == 'existe_ley' or field.name == 'object_id')]
+
+    for field in campos:
+        tabla[field.verbose_name] = {}
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+            tabla[field.verbose_name][key] = []
+
+            for op in SI_NO_RESPONDE:    
+                tabla[field.verbose_name][key].append(ConocimientoLey.objects.filter(content_type=cfunc, object_id__in=lista, ** {field.name: op[0]}).count())
+
+    totales = get_total(resultados)
+    grafico = convertir_grafico(tabla)
+    tabla = get_prom_dead_list(tabla, totales)
+    return render_to_response("monitoreo/funcionarios/prohibido_por_ley_func.html", RequestContext(request, locals()))
+
+def ruta_critica(request):
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    campos = [field for field in RutaCritica._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
+
+    opciones = [1, 2, 3, 4, 5]
+
+    for field in campos:
+        tabla[field.verbose_name] = {}
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+            tabla[field.verbose_name][key] = {}
+
+            for op in opciones:
+                tabla[field.verbose_name][key][op] = RutaCritica.objects.filter(content_type=cfunc, object_id__in=lista, ** {field.name: op-1}).count()
+
+    totales = get_total(resultados)
+    #tomar todos los valores de la tabla y calcular promedio
+    for key, value in tabla.items():
+        for i in range(1, 3):
+            total = sum(tabla[key][i].values())            
+            for nivel in opciones:                                
+                tabla[key][i][nivel] = [tabla[key][i][nivel], get_prom(tabla[key][i][nivel], total)]    
+
+    return render_to_response("monitoreo/funcionarios/ruta_critica.html", RequestContext(request, locals()))
 
 #obtener la vista adecuada para los indicadores
 def _get_view_funcionario(request, vista):
@@ -849,6 +936,10 @@ VALID_VIEWS_FUNCIONARIO = {
     'le-hablan-de': le_hablan_de,
     'expresion-violencia': expresion_violencia,
     'comportamiento': comportamiento_funcionario,
+    'hombres-violentos-por': hombres_violentos_func,
+    'hombres-violencia-mujeres': hombres_violencia_mujeres_func,
+    'prohibido-por-ley': prohibido_por_ley_func,
+    'ruta-critica': ruta_critica,
 }
 
 #funcion encargada de sacar promedio con los valores enviados
