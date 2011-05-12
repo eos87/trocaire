@@ -62,7 +62,9 @@ def _query_set_filtrado(request, tipo='mujer'):
         dicc[6] = Hombre.objects.filter(edad__gt=18, ** params)
         return dicc
     elif tipo == 'funcionario':
-        return Funcionario.objects.filter( ** params)
+        dicc[1] = Funcionario.objects.filter(sexo='femenino', ** params)
+        dicc[2] = Funcionario.objects.filter(sexo='masculino', ** params)
+        return dicc
 
 def hablan_de(request):
     """Vista sobre: Cuando alguien le habla de VBG usted cree que estan hablando de:"""
@@ -730,18 +732,75 @@ def negociacion_pareja(request):
     tabla = get_prom_lista(tabla, totales)
     return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
 
-############## ACA LAS VISTAS PARA FUNCIONARIOS ###########################
+#---------------------------- ACA LAS VISTAS PARA FUNCIONARIOS -------------------------------#
 cfunc = ContentType.objects.get(app_label="1-principal", model="funcionario")
+
+# funcion para eliminar opciones que suman 0
+verificar = lambda x: sum(x)
+
 def le_hablan_de(request):
+    titulo = '¿Cuando alguien le habla de VBG usted cree que estan hablando de?'
     encuestas = _query_set_filtrado(request, tipo='funcionario')
     tabla = {}
     opciones = HablanDe.objects.all()
     for op in opciones:
-        tabla[op] = ConceptoViolencia.objects.filter(content_type=cfunc, object_id__in=[encuesta.id for encuesta in encuestas], \
-                                                     hablande=op, respuesta='si').count()
+        tabla[op] = []
+    
+    for op in opciones:
+        for key, grupo in encuestas.items():
+            tabla[op].append(ConceptoViolencia.objects.filter(content_type=cfunc, object_id__in=[encuesta.id for encuesta in grupo], \
+                             hablande=op, respuesta='si').count())
+    for key, value in tabla.items():
+        if verificar(value) == 0:
+            del tabla[key]
+    totales = get_total(encuestas)
+    tabla = get_prom_lista_func(tabla, totales)
 
-    return render_to_response("monitoreo/funcionarios/le_hablan_de.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/funcionarios/generica_funcionario.html", RequestContext(request, locals()))
 
+def expresion_violencia(request):
+    titulo = '¿De que manera considera usted que se expresa la violencia?'
+    encuestas = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    campos = [field for field in ExpresionVBG._meta.fields if field.get_internal_type() == 'CharField']
+
+    for field in campos:
+        tabla[field.verbose_name] = []
+
+    for key, grupo in encuestas.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for field in campos:
+            tabla[field.verbose_name].append(ExpresionVBG.objects.filter(content_type=cfunc, object_id__in=lista, ** {field.name: 'si'}).count())
+
+    totales = get_total(encuestas)
+    tabla = get_prom_lista_func(tabla, totales)
+
+    return render_to_response("monitoreo/funcionarios/generica_funcionario.html", RequestContext(request, locals()))
+
+def comportamiento_funcionario(request):
+    from models import CREENCIAS_VBG_RESP
+    titulo = u'Como deben comportarse hombres y mujeres'
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    campos = [field for field in Creencia._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
+
+    for field in campos:
+        tabla[field.verbose_name] = {}
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+
+            tabla[field.verbose_name][key] = []
+            for op in CREENCIAS_VBG_RESP:
+                tabla[field.verbose_name][key].append(Creencia.objects.filter(content_type=cfunc, object_id__in=lista, ** {field.name: op[0]}).count())
+
+    totales = get_total(resultados)
+    grafico = convertir_grafico(tabla)
+    tabla = get_prom_dead_list(tabla, totales)
+
+    return render_to_response("monitoreo/funcionarios/comportamiento.html", RequestContext(request, locals()))
 
 #obtener la vista adecuada para los indicadores
 def _get_view(request, vista):
@@ -775,11 +834,22 @@ VALID_VIEWS = {
     'tipo-vbg-ejercido': tipo_vbg_ejercido,
     'actividades-hogar': actividades_hogar,
     'solucion-problema': solucion_problema,
-    'negociacion-pareja': negociacion_pareja,
+    'negociacion-pareja': negociacion_pareja,    
+    }
 
+#obtener la vista adecuada para los indicadores
+def _get_view_funcionario(request, vista):
+    if vista in VALID_VIEWS_FUNCIONARIO:
+        return VALID_VIEWS_FUNCIONARIO[vista](request)
+    else:
+        raise ViewDoesNotExist("Tried %s in module %s Error: View not define in VALID_VIEWS." % (vista, 'encuesta.views'))
+
+VALID_VIEWS_FUNCIONARIO = {
     #vistas para funcionarios, son un turco pero ni moo :S
     'le-hablan-de': le_hablan_de,
-    }
+    'expresion-violencia': expresion_violencia,
+    'comportamiento': comportamiento_funcionario,
+}
 
 #funcion encargada de sacar promedio con los valores enviados
 def get_prom(cantidad, total):
@@ -798,6 +868,13 @@ def get_prom_lista(tabla, total):
             [value[3], get_prom(value[3], total[3])],
             [value[4], get_prom(value[4], total[4])],
             [value[5], get_prom(value[5], total[5])]]
+    return tabla2
+
+def get_prom_lista_func(tabla, total):
+    tabla2 = {}
+    for key, value in tabla.items():
+        tabla2[key] = [[value[0], get_prom(value[0], total[0])],
+            [value[1], get_prom(value[1], total[1])]]
     return tabla2
 
 def get_prom_dead_list(tabla, totales):
@@ -840,9 +917,7 @@ def convertir_grafico(tabla):
         for j in range(1, len(tabla.items()[0][1][1]) + 1):
             for key, value in tabla.items():
                 dicc[i][j].append(value[i][j-1])
-
     return dicc
-
 
 #------------------------LIDERES Y LIDEREZAS------------------------------------
 def _query_set_filtrado_lideres(request):
@@ -868,7 +943,7 @@ def _query_set_filtrado_lideres(request):
         else:
             params['municipio__in'] = Municipio.objects.filter(departamento__in=Departamento.objects.filter(pais__in=request.session['pais']))
 
-    return Lider.objects.filter(**params) 
+    return Lider.objects.filter( ** params)
 
 def _get_vista_lideres(request, vista):
     if vista in VALID_VIEWS_LIDERES:
@@ -928,8 +1003,6 @@ def lideres_hombres_violentos(request):
     tabla = get_prom_lista(tabla, totales)
     
     return render_to_response("monitoreo/generica_lideres.html", RequestContext(request, locals()))
-
-
 
 VALID_VIEWS_LIDERES = { 'concepto-violencia': concepto_violencia, 
                         'hombres-violentos': lideres_hombres_violentos,
