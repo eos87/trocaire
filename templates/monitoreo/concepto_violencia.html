@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+<script type="text/javascript" src="/files/js/highcharts.js"></script>
+<script type="text/javascript" src="/files/js/exporting.js"></script>
+<script type="text/javascript">    
+    var plotOptions = {
+        column: {
+            groupPadding: 0,
+            pointPadding: 0.9,
+            borderWidth: 0
+        },
+        series: {
+            pointWidth: 25,
+            minPointLength : 0.5
+        }
+    }
+    var tooltip = {
+        formatter: function() {
+            return ''+
+                this.series.name +': '+ this.y +'%';
+        }
+    }
+    var leyenda = {
+        layout: 'horizontal',
+        align: 'center',
+        verticalAlign: 'bottom',
+        shadow: true
+    }
+    var chart;
+    $(document).ready(function() {
+        $('.grafos').click(function(){
+            var id = $(this).attr('id');
+            var series;
+            var titulo;
+            if(id=='m10_13'){
+                titulo = 'Mujeres de 10-13 años';
+                series = [{% for key, value in tabla.items %}{% if value.0.1 != 0 %}{name: '{{key}}',data: [{{value.0.1}}]}, {% endif %}{% endfor %}]
+            }else if(id=='m14_18'){
+                titulo = 'Mujeres de 14-18 años';
+                series = [{% for key, value in tabla.items %}{% if value.1.1 != 0 %}{name: '{{key}}',data: [{{value.1.1}}]}, {% endif %}{% endfor %}]
+            }else if(id=='m18_mas'){
+                titulo = 'Mujeres mayores de 18 años';
+                series = [{% for key, value in tabla.items %}{% if value.2.1 != 0 %}{name: '{{key}}',data: [{{value.2.1}}]}, {% endif %}{% endfor %}]
+            }else if(id=='h10_13'){
+                titulo = 'Hombres de 10-13 años';
+                series = [{% for key, value in tabla.items %}{% if value.3.1 != 0 %}{name: '{{key}}',data: [{{value.3.1}}]}, {% endif %}{% endfor %}]
+            }else if(id=='h14_18'){
+                titulo = 'Hombres de 14-18 años';
+                series = [{% for key, value in tabla.items %}{% if value.4.1 != 0 %}{name: '{{key}}',data: [{{value.4.1}}]}, {% endif %}{% endfor %}]
+            }else if(id=='h18_mas'){
+                titulo = 'Hombres mayores de 18 años';
+                series = [{% for key, value in tabla.items %}{% if value.5.1 != 0 %}{name: '{{key}}',data: [{{value.5.1}}]}, {% endif %}{% endfor %}]
+            }
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container',
+                    defaultSeriesType: 'column'
+                },
+                title: {
+                    text: '¿Cuando alguien le habla de VBG usted cree que le estan hablando de?'
+                },
+                subtitle: {
+                    text: titulo
+                },
+                xAxis: {
+                    categories: [
+                        'Opciones'
+                    ]
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Porcentajes'
+                    }
+                },
+                legend: leyenda,
+                tooltip: tooltip,
+                plotOptions: plotOptions,
+                series: series
+            });            
+            return false;
+        });
+    });
+</script>
+{% endblock %}
+
+{% block contenido %}
+<div>Graficos</div>
+<a href="#" id="m10_13" class="grafos">Mujeres 10-13</a> | <a href="#" id="m14_18" class="grafos">Mujeres 14-18</a> | <a href="#" id="m18_mas" class="grafos">Mujeres mayores de 18</a><br>
+<a href="#" id="h10_13" class="grafos">Hombres 10-13</a> | <a href="#" id="h14_18" class="grafos">Hombres 14-18</a> | <a href="#" id="h18_mas" class="grafos">Hombres mayores de 18</a><br>
+<br>
+<div id="container"></div>
+<br>
+{{totales}}<br><br>
+<table class="tabla-resultados">
+    <caption>Cuando alguien le habla de violencia, usted cree que est&aacute;n hablando de:</caption>
+    <thead>
+        <tr>
+            <th >Resultado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in tabla.items %}
+        <tr>
+            <td>{{key}}</td>
+            {% for valor in value %}
+            <td>{{valor}}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
