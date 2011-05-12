@@ -210,11 +210,20 @@ a{
     color:#a91051;
     font-weight:bold;
     font-size:17px;
-
     margin:5px;
     border-radius: 20px;
     -webkit-border-radius: 20x ;
     -moz-border-radius: 20px ;
+}
+
+.titulo a, 
+.titulo a:visited{
+    color:#4086ad;
+    text-decoration:none;
+}
+
+.titulo a:hover{
+    color:#306480;
 }
 
 .marco-interior{padding:15px;}
@@ -299,6 +308,54 @@ label #id_year{
 #menu-indicadores ul a:hover{
     background:#d4ebeb;
 
+}
+
+#grafosmujer{
+    float:left;
+    width:350px;
+    background:#a1476d url(/files/img/mujeresbarra.png) no-repeat;
+    height:30px;
+    padding-left:130px;
+}
+
+#grafoshombre{
+    float:left;
+    width:350px;
+    background:#4086ad url(/files/img/hombresbarra.png) no-repeat;
+    height:30px;
+    padding-left:130px;
+}
+
+#grafosmujer a{
+    color:#5c3566;
+}
+
+#grafoshombre a{
+    color:#204356;
+}
+
+.barra{
+    font-size:12px;
+}
+
+.barra a, .barra a:visited{
+    display:block;
+    margin:4px 5px 0px 5px;
+    float:left;
+    padding:1px 10px 1px 10px;
+    background:url(/files/img/fondobotonbarra.png) repeat-x;
+    border-radius: 20px;
+    -webkit-border-radius: 20x ;
+    -moz-border-radius: 20px ;
+    text-decoration:none;
+    font-weight:bold;
+    border:#fff solid 1px;
+    -moz-box-shadow: 0px 0px 10px #3b1a28;
+    -webkit-box-shadow: 0px 0px 10px #3b1a28;
+}
+
+.barra a:hover{
+    background:#fff;
 }
 
 
