@@ -360,6 +360,9 @@ label #id_year{
 .barra a:hover{
     background:#fff;
 }
+#container{
+    padding-left: 1px;
+}
 
 
 

@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import ViewDoesNotExist
+from django.db.models import Sum
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from forms import ConsultarForm
@@ -933,25 +934,25 @@ def ruta_critica(request):
         for i in range(5):
             suma = []
             for key, value in tabla.items():
-                for k, v in value.items()[a:a+1]:
+                for k, v in value.items()[a:a + 1]:
                     suma.append(v.values()[counter])
             counter += 1
             totales_vertical.append(sum(suma))   
 
     for i in range(5):
-        grafico[i+1] = []
+        grafico[i + 1] = []
 
     orden = 0
     for a in range(2):        
         counter2 = 0
         for i in range(5):
             for key, value in tabla.items():
-                for k, v in value.items()[a:a+1]:
+                for k, v in value.items()[a:a + 1]:
                     #calcular el promedio de cada valor
                     promedio = get_prom(v.values()[counter2], totales_vertical[orden])
                     #agregar a la tabla el promedio para cada valor
-                    tabla[key][a+1][i+1] = [v.values()[counter2], promedio]
-                    grafico[i+1].append({key: v.values()[counter2]})
+                    tabla[key][a + 1][i + 1] = [v.values()[counter2], promedio]
+                    grafico[i + 1].append({key: v.values()[counter2]})
             counter2 += 1
             orden += 1
 
@@ -977,8 +978,7 @@ def registro_datos(request):
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
-def casos_registrados(request):
-    from django.db.models import Sum
+def casos_registrados(request):    
     titulo = u'¿Cuántos casos de VBG tienen registrados?'
     resultados = _query_set_filtrado(request, tipo='funcionario')
     tabla = {}
@@ -989,6 +989,129 @@ def casos_registrados(request):
         [lista.append(encuesta.id) for encuesta in grupo]
         tabla[key] = RegistroDato.objects.filter(content_type=cfunc, object_id__in=lista).aggregate(casos=Sum('cuantos'))['casos']
     return render_to_response("monitoreo/funcionarios/casos_registrados.html", {'tabla': tabla, 'titulo': titulo, 'totales': totales}, RequestContext(request))
+
+def casos_registrados_por_tipo(request):
+    resultados = _query_set_filtrado(request, tipo='funcionario')    
+    titulo = u'Qué cantidad de casos de VBG han registrado?'
+    campos = [field for field in RegistroDato._meta.fields if field.get_internal_type() == 'IntegerField' and field.name not in ['object_id', 'lleva_registro', 'cuantos']]
+    tabla = {}
+
+    for campo in campos:
+        tabla[campo.verbose_name] = {}
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        for campo in campos:
+            tabla[campo.verbose_name][key] = RegistroDato.objects.filter(content_type=cfunc, object_id__in=lista).aggregate(cantidad=Sum(campo.name))['cantidad']        
+
+    totales = get_total(resultados)
+    return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
+def calidad_servicios(request):
+    from models import SERVICIOS
+    titulo = u'¿Cómo valora usted los servicios que su institución ofrece a mujeres que viven VBG?'
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    totales = get_total(resultados)
+
+    for opcion in SERVICIOS:
+        tabla[opcion[1]] = {}
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        for opcion in SERVICIOS:
+            tabla[opcion[1]][key] = CalidadAtencionFuncionario.objects.filter(content_type=cfunc, object_id__in=lista, valor_servicio=opcion[0]).count()
+
+    return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
+                       {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                       RequestContext(request))
+
+def mejorar_atencion(request):
+    from models import SI_NO_SIMPLE2
+    titulo = u'¿Ha realizado su institución algunas acciones dirigidas a mejorar la atencion a las mujeres?'
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    totales = get_total(resultados)
+
+    for opcion in SI_NO_SIMPLE2:
+        tabla[opcion[1]] = {}
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        for opcion in SI_NO_SIMPLE2:
+            tabla[opcion[1]][key] = AccionMejorarAtencion.objects.filter(content_type=cfunc, object_id__in=lista, realizo_accion=opcion[0]).count()
+
+    return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
+                       {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                       RequestContext(request))
+
+def que_acciones(request):    
+    titulo = u'¿Cuáles fueron las acciones que su institución realizó?'
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    opciones = Accion.objects.all()
+    for op in opciones:
+        tabla[op] = []
+
+    for op in opciones:
+        for key, grupo in resultados.items():
+            tabla[op].append(AccionMejorarAtencion.objects.filter(content_type=cfunc, object_id__in=[encuesta.id for encuesta in grupo], \
+                             cuales=op).count())
+    for key, value in tabla.items():
+        if verificar(value) == 0:
+            del tabla[key]
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+
+    return render_to_response("monitoreo/funcionarios/generica_funcionario.html",
+                       {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
+                       RequestContext(request))
+
+def prevenir_vbg(request):
+    from models import SI_NO_SIMPLE2
+    titulo = u'¿Su institución realizo algunas acciones dirigidas a prevenir la VBG?'
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    totales = get_total(resultados)
+
+    for opcion in SI_NO_SIMPLE2:
+        tabla[opcion[1]] = {}
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        for opcion in SI_NO_SIMPLE2:
+            tabla[opcion[1]][key] = AccionPrevVBG.objects.filter(content_type=cfunc, object_id__in=lista, realizo_accion=opcion[0]).count()
+    return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
+                       {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                       RequestContext(request))
+
+def cuales_acciones(request):
+    titulo = u'¿Cuáles fueron las acciones de prevención de la VBG que su institución realizo?'
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    opciones = AccionPrevencion.objects.all()
+    for op in opciones:
+        tabla[op] = []
+
+    for op in opciones:
+        for key, grupo in resultados.items():
+            tabla[op].append(AccionPrevVBG.objects.filter(content_type=cfunc, object_id__in=[encuesta.id for encuesta in grupo], \
+                             accion_prevenir=op).count())
+    for key, value in tabla.items():
+        if verificar(value) == 0:
+            del tabla[key]
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+
+    return render_to_response("monitoreo/funcionarios/generica_funcionario.html",
+                       {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
+                       RequestContext(request))
 
 #obtener la vista adecuada para los indicadores
 def _get_view_funcionario(request, vista):
@@ -1008,6 +1131,12 @@ VALID_VIEWS_FUNCIONARIO = {
     'ruta-critica': ruta_critica,
     'registro-datos': registro_datos,
     'casos-registrados': casos_registrados,
+    'casos-registrados-por-tipo': casos_registrados_por_tipo,
+    'calidad-servicios': calidad_servicios,
+    'mejorar-atencion': mejorar_atencion,
+    'que-acciones': que_acciones,
+    'prevenir-vbg': prevenir_vbg,
+    'cuales-acciones': cuales_acciones,
 }
 
 #funcion encargada de sacar promedio con los valores enviados
