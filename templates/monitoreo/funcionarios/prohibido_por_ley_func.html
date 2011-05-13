@@ -95,9 +95,10 @@
     </div>
     <div id= "grafoshombre" class="barra">
         <a href="#" id="hombres" class="grafos">Gráfico Hombres</a>
-    </div>
+    </div>    
+    <div class="clean"></div>
     <br>
-<div id="container"></div><br>
+    <div id="container"></div>    
     <table class="tabla-resultados" style="width:100%;">
         <caption>TOTALES</caption>
         <thead>
@@ -115,37 +116,37 @@
             </tr>
         </tbody>
     </table><br>
-<div class="tabla-container">
-    <table class="tabla-resultados">
-        <caption>Sabe usted cuales de las siguientes acciones son prohibidas por la ley</caption>
-        <thead>
-            <tr>
-                <th rowspan="2">Categorias</th>
-                <th colspan="4">Mujeres</th>
-                <th colspan="4">Hombres</th>
-            </tr>            
-            <tr>
-                {% for grupo in tabla.items.0.1.items.0.1|slice:":2" %}
-                {% for k in SI_NO_RESPONDE %}
-                <th>{{k.1}}</th>
+    <div class="tabla-container">
+        <table class="tabla-resultados">
+            <caption>Sabe usted cuales de las siguientes acciones son prohibidas por la ley</caption>
+            <thead>
+                <tr>
+                    <th rowspan="2">Categorias</th>
+                    <th colspan="4">Mujeres</th>
+                    <th colspan="4">Hombres</th>
+                </tr>
+                <tr>
+                    {% for grupo in tabla.items.0.1.items.0.1|slice:":2" %}
+                    {% for k in SI_NO_RESPONDE %}
+                    <th>{{k.1}}</th>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in tabla.items %}
+                <tr>
+                    <td>{{key}}</td>
+                    {% for k,v in value.items|slice:":3" %}
+                    {% for valor in v %}
+                    <td>{{valor.0}} ({{valor.1}}%)</td>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
                 {% endfor %}
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for key, value in tabla.items %}
-            <tr>
-                <td>{{key}}</td>
-                {% for k,v in value.items|slice:":3" %}
-                {% for valor in v %}
-                <td>{{valor.0}} ({{valor.1}}%)</td>
-                {% endfor %}
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
 </div>
 <!--FIN tabla de la MUERTE UNO-->
 {% endblock %}

@@ -437,7 +437,8 @@ def que_hace_ante_vbg(request):
 
             for op in opciones:
                 tabla[field.verbose_name][key][op] = AccionVBG.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op-1}).count()
-    totales = get_total(resultados)
+    totales = get_total(resultados)   
+            
     return render_to_response("monitoreo/que_hace_ante_vbg.html", RequestContext(request, locals()))
 
 def donde_buscar_ayuda(request):
@@ -471,7 +472,7 @@ def donde_buscar_ayuda(request):
     return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
 
 def que_debe_hacer(request):    
-    titulo = "¿Si hombre le pega a su pareja que acciones deberia de tomar?"
+    titulo = "¿Si un hombre le pega a su pareja que acciones deberia de tomar?"
     resultados = _query_set_filtrado(request)
     tabla = {}
     opciones = QueDebeHacer.objects.all()
@@ -1027,8 +1028,8 @@ def calidad_servicios(request):
             tabla[opcion[1]][key] = CalidadAtencionFuncionario.objects.filter(content_type=cfunc, object_id__in=lista, valor_servicio=opcion[0]).count()
 
     return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
-                       {'tabla': tabla, 'titulo': titulo, 'totales': totales},
-                       RequestContext(request))
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
 
 def mejorar_atencion(request):
     from models import SI_NO_SIMPLE2
@@ -1047,8 +1048,8 @@ def mejorar_atencion(request):
             tabla[opcion[1]][key] = AccionMejorarAtencion.objects.filter(content_type=cfunc, object_id__in=lista, realizo_accion=opcion[0]).count()
 
     return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
-                       {'tabla': tabla, 'titulo': titulo, 'totales': totales},
-                       RequestContext(request))
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
 
 def que_acciones(request):    
     titulo = u'¿Cuáles fueron las acciones que su institución realizó?'
@@ -1069,8 +1070,8 @@ def que_acciones(request):
     tabla = get_prom_lista_func(tabla, totales)
 
     return render_to_response("monitoreo/funcionarios/generica_funcionario.html",
-                       {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
-                       RequestContext(request))
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
+                              RequestContext(request))
 
 def prevenir_vbg(request):
     from models import SI_NO_SIMPLE2
@@ -1088,8 +1089,8 @@ def prevenir_vbg(request):
         for opcion in SI_NO_SIMPLE2:
             tabla[opcion[1]][key] = AccionPrevVBG.objects.filter(content_type=cfunc, object_id__in=lista, realizo_accion=opcion[0]).count()
     return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
-                       {'tabla': tabla, 'titulo': titulo, 'totales': totales},
-                       RequestContext(request))
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
 
 def cuales_acciones(request):
     titulo = u'¿Cuáles fueron las acciones de prevención de la VBG que su institución realizo?'
@@ -1110,8 +1111,8 @@ def cuales_acciones(request):
     tabla = get_prom_lista_func(tabla, totales)
 
     return render_to_response("monitoreo/funcionarios/generica_funcionario.html",
-                       {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
-                       RequestContext(request))
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
+                              RequestContext(request))
 
 #obtener la vista adecuada para los indicadores
 def _get_view_funcionario(request, vista):
@@ -1213,6 +1214,8 @@ def _get_vista_lideres(request, vista):
         return VALID_VIEWS_LIDERES[vista](request)
     else:
         raise ViewDoesNotExist("Tried %s in module %s Error: View not define in VALID_VIEWS." % (vista, 'encuesta.views'))
+
+verificar_dicc = lambda x: x[1] + x[2]
 
 #content type para lider
 clider = ContentType.objects.get(app_label="1-principal", model="lider")
@@ -1334,6 +1337,27 @@ def conoce_hombres_violentos(request):
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
+def conoce_mujeres_vbg(request):
+    titulo = u'¿Conoce usted si en su comunidad existen mujeres que han vivido VBG?'
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+
+    for op in ['si', 'no']:
+        tabla[op.title()] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in ['si', 'no']:
+            tabla[op.title()].append(SituacionVBG.objects.filter(content_type=clider, object_id__in=lista, conoce_mujeres=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/lideres/generica_lideres_pie.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
 def hombres_violencia_mujeres_lideres(request):
     """Para usted, los hombres ejercen violencia hacia las mujeres porque"""
     titulo = u'Para usted, los hombres ejercen violencia hacia las mujeres porque'
@@ -1391,31 +1415,238 @@ def donde_buscar_ayuda_lideres(request):
 
     for key, grupo in resultados.items():
         lista = []
-        [lista.append(encuesta.id) for encuesta in grupo]
-
-        content = ContentType.objects.get(app_label="1-principal", model="lider")
+        [lista.append(encuesta.id) for encuesta in grupo]      
 
         for op in opciones:
-            tabla[op].append(AccionVBG.objects.filter(content_type=content, object_id__in=lista, donde_buscar=op).count())
+            tabla[op].append(AccionVBGLider.objects.filter(content_type=clider, object_id__in=lista, donde_buscar=op).count())
 
     for key, value in tabla.items():
-        if sum(value) == 0:
+        if verificar(value) < 5:
             del tabla[key]
 
     totales = get_total(resultados)
     tabla = get_prom_lista_func(tabla, totales)
     
-    return render_to_response("monitoreo/generica_lideres.html",
-                              {'tabla': tabla, 'titulo': titulo},
+    return render_to_response("monitoreo/lideres/generica_lideres.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
+def ha_vivido_vbg(request):
+    titulo = u'¿Considera usted que alguna vez ha vivido VBG?'
+    tabla = {}
+    resultados = _query_set_filtrado(request, tipo='lider')
+
+    for op in ['si', 'no']:
+        tabla[op.title()] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in ['si', 'no']:
+            tabla[op.title()].append(PrevalenciaVBGLider.objects.filter(content_type=clider, object_id__in=lista, ha_vivido_vbg=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/lideres/generica_lideres_pie.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
+def tipo_vbg_ha_vivido(request):
+    resultados = _query_set_filtrado(request, tipo='lider')
+    titulo = u'¿Qué tipo de VBG ha vivido?'
+    tipos = TipoVBG.objects.all()
+    tabla = {}
+
+    for tipo in tipos:
+        tabla[tipo] = {}
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        for tipo in tipos:
+            tabla[tipo][key] = PrevalenciaVBGLider.objects.filter(content_type=clider, object_id__in=lista, que_tipo=tipo).count()
+
+    for key, value in tabla.items():        
+        if verificar_dicc(value) == 0:
+            del tabla[key]
+
+    totales = get_total(resultados)
+    return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
+def frecuencia_vbg(request):
+    from models import FRECUENCIA
+    resultados = _query_set_filtrado(request, tipo='lider')
+    titulo = u'¿Con que frecuencia ha vivido situaciones de VBG?'
+    tabla = {}
+
+    for tipo in FRECUENCIA:
+        tabla[tipo[1]] = {}
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        for tipo in FRECUENCIA:
+            tabla[tipo[1]][key] = PrevalenciaVBGLider.objects.filter(content_type=clider, object_id__in=lista, frecuencia=tipo[0]).count()
+
+    totales = get_total(resultados)
+    return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
+def quien_ejercio_vbg(request):
+    titulo = u'¿Quién fue la persona que ejecutó esta situación?'
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    quienes = Quien.objects.all()
+
+    for quien in quienes:
+        tabla[quien] = []
+
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+
+            tabla[quien].append(PrevalenciaVBGLider.objects.filter(content_type=clider, object_id__in=lista, quien=quien).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/lideres/generica_lideres.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
+def conocimiento_leyes(request):
+    from models import SI_NO_RESPONDE
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    campos = [field for field in ConocimientoLey._meta.fields if field.get_internal_type() == 'IntegerField' and not (field.name == 'existe_ley' or field.name == 'object_id')]
+
+    for field in campos:
+        tabla[field.verbose_name] = {}
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+            tabla[field.verbose_name][key] = []
+
+            for op in SI_NO_RESPONDE:
+                tabla[field.verbose_name][key].append(ConocimientoLey.objects.filter(content_type=clider, object_id__in=lista, ** {field.name: op[0]}).count())
+
+    totales = get_total(resultados)
+    grafico = convertir_grafico(tabla)
+    tabla = get_prom_dead_list(tabla, totales)
+    return render_to_response("monitoreo/funcionarios/prohibido_por_ley_func.html", 
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'grafico': grafico},
+                              RequestContext(request))
+
+def decisiones(request):
+    titulo = u'¿Cuando una mujer vive VBG cuales acciones deberia realizar?'
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    quienes = Decision.objects.all()
+
+    for quien in quienes:
+        tabla[quien] = []
+
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+            tabla[quien].append(TomaDecision.objects.filter(content_type=clider, object_id__in=lista, decision=quien).count())
+
+    for key, value in tabla.items():
+        if verificar(value) < 5:
+            del tabla[key]
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/lideres/generica_lideres.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
+def corresponsabilidad(request):
+    titulo = u'¿Cuáles de las siguientes actividades realiza usted en su hogar?'
+    from models import HOGAR
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    campos = [field for field in Corresponsabilidad._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
+
+    for field in campos:
+        tabla[field.verbose_name] = {}
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+
+            tabla[field.verbose_name][key] = []
+            for op in HOGAR:
+                tabla[field.verbose_name][key].append(Corresponsabilidad.objects.filter(content_type=clider, object_id__in=lista, ** {field.name: op[0]}).count())
+
+    totales = get_total(resultados)
+    grafico = convertir_grafico(tabla)
+    tabla = get_prom_dead_list2(tabla, totales)
+    return render_to_response("monitoreo/lideres/corresponsabilidad.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'grafico': grafico, 'HOGAR': HOGAR},
+                              RequestContext(request))
+
+def que_debe_hacer_lideres(request):
+    titulo = "¿Si un hombre le pega a su pareja que acciones deberia de tomar?"
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    opciones = QueDebeHacer.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in opciones:
+            tabla[op].append(AccionVBGLider.objects.filter(content_type=clider, object_id__in=lista, accion_tomar=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/lideres/generica_lideres.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
+def prevenir_vbg_lider(request):
+    from models import SI_NO_SIMPLE2
+    titulo = u'¿En su organización, escuela o usted realizan algunas acciones dirigidas a prevenir la VBG?'
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    totales = get_total(resultados)
+
+    for opcion in SI_NO_SIMPLE2:
+        tabla[opcion[1]] = {}
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        for opcion in SI_NO_SIMPLE2:
+            tabla[opcion[1]][key] = AccionVBGLider.objects.filter(content_type=clider, object_id__in=lista, ud_previene=opcion[0]).count()
+    return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
 VALID_VIEWS_LIDERES = {
-    'le-hablan-de': lideres_le_hablan_de,
-    'conoce-hombres-violentos': conoce_hombres_violentos,
-    'hombres-violentos': lideres_hombres_violentos,    
+    'le-hablan-de': lideres_le_hablan_de, 
+    'hombres-violentos': lideres_hombres_violentos, 
     'comportamiento': comportamiento_lideres,
     'justificacion': hombres_violencia_mujeres_lideres,
     'ayuda-mujer': ayuda_mujer_violencia_lideres,
-    'donde-busca': donde_buscar_ayuda_lideres,
-    'expresion-violencia': expresion_violencia_lideres,        
+    'donde-buscar-ayuda': donde_buscar_ayuda_lideres,
+    'expresion-violencia': expresion_violencia_lideres,
+    'conoce-hombres-violentos': conoce_hombres_violentos,
+    'conoce-mujeres-vbg': conoce_mujeres_vbg,
+    'ha-vivido-vbg': ha_vivido_vbg,
+    'tipo-vbg-ha-vivido': tipo_vbg_ha_vivido,
+    'frecuencia-vbg': frecuencia_vbg,
+    'quien-ejercio-vbg': quien_ejercio_vbg,
+    'conocimiento-leyes': conocimiento_leyes,
+    'decisiones': decisiones,
+    'corresponsabilidad': corresponsabilidad,
+    #aca la tabla fea
+    'que-debe-hacer': que_debe_hacer_lideres,
+    'prevenir-vbg': prevenir_vbg_lider,
 }
