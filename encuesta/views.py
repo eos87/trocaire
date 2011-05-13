@@ -1267,6 +1267,80 @@ def donde_buscar_ayuda_lideres(request):
                               {'tabla': tabla, 'titulo': titulo},
                               RequestContext(request))
 
+def expresion_violencia_lideres(request):
+    titulo = '¿De que manera considera usted que se expresa la violencia?'
+    encuestas = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    campos = [field for field in ExpresionVBG._meta.fields if field.get_internal_type() == 'CharField']
+    content = ContentType.objects.get(app_label="1-principal", model="lider")
+
+    for field in campos:
+        tabla[field.verbose_name] = []
+
+    for key, grupo in encuestas.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for field in campos:
+            tabla[field.verbose_name].append(ExpresionVBG.objects.filter(content_type=content, object_id__in=lista, ** {field.name: 'si'}).count())
+
+    totales = get_total(encuestas)
+    tabla = get_prom_lista_func(tabla, totales)
+
+    return render_to_response("monitoreo/generica_lideres.html", 
+                              {'tabla': tabla, 'titulo': titulo},
+                              RequestContext(request))
+
+def lideres_le_hablan_de(request):
+    titulo = '¿Cuando alguien le habla de VBG usted cree que estan hablando de?'
+    encuestas = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    opciones = HablanDe.objects.all()
+    content = ContentType.objects.get(app_label="1-principal", model="lider")
+    for op in opciones:
+        tabla[op] = []
+    
+    for op in opciones:
+        for key, grupo in encuestas.items():
+            tabla[op].append(ConceptoViolencia.objects.filter(content_type=content, object_id__in=[encuesta.id for encuesta in grupo], \
+                             hablande=op, respuesta='si').count())
+    for key, value in tabla.items():
+        if verificar(value) == 0:
+            del tabla[key]
+    totales = get_total(encuestas)
+    tabla = get_prom_lista_func(tabla, totales)
+
+
+    return render_to_response("monitoreo/generica_lideres.html", 
+                              {'tabla': tabla, 'titulo': titulo},
+                              RequestContext(request))
+
+def que_hace_ante_vbg_lideres(request):
+    """Que hace usted cuando existe una situación de VBG"""
+    titulo = 'Que hace usted cuando existe una situación de VBG'
+    resultados = _query_set_filtrado(request, tipo="lider")
+    tabla = {}
+    campos = [field for field in AccionVBG._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
+    content = ContentType.objects.get(app_label="1-principal", model="lider")
+
+    opciones = [1, 2, 3, 4, 5, 6]
+
+    for field in campos:        
+        tabla[field.verbose_name] = {}
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+            tabla[field.verbose_name][key] = {}            
+                
+            for op in opciones:
+                tabla[field.verbose_name][key][op] = AccionVBG.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op-1}).count()
+    totales = get_total(resultados)
+    #tabla = get_prom_lista_func(tabla, totales)
+
+    return render_to_response("monitoreo/generica_lideres.html", 
+                              {'tabla': tabla, 'titulo': titulo},
+                              RequestContext(request))
+
 VALID_VIEWS_LIDERES = {'concepto-violencia': concepto_violencia, 
     'hombres-violentos': lideres_hombres_violentos,
     'conoce-vbg': lideres_vbg,
@@ -1274,4 +1348,7 @@ VALID_VIEWS_LIDERES = {'concepto-violencia': concepto_violencia,
     'justificacion': hombres_violencia_mujeres_lideres,
     'ayuda-mujer': ayuda_mujer_violencia_lideres,
     'donde-busca': donde_buscar_ayuda_lideres,
+    'expresion-violencia': expresion_violencia_lideres,
+    'le-hablan-de': lideres_le_hablan_de,
+    'que-hace': que_hace_ante_vbg_lideres,
 }
