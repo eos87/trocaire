@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block extrahead %}
+{% if not nografo %}
 <script type="text/javascript" src="/files/js/highcharts.js"></script>
 <script type="text/javascript" src="/files/js/exporting.js"></script>
 <script type="text/javascript">
@@ -71,6 +72,7 @@
         });
     });
 </script>
+{% endif %}
 {% endblock %}
 
 {% block contenido %}
@@ -79,6 +81,7 @@
     <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
 </div>
 <div class="contraparts">
+    {% if not nografo %}
     <br>
     <div id= "grafosmujer" class="barra">
         <a href="#"  id="mujeres" class="grafos">Gráfico Mujeres</a>
@@ -87,7 +90,9 @@
         <a href="#" id="hombres" class="grafos">Gráfico Hombres</a>
     </div>
     <br>
+    <div class="clean"></div>    
     <div id="container"></div><br>
+    {% endif %}
     <table class="tabla-resultados" style="width:100%;">
         <caption>TOTALES</caption>
         <thead>

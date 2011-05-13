@@ -1050,6 +1050,28 @@ def mejorar_atencion(request):
                        {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                        RequestContext(request))
 
+def que_acciones(request):    
+    titulo = u'¿Cuáles fueron las acciones que su institución realizó?'
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    opciones = Accion.objects.all()
+    for op in opciones:
+        tabla[op] = []
+
+    for op in opciones:
+        for key, grupo in resultados.items():
+            tabla[op].append(AccionMejorarAtencion.objects.filter(content_type=cfunc, object_id__in=[encuesta.id for encuesta in grupo], \
+                             cuales=op).count())
+    for key, value in tabla.items():
+        if verificar(value) == 0:
+            del tabla[key]
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+
+    return render_to_response("monitoreo/funcionarios/generica_funcionario.html",
+                       {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
+                       RequestContext(request))
+
 def prevenir_vbg(request):
     from models import SI_NO_SIMPLE2
     titulo = u'¿Su institución realizo algunas acciones dirigidas a prevenir la VBG?'
@@ -1070,7 +1092,7 @@ def prevenir_vbg(request):
                        RequestContext(request))
 
 def cuales_acciones(request):
-    titulo = '¿Cuáles fueron las acciones de prevención de la VBG que su institución realizo?'
+    titulo = u'¿Cuáles fueron las acciones de prevención de la VBG que su institución realizo?'
     resultados = _query_set_filtrado(request, tipo='funcionario')
     tabla = {}
     opciones = AccionPrevencion.objects.all()
@@ -1088,7 +1110,7 @@ def cuales_acciones(request):
     tabla = get_prom_lista_func(tabla, totales)
 
     return render_to_response("monitoreo/funcionarios/generica_funcionario.html",
-                       {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                       {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
                        RequestContext(request))
 
 #obtener la vista adecuada para los indicadores
@@ -1112,6 +1134,7 @@ VALID_VIEWS_FUNCIONARIO = {
     'casos-registrados-por-tipo': casos_registrados_por_tipo,
     'calidad-servicios': calidad_servicios,
     'mejorar-atencion': mejorar_atencion,
+    'que-acciones': que_acciones,
     'prevenir-vbg': prevenir_vbg,
     'cuales-acciones': cuales_acciones,
 }
