@@ -81,7 +81,28 @@
 {% endblock %}
 
 {% block contenido %}
-{{totales}}<br>
+<div class="title_bar">
+    <div class="titulo">¿Menciones los pasos de la ruta cr&iacute;tica de la violencia?</div>
+    <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
+</div>
+<div class="contraparts"><br>
+<table class="tabla-resultados" style="width:100%;">
+        <caption>TOTALES</caption>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>TOTALES ENCUESTADOS</td>
+                <td>{{totales.0}}</td>
+                <td>{{totales.1}}</td>
+            </tr>
+        </tbody>
+    </table><br>
 <div id="tabs" style="font-size:70%;">
     <ul>
         <li><a href="#tabla-mujeres">Mujeres</a></li>
@@ -173,7 +194,7 @@
         </table>
         <br>
         <h2>Gr&aacute;ficos</h2>
-        <div class="graficos"">
+        <div class="graficos">
              <ul>
                 {% for opcion in opciones %}
                 <li><a href="#hombres-{{opcion}}">Opcion {{opcion}}</a></li>
@@ -184,5 +205,6 @@
             {% endfor %}            
         </div>
     </div>
+</div>
 </div>
 {% endblock %}
