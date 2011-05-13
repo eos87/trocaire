@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+<script type="text/javascript" src="/files/js/highcharts.js"></script>
+<script type="text/javascript" src="/files/js/exporting.js"></script>
+<script type="text/javascript">
+    var plotOptions = {
+         pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+               enabled: false
+            },
+            showInLegend: true
+         },
+         series: {
+            dataLabels: {
+                enabled: true,
+                align: "center",
+                formatter: function() {
+                    return ''+ this.percentage.toFixed(2) + ' %';
+                },
+                color: '#000',
+                style: {
+                    font: '12px Trebuchet MS, Verdana, sans-serif'
+                }
+            }
+        }
+    }
+    var tooltip = {
+        formatter: function() {
+            return '<b>'+ this.point.name +'</b>: '+ this.percentage.toFixed(2) +'%';
+        }
+    }
+    var chart;
+    $(document).ready(function(){
+        $('.grafos').click(function(){
+            var id = $(this).attr('id');
+            var series;
+            var titulo;
+            if(id=='m10_13'){
+                titulo = 'Mujeres';
+                series = [{data: [{% for key, value in tabla.items %}['{{key|title}}', {{value.1}}],{% endfor %}]}]
+            }else if(id=='h10_13'){
+                titulo = 'Hombres';
+                series = [{data: [{% for key, value in tabla.items %}['{{key|title}}', {{value.2}}],{% endfor %}]}]
+            }
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container',
+                    defaultSeriesType: 'pie',
+                    height: 480,
+                    width: 900
+                },
+                title: {
+                    text: '{{titulo}}'
+                },
+                subtitle: {
+                    text: titulo
+                },
+                tooltip: tooltip,
+                plotOptions: plotOptions,
+                series: series
+            });
+            return false;
+        });
+    });
+</script>
+{% endblock %}
+
+{% block contenido %}
+<div class="title_bar">
+    <div class="titulo">{{titulo}}</div>
+    <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
+</div>
+<div class="contraparts"><br>
+    <div id= "grafosmujer" class="barra">
+        <a href="#" id="m10_13" class="grafos">Gr&aacute;fico Mujeres</a>
+    </div>
+    <div id= "grafoshombre" class="barra">
+        <a href="#" id="h10_13" class="grafos">Gr&aacute;fico Hombres</a>
+    </div>
+    <div class="clean"></div>
+    <div id="container"></div>
+</div>
+<br>
+<div>
+    <table class="tabla-resultados">
+        <caption>TOTALES</caption>
+        <thead>
+            <tr>
+                <th rowspan="2">Categorias</th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>TOTAL ENCUESTADOS</td>
+                <td>{{totales.0}}</td>
+                <td>{{totales.1}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <table class="tabla-resultados">
+        <caption>{{titulo}}</caption>
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, value in tabla.items %}
+            <tr>
+                <td>{{key|title}}</td>
+                <td>{{value.1}}</td>
+                <td>{{value.2}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
