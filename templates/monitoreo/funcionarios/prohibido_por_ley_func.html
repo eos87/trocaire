@@ -82,13 +82,39 @@
 {% endblock %}
 
 {% block contenido %}
-{{totales}}<br>
 
 <!-- BEGIN tabla de la MUERTE-->
-<div>Graficos</div>
-<a href="#" id="mujeres" class="grafos">Mujeres</a> | <a href="#" id="hombres" class="grafos">Hombres</a><br>
-<br>
-<div id="container"></div>
+<div class="title_bar">
+    <div class="titulo">Acciones prohibidas por la ley?</div>
+    <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
+</div>
+<div class="contraparts">
+    <br>
+    <div id= "grafosmujer" class="barra">
+        <a href="#"  id="mujeres" class="grafos">Gráfico Mujeres</a>
+    </div>
+    <div id= "grafoshombre" class="barra">
+        <a href="#" id="hombres" class="grafos">Gráfico Hombres</a>
+    </div>
+    <br>
+<div id="container"></div><br>
+    <table class="tabla-resultados" style="width:100%;">
+        <caption>TOTALES</caption>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>TOTALES ENCUESTADOS</td>
+                <td>{{totales.0}}</td>
+                <td>{{totales.1}}</td>
+            </tr>
+        </tbody>
+    </table><br>
 <div class="tabla-container">
     <table class="tabla-resultados">
         <caption>Sabe usted cuales de las siguientes acciones son prohibidas por la ley</caption>
@@ -119,6 +145,7 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
 </div>
 <!--FIN tabla de la MUERTE UNO-->
 {% endblock %}
