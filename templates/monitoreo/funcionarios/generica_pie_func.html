@@ -69,7 +69,6 @@
 {% endblock %}
 
 {% block contenido %}
-{{totales}}
 <div class="title_bar">
     <div class="titulo">{{titulo}}</div>
     <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
@@ -82,6 +81,23 @@
         <a href="#" id="h10_13" class="grafos">Gr&aacute;fico Hombres</a>
     </div>
     <div class="clean"></div>
-    <div id="container"></div>
+    <div id="container"></div><br>
+    <table class="tabla-resultados" style="width:100%;">
+        <caption>TOTALES</caption>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>TOTALES ENCUESTADOS</td>
+                <td>{{totales.0}}</td>
+                <td>{{totales.1}}</td>
+            </tr>
+        </tbody>
+    </table><br>
 </div>
 {% endblock %}
