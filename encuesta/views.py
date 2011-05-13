@@ -920,11 +920,40 @@ def ruta_critica(request):
 
     totales = get_total(resultados)
     #tomar todos los valores de la tabla y calcular promedio
-    for key, value in tabla.items():
-        for i in range(1, 3):
-            total = sum(tabla[key][i].values())            
-            for nivel in opciones:                                
-                tabla[key][i][nivel] = [tabla[key][i][nivel], get_prom(tabla[key][i][nivel], total)]    
+#    for key, value in tabla.items():
+#        for i in range(1, 3):
+#            total = sum(tabla[key][i].values())
+#            for nivel in opciones:
+#                tabla[key][i][nivel] = [tabla[key][i][nivel], get_prom(tabla[key][i][nivel], total)]
+
+    totales_vertical = []
+    grafico = {}
+    for a in range(2):        
+        counter = 0
+        for i in range(5):
+            suma = []
+            for key, value in tabla.items():
+                for k, v in value.items()[a:a+1]:
+                    suma.append(v.values()[counter])
+            counter += 1
+            totales_vertical.append(sum(suma))   
+
+    for i in range(5):
+        grafico[i+1] = []
+
+    orden = 0
+    for a in range(2):        
+        counter2 = 0
+        for i in range(5):
+            for key, value in tabla.items():
+                for k, v in value.items()[a:a+1]:
+                    #calcular el promedio de cada valor
+                    promedio = get_prom(v.values()[counter2], totales_vertical[orden])
+                    #agregar a la tabla el promedio para cada valor
+                    tabla[key][a+1][i+1] = [v.values()[counter2], promedio]
+                    grafico[i+1].append({key: v.values()[counter2]})
+            counter2 += 1
+            orden += 1
 
     return render_to_response("monitoreo/funcionarios/ruta_critica.html", RequestContext(request, locals()))
 

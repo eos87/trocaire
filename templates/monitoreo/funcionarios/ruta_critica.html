@@ -34,40 +34,46 @@
     }
     var tooltip = {
         formatter: function() {
-            return '<b>Opcion '+ this.point.name +'</b>: '+ this.y +'%';
+            return '<b>'+ this.point.name +'</b>: '+ this.percentage.toFixed(2) +'%';
         }
     }
 
     $(document).ready(function(){
         $("#tabs").tabs();
+        $(".graficos").tabs();
+        $(".graficos1").tabs();
     });
     $(document).ready(function(){
-        {% for key, value in tabla.items %}
-        var chart{{forloop.counter}} = new Highcharts.Chart({
+        {% for key, value in grafico.items %}
+        var mchart{{forloop.counter}} = new Highcharts.Chart({
             chart: {
                 renderTo: 'mujeres-{{forloop.counter}}',
-                defaultSeriesType: 'pie'
+                defaultSeriesType: 'pie',
+                height: 480,
+                width: 900
             },
             title: {
-                text: '{{key}}'
+                text: 'Opcion {{key}}'
             },            
             tooltip: tooltip,
             plotOptions: plotOptions,
-            series: [{data: [{% for k, v in value.items|slice:"1" %}{% for a, b in v.items %}['{{a}}', {{b.1}}], {% endfor %}]{% endfor %}}]
+            series: [{data: [{% for valor in value|slice:"5" %}['{{valor.items.0.0}}', {{valor.items.0.1.0}}],{% endfor %}]}]
         });    
         {% endfor %}
-        {% for key, value in tabla.items %}
-        var chart{{forloop.counter}} = new Highcharts.Chart({
+        {% for key, value in grafico.items %}
+        var hchart{{forloop.counter}} = new Highcharts.Chart({
             chart: {
                 renderTo: 'hombres-{{forloop.counter}}',
-                defaultSeriesType: 'pie'
+                defaultSeriesType: 'pie',
+                height: 480,
+                width: 900
             },
             title: {
-                text: '{{key}}'
+                text: 'Opcion {{key}}'
             },            
             tooltip: tooltip,
             plotOptions: plotOptions,
-            series: [{data: [{% for k, v in value.items|slice:"1:2" %}{% for a, b in v.items %}['{{a}}', {{b.1}}], {% endfor %}]{% endfor %}}]
+            series: [{data: [{% for valor in value|slice:"5:10" %}['{{valor.items.0.0}}', {{valor.items.0.1.0}}],{% endfor %}]}]
         });
         {% endfor %}
     });
@@ -75,7 +81,7 @@
 {% endblock %}
 
 {% block contenido %}
-{{totales}}
+{{totales}}<br>
 <div id="tabs" style="font-size:70%;">
     <ul>
         <li><a href="#tabla-mujeres">Mujeres</a></li>
@@ -106,13 +112,26 @@
                     {% endfor %}
                 </tr>
                 {% endfor %}
+                <tr>
+                    <td>Totales</td>
+                    {% for total in totales_vertical|slice:"5" %}
+                    <td>
+                        {{total}}
+                    </td>
+                    {% endfor %}
+                </tr>
             </tbody>
         </table>
         <br>
         <h2>Gr&aacute;ficos</h2>
-        <div class="graficos">
+        <div class="graficos1">
+             <ul>
+                {% for opcion in opciones %}
+                <li><a href="#mujeres-{{opcion}}">Opcion {{opcion}}</a></li>
+                {% endfor %}
+            </ul>
             {% for key, value in tabla.items %}
-            <div id="mujeres-{{forloop.counter}}" style="width: 460px; float: left; border-top: 1px #ccc dashed; margin-top: 10px; padding-top: 10px;"></div>
+            <div id="mujeres-{{forloop.counter}}"></div>
             {% endfor %}
             <div class="clean"></div>
         </div>
@@ -142,15 +161,27 @@
                     {% endfor %}
                 </tr>
                 {% endfor %}
+                <tr>
+                    <td>Totales</td>
+                    {% for total in totales_vertical|slice:"5:10" %}
+                    <td>
+                        {{total}}
+                    </td>
+                    {% endfor %}
+                </tr>
             </tbody>
         </table>
         <br>
         <h2>Gr&aacute;ficos</h2>
-        <div class="graficos">
+        <div class="graficos"">
+             <ul>
+                {% for opcion in opciones %}
+                <li><a href="#hombres-{{opcion}}">Opcion {{opcion}}</a></li>
+                {% endfor %}
+            </ul>
             {% for key, value in tabla.items %}
-            <div id="hombres-{{forloop.counter}}" style="width: 460px; float: left; border-top: 1px #ccc dashed; margin-top: 10px; padding-top: 10px;"></div>
-            {% endfor %}
-            <div class="clean"></div>
+            <div id="hombres-{{forloop.counter}}" style="width: 900px;"></div>
+            {% endfor %}            
         </div>
     </div>
 </div>
