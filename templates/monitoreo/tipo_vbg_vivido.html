@@ -37,13 +37,13 @@
             var titulo;
             if(id=='m10_13'){
                 titulo = 'Mujeres de 10-13 años';
-                series = [{% for key, value in tabla.items %}{% if value.0.1 != 0 %}{name: '{{key}}',data: [{{value.0.1}}]}, {% endif %}{% endfor %}]
+                series = [{% for key, value in tabla.items %}{name: '{{key}}',data: [{{value.0.1}}]}, {% endfor %}]
             }else if(id=='m14_18'){
                 titulo = 'Mujeres de 14-18 años';
-                series = [{% for key, value in tabla.items %}{% if value.1.1 != 0 %}{name: '{{key}}',data: [{{value.1.1}}]}, {% endif %}{% endfor %}]
+                series = [{% for key, value in tabla.items %}{name: '{{key}}',data: [{{value.1.1}}]}, {% endfor %}]
             }else if(id=='m18_mas'){
                 titulo = 'Mujeres mayores de 18 años';
-                series = [{% for key, value in tabla.items %}{% if value.2.1 != 0 %}{name: '{{key}}',data: [{{value.2.1}}]}, {% endif %}{% endfor %}]
+                series = [{% for key, value in tabla.items %}{name: '{{key}}',data: [{{value.2.1}}]}, {% endfor %}]
             }
             chart = new Highcharts.Chart({
                 chart: {
