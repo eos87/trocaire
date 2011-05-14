@@ -7,7 +7,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^$', direct_to_template, {'template': 'index.html'}),
+    (r'^$', 'trocaire.views.index'),
     (r'^monitoreo/', include('trocaire.encuesta.urls')),
     (r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html'}),
     (r'^admin/', include(admin.site.urls)),

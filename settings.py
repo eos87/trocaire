@@ -76,3 +76,13 @@ INSTALLED_APPS = (
     #'debug_toolbar',
 )
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+TEMPLATE_CONTEXT_PROCESSORS=(
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    #"django.core.context_processors.static",
+    "django.contrib.messages.context_processors.messages",
+    "trocaire.context.variables",
+)

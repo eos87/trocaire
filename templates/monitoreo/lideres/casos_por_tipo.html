@@ -1,52 +1,56 @@
 {% extends "base.html" %}
 
-{% block extratitle %}{{titulo}}{% endblock %}
-
 {% block extrahead %}
-{% if not nografo %}
 <script type="text/javascript" src="/files/js/highcharts.js"></script>
 <script type="text/javascript" src="/files/js/exporting.js"></script>
-<script type="text/javascript">    
+<script type="text/javascript">
     var plotOptions = {
-        column: {
-            groupPadding: 0,
-            pointPadding: 0.9,
-            borderWidth: 0
-        },
-        series: {
-            pointWidth: 25,
-            minPointLength : 0.5
+         pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+               enabled: false
+            },
+            showInLegend: true
+         },
+         series: {
+            dataLabels: {
+                enabled: true,
+                align: "center",
+                formatter: function() {
+                    return ''+ this.percentage.toFixed(2) + ' %';
+                },
+                color: '#000',
+                style: {
+                    font: '12px Trebuchet MS, Verdana, sans-serif'
+                }
+            }
         }
     }
     var tooltip = {
         formatter: function() {
-            return ''+
-                this.series.name +': '+ this.y +'%';
+            return '<b>'+ this.point.name +'</b>: '+ this.percentage.toFixed(2) +'%';
         }
     }
-    var leyenda = {
-        layout: 'horizontal',
-        align: 'center',
-        verticalAlign: 'bottom',
-        shadow: true
-    }
     var chart;
-    $(document).ready(function() {
+    $(document).ready(function(){
         $('.grafos').click(function(){
             var id = $(this).attr('id');
             var series;
             var titulo;
             if(id=='m10_13'){
                 titulo = 'Mujeres';
-                series = [{% for key, value in tabla.items %}{% if value.0.1 != 0 %}{name: '{{key}}',data: [{{value.0.1}}]}, {% endif %}{% endfor %}]
-            }else if(id=='m14_18'){
+                series = [{data: [{% for key, value in tabla.items %}['{{key|title}}', {{value.1}}],{% endfor %}]}]
+            }else if(id=='h10_13'){
                 titulo = 'Hombres';
-                series = [{% for key, value in tabla.items %}{% if value.1.1 != 0 %}{name: '{{key}}',data: [{{value.1.1}}]}, {% endif %}{% endfor %}]
+                series = [{data: [{% for key, value in tabla.items %}['{{key|title}}', {{value.2}}],{% endfor %}]}]
             }
             chart = new Highcharts.Chart({
                 chart: {
                     renderTo: 'container',
-                    defaultSeriesType: 'column'
+                    defaultSeriesType: 'pie',
+                    height: 480,
+                    width: 900
                 },
                 title: {
                     text: '{{titulo}}'
@@ -54,27 +58,14 @@
                 subtitle: {
                     text: titulo
                 },
-                xAxis: {
-                    categories: [
-                        'Opciones'
-                    ]
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: 'Porcentajes'
-                    }
-                },
-                legend: leyenda,
                 tooltip: tooltip,
                 plotOptions: plotOptions,
                 series: series
-            });            
+            });
             return false;
         });
     });
 </script>
-{% endif %}
 {% endblock %}
 
 {% block contenido %}
@@ -83,17 +74,16 @@
     <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
 </div>
 <div class="contraparts"><br>
-    {% if not nografo %}
     <div id= "grafosmujer" class="barra">
         <a href="#" id="m10_13" class="grafos">Gr&aacute;fico Mujeres</a>
     </div>
     <div id= "grafoshombre" class="barra">
-        <a href="#" id="m14_18" class="grafos">Gr&aacute;fico Hombres</a>
+        <a href="#" id="h10_13" class="grafos">Gr&aacute;fico Hombres</a>
     </div>
     <div class="clean"></div>
     <div id="container"></div>
-    {% endif %}
 </div>
+<br>
 <div>
     <table class="tabla-resultados">
         <caption>TOTALES</caption>
@@ -114,21 +104,20 @@
     </table>
     <br>
     <table class="tabla-resultados">
-        <caption>{{titulo}}:</caption>
+        <caption>{{titulo}}</caption>
         <thead>
             <tr>
-                <th >Resultado</th>
-                <th >Mujeres</th>
-                <th >Hombres</th>
+                <th>&nbsp;</th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
             </tr>
         </thead>
         <tbody>
             {% for key, value in tabla.items %}
             <tr>
-                <td>{{key}}</td>
-                {% for valor in value %}
-                <td>{{valor.0}} ({{valor.1}} %)</td>
-                {% endfor %}
+                <td>{{key|title}}</td>
+                <td>{{value.1}}</td>
+                <td>{{value.2}}</td>
             </tr>
             {% endfor %}
         </tbody>

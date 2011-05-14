@@ -2,6 +2,12 @@ from django.http import HttpResponse
 from trocaire.lugar.models import *
 from trocaire.encuesta.models import *
 from django.utils import simplejson
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
+def index(request):
+    request.session['centinela'] = 0
+    return render_to_response("index.html", RequestContext(request, locals()))
 
 def get_depas(request):
     id = request.GET.get('id', '')

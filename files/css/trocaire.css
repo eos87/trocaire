@@ -57,6 +57,33 @@ a{
 .salir_sprite:hover{
     background-position: 0 -28px;
 }
+.mh_sprite{
+    background: url(/files/img/mh_sprite.png) no-repeat;
+    display: inline-block;
+    width: 140px;
+    height: 28px;
+}
+.mh_sprite:hover{
+    background-position: 0 -28px;
+}
+.lider_sprite{
+    background: url(/files/img/lider_sprite.png) no-repeat;
+    display: inline-block;
+    width: 75px;
+    height: 28px;
+}
+.lider_sprite:hover{
+    background-position: 0 -28px;
+}
+.func_sprite{
+    background: url(/files/img/func_sprite.png) no-repeat;
+    display: inline-block;
+    width: 106px;
+    height: 28px;
+}
+.func_sprite:hover{
+    background-position: 0 -28px;
+}
 .banner{
     background: url(/files/img/banner.png) repeat-x;
     height: 286px;    

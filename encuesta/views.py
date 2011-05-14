@@ -22,10 +22,12 @@ def consultar(request):
             request.session['departamento'] = form.cleaned_data['departamento']
             request.session['organizacion'] = form.cleaned_data['organizacion']
             request.session['municipio'] = form.cleaned_data['municipio']
+            request.session['centinela'] = 1
             centinela = 1
     else:
         form = ConsultarForm()
         centinela = 0
+
     return render_to_response("monitoreo/consultar.html", RequestContext(request, locals()))
 
 #funcion destinada a devolver las encuestas en rangos de edad
@@ -1472,7 +1474,7 @@ def tipo_vbg_ha_vivido(request):
             del tabla[key]
 
     totales = get_total(resultados)
-    return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
+    return render_to_response("monitoreo/lideres/casos_por_tipo.html",
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
@@ -1492,7 +1494,7 @@ def frecuencia_vbg(request):
             tabla[tipo[1]][key] = PrevalenciaVBGLider.objects.filter(content_type=clider, object_id__in=lista, frecuencia=tipo[0]).count()
 
     totales = get_total(resultados)
-    return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
+    return render_to_response("monitoreo/lideres/casos_por_tipo.html",
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
@@ -1518,6 +1520,7 @@ def quien_ejercio_vbg(request):
                               RequestContext(request))
 
 def conocimiento_leyes(request):
+    titulo = u'Acciones son prohibidas por la ley'
     from models import SI_NO_RESPONDE
     resultados = _query_set_filtrado(request, tipo='lider')
     tabla = {}
@@ -1536,8 +1539,8 @@ def conocimiento_leyes(request):
     totales = get_total(resultados)
     grafico = convertir_grafico(tabla)
     tabla = get_prom_dead_list(tabla, totales)
-    return render_to_response("monitoreo/funcionarios/prohibido_por_ley_func.html", 
-                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'grafico': grafico},
+    return render_to_response("monitoreo/lideres/prohibido_por_ley.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'grafico': grafico, 'SI_NO_RESPONDE': SI_NO_RESPONDE},
                               RequestContext(request))
 
 def decisiones(request):
@@ -1625,7 +1628,194 @@ def prevenir_vbg_lider(request):
         [lista.append(encuesta.id) for encuesta in grupo]
         for opcion in SI_NO_SIMPLE2:
             tabla[opcion[1]][key] = AccionVBGLider.objects.filter(content_type=clider, object_id__in=lista, ud_previene=opcion[0]).count()
-    return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
+    return render_to_response("monitoreo/lideres/casos_por_tipo.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
+def cuales_acciones_lideres(request):
+    titulo = u'¿Cuáles fueron las acciones de prevención de la VBG que realizo?'
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    opciones = AccionPrevencion.objects.all()
+    for op in opciones:
+        tabla[op] = []
+
+    for op in opciones:
+        for key, grupo in resultados.items():
+            tabla[op].append(AccionVBGLider.objects.filter(content_type=clider, object_id__in=[encuesta.id for encuesta in grupo], \
+                             accion_prevenir=op).count())
+    for key, value in tabla.items():
+        if verificar(value) < 5:
+            del tabla[key]
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+
+    return render_to_response("monitoreo/lideres/generica_lideres.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
+                              RequestContext(request))
+
+def mujeres_lideres(request):
+    titulo = u'¿Existen mujeres que representan a otras mujeres?'
+    tabla = {}
+    resultados = _query_set_filtrado(request, tipo='lider')
+
+    for op in ['si', 'no']:
+        tabla[op.title()] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in ['si', 'no']:
+            tabla[op.title()].append(IncidenciaPolitica.objects.filter(content_type=clider, object_id__in=lista, existen_mujeres=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/lideres/generica_lideres_pie.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+def nivel_satisfaccion(request):
+    from models import SATISFECHAS
+    titulo = u'¿Qué tan satisfechas están las mujeres con quienes las representan?'
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    totales = get_total(resultados)
+
+    for opcion in SATISFECHAS:
+        tabla[opcion[1]] = {}
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        for opcion in SATISFECHAS:
+            tabla[opcion[1]][key] = IncidenciaPolitica.objects.filter(content_type=clider, object_id__in=lista, satisfecha=opcion[0]).count()
+    return render_to_response("monitoreo/lideres/casos_por_tipo.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
+def presenta_propuestas(request):
+    titulo = u'¿Ha presentado propuestas de acciones de prevención de VBG?'
+    tabla = {}
+    resultados = _query_set_filtrado(request, tipo='lider')
+
+    for op in ['si', 'no']:
+        tabla[op.title()] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in ['si', 'no']:
+            tabla[op.title()].append(CalidadAtencion.objects.filter(content_type=clider, object_id__in=lista, propuesta=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/lideres/generica_lideres_pie.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
+def tipo_propuesta_presentada(request):
+    titulo = u'¿Que tipo de propuesta ha presentado?'
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    opciones = TipoPropuesta.objects.all()
+    for op in opciones:
+        tabla[op] = []
+
+    for op in opciones:
+        for key, grupo in resultados.items():
+            tabla[op].append(CalidadAtencion.objects.filter(content_type=clider, object_id__in=[encuesta.id for encuesta in grupo], \
+                             si_tipo=op).count())
+    for key, value in tabla.items():
+        if verificar(value) == 1:
+            del tabla[key]
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+
+    return render_to_response("monitoreo/lideres/generica_lideres.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
+                              RequestContext(request))
+
+def negocia_propuestas(request):
+    titulo = u'¿Ha negociado propuestas de acciones de prevención de VBG?'
+    tabla = {}
+    resultados = _query_set_filtrado(request, tipo='lider')
+
+    for op in ['si', 'no']:
+        tabla[op.title()] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in ['si', 'no']:
+            tabla[op.title()].append(CalidadAtencion.objects.filter(content_type=clider, object_id__in=lista, propuesta2=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/lideres/generica_lideres_pie.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
+def tipo_propuesta_negociada(request):
+    titulo = u'¿Que tipo de propuesta ha negociado?'
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    opciones = TipoPropuesta.objects.all()
+    for op in opciones:
+        tabla[op] = []
+
+    for op in opciones:
+        for key, grupo in resultados.items():
+            tabla[op].append(CalidadAtencion.objects.filter(content_type=clider, object_id__in=[encuesta.id for encuesta in grupo], \
+                             si_tipo2=op).count())
+    for key, value in tabla.items():
+        if verificar(value) == 1:
+            del tabla[key]
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+
+    return render_to_response("monitoreo/lideres/generica_lideres.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
+                              RequestContext(request))
+
+def solucion_problema_lideres(request):
+    titulo = u'¿Qué se debe hacer para que la solución a un conflicto entre la pareja sea exitoso?'
+    from models import DES_AC
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    campos = [field for field in ComunicacionAsertiva._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
+    for field in campos:
+        tabla[field.verbose_name] = {}
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+            tabla[field.verbose_name][key] = []
+            for op in DES_AC:
+                tabla[field.verbose_name][key].append(ComunicacionAsertiva.objects.filter(content_type=clider, object_id__in=lista, ** {field.name: op[0]}).count())
+
+    totales = get_total(resultados)
+    grafico = convertir_grafico(tabla)
+    tabla = get_prom_dead_list3(tabla, totales)
+
+    return render_to_response("monitoreo/lideres/solucion_problema_lideres.html", RequestContext(request, locals()))
+
+def negociacion_exitosa(request):
+    titulo = u'¿Qué se debe hacer para que una negociación de pareja sea exitosa?'
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    opciones = NegociacionExitosa.objects.all()
+    for op in opciones:
+        tabla[op] = []
+
+    for op in opciones:
+        for key, grupo in resultados.items():
+            tabla[op].append(ComunicacionAsertiva.objects.filter(content_type=clider, object_id__in=[encuesta.id for encuesta in grupo], \
+                             negociacion_exitosa=op).count())
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+
+    return render_to_response("monitoreo/lideres/generica_lideres.html",
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
@@ -1649,4 +1839,13 @@ VALID_VIEWS_LIDERES = {
     #aca la tabla fea
     'que-debe-hacer': que_debe_hacer_lideres,
     'prevenir-vbg': prevenir_vbg_lider,
+    'cuales-acciones': cuales_acciones_lideres,
+    'mujeres-lideres': mujeres_lideres,
+    'nivel-satisfaccion': nivel_satisfaccion,
+    'presenta-propuestas': presenta_propuestas,
+    'negocia-propuestas': negocia_propuestas,
+    'tipo-propuesta-presentada': tipo_propuesta_presentada,
+    'tipo-propuesta-negociada': tipo_propuesta_negociada,
+    'solucion-problema-lideres': solucion_problema_lideres,
+    'negociacion-exitosa': negociacion_exitosa,
 }

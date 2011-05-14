@@ -39,24 +39,24 @@
             var id = $(this).attr('id');
             var series;
             var titulo;
-            if(id=='m10_13'){
+            if(id=='mujeres'){
                 titulo = 'Mujeres';
                 series = [{% for key, value in grafico.1.items %}{
-                        name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
+                        name: "{% if key == 1 %}Si{% else %}{% if key == 2 %}No{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
-            }else if(id=='m14_18'){
+            }else if(id=='hombres'){
                 titulo = 'Hombres';
                 series = [{% for key, value in grafico.2.items %}{
-                        name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
+                        name: "{% if key == 1 %}Si{% else %}{% if key == 2 %}No{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
-            }   
+            }
             chart = new Highcharts.Chart({
                 chart: {
                     renderTo: 'container',
                     defaultSeriesType: 'column'
                 },
                 title: {
-                    text: 'Como deben comportarse los hombres y las mujeres'
+                    text: 'Conocimiento sobre acciones son prohibidas por la ley'
                 },
                 subtitle: {
                     text: titulo
@@ -82,71 +82,71 @@
 {% endblock %}
 
 {% block contenido %}
+
 <!-- BEGIN tabla de la MUERTE-->
 <div class="title_bar">
-    <div class="titulo">Como deben comportarse los hombres y las mujeres</div>
+    <div class="titulo">Acciones prohibidas por la ley?</div>
     <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
 </div>
-<div class="contraparts"><br>
+<div class="contraparts">
+    <br>
     <div id= "grafosmujer" class="barra">
-        <a href="#" id="m10_13" class="grafos">Grafico Mujeres</a>
+        <a href="#"  id="mujeres" class="grafos">Gráfico Mujeres</a>
     </div>
     <div id= "grafoshombre" class="barra">
-        <a href="#" id="m14_18" class="grafos">Gr&aacute;fico Hombres</a>
-    </div>
+        <a href="#" id="hombres" class="grafos">Gráfico Hombres</a>
+    </div>    
     <div class="clean"></div>
-    <div id="container"></div>
-</div>
-<br>
-<div>
-    <table class="tabla-resultados">
+    <br>
+    <div id="container"></div>    
+    <table class="tabla-resultados" style="width:100%;">
         <caption>TOTALES</caption>
         <thead>
             <tr>
-                <th rowspan="2">Categorias</th>
+                <th></th>
                 <th>Mujeres</th>
                 <th>Hombres</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>TOTAL ENCUESTADOS</td>
+                <td>TOTALES ENCUESTADOS</td>
                 <td>{{totales.0}}</td>
                 <td>{{totales.1}}</td>
             </tr>
         </tbody>
-    </table>
-    <br>    
-    <table class="tabla-resultados">
-        <caption>Como deben comportarse los hombres y las mujeres</caption>
-        <thead>
-            <tr>
-                <th rowspan="3">Categorias</th>
-                <th colspan="4">Mujeres</th>
-                <th colspan="4">Hombres</th>
-            </tr>
-            <tr>
-                {% for grupo in tabla.items.0.1.items.0.1|slice:":2" %}
-                {% for k in CREENCIAS_VBG_RESP %}
-                <th>{{k.1}}</th>
+    </table><br>
+    <div class="tabla-container">
+        <table class="tabla-resultados">
+            <caption>Sabe usted cuales de las siguientes acciones son prohibidas por la ley</caption>
+            <thead>
+                <tr>
+                    <th rowspan="2">Categorias</th>
+                    <th colspan="4">Mujeres</th>
+                    <th colspan="4">Hombres</th>
+                </tr>
+                <tr>
+                    {% for grupo in tabla.items.0.1.items.0.1|slice:":2" %}
+                    {% for k in SI_NO_RESPONDE %}
+                    <th>{{k.1}}</th>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in tabla.items %}
+                <tr>
+                    <td>{{key}}</td>
+                    {% for k,v in value.items|slice:":3" %}
+                    {% for valor in v %}
+                    <td>{{valor.0}} ({{valor.1}}%)</td>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
                 {% endfor %}
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for key, value in tabla.items %}
-            <tr>
-                <td>{{key}}</td>
-                {% for k,v in value.items|slice:":2" %}
-                {% for valor in v %}
-                <td>{{valor.0}} ({{valor.1}}%)</td>                
-                {% endfor %}
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </div>
-<br>
 <!--FIN tabla de la MUERTE UNO-->
 {% endblock %}
