@@ -108,7 +108,7 @@ def hablan_de(request):
 
 def expresion_vbg(request):
     """Vista sobre: De que manera cree usted que se expresa la VBG"""
-    titulo = '¿Cuando alguien le habla de VBG usted cree que le estan hablando de?'
+    titulo = '¿De que manera cree usted que se expresa la VBG?'
     resultados = _query_set_filtrado(request)
     tabla = {}
     campos = [field for field in ExpresionVBG._meta.fields if field.get_internal_type() == 'CharField']
