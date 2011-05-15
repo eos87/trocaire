@@ -58,11 +58,21 @@ def _query_set_filtrado(request, tipo='mujer'):
     if tipo == 'mujer':
         dicc[1] = Mujer.objects.filter(edad__range=(10, 13), ** params)
         dicc[2] = Mujer.objects.filter(edad__range=(14, 18), ** params)
-        dicc[3] = Mujer.objects.filter(edad__gt=18, ** params)
-
+        dicc[3] = Mujer.objects.filter(edad__gt=18, ** params)        
         dicc[4] = Hombre.objects.filter(edad__range=(10, 13), ** params)
         dicc[5] = Hombre.objects.filter(edad__range=(14, 18), ** params)
         dicc[6] = Hombre.objects.filter(edad__gt=18, ** params)
+        return dicc
+
+    if tipo == 'especial':
+        dicc[1] = Mujer.objects.filter(edad__range=(10, 13), ** params)
+        dicc[2] = Mujer.objects.filter(edad__range=(14, 18), ** params)
+        dicc[3] = Mujer.objects.filter(edad__gt=18, ** params)
+        dicc[4] = Mujer.objects.filter(** params)
+        dicc[5] = Hombre.objects.filter(edad__range=(10, 13), ** params)
+        dicc[6] = Hombre.objects.filter(edad__range=(14, 18), ** params)
+        dicc[7] = Hombre.objects.filter(edad__gt=18, ** params)
+        dicc[8] = Hombre.objects.filter(** params)
         return dicc
     elif tipo == 'funcionario':
         dicc[1] = Funcionario.objects.filter(sexo='femenino', ** params)
@@ -76,7 +86,7 @@ def _query_set_filtrado(request, tipo='mujer'):
 def hablan_de(request):
     """Vista sobre: Cuando alguien le habla de VBG usted cree que estan hablando de:"""
     titulo = "¿Cuando alguien le habla de VBG usted cree que le estan hablando de?"
-    resultados = _query_set_filtrado(request)
+    resultados = _query_set_filtrado(request, tipo='especial')
     tabla = {}
     opciones = HablanDe.objects.all()
     
@@ -87,24 +97,24 @@ def hablan_de(request):
         lista = []
         [lista.append(encuesta.id) for encuesta in grupo]
 
-        if key < 4:
+        if key < 5:
             content = ContentType.objects.get(app_label="1-principal", model="mujer")
         else:
             content = ContentType.objects.get(app_label="1-principal", model="hombre")
 
         for opcion in opciones:
             query = ConceptoViolencia.objects.filter(content_type=content, object_id__in=lista, hablande=opcion, respuesta='si')
-            tabla[opcion].append(query.count())
+            tabla[opcion].append(query.count())            
 
     checkvalue = lambda x: sum(x)
     for key, value in tabla.items():        
-        if checkvalue(value) == 0:
+        if checkvalue(value) < 15:
             del tabla[key]
             
     totales = get_total(resultados)    
-    tabla = get_prom_lista(tabla, totales)
+    tabla = get_prom_lista_con_total(tabla, totales)
 
-    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
 
 def expresion_vbg(request):
     """Vista sobre: De que manera cree usted que se expresa la VBG"""
@@ -1148,7 +1158,20 @@ def get_prom(cantidad, total):
         x = 0
     else:
         x = (cantidad * 100) / float(total)
-    return round(x, 2)
+    return int(round(x, 0))
+
+def get_prom_lista_con_total(tabla, total):
+    tabla2 = {}
+    for key, value in tabla.items():
+        tabla2[key] = [[value[0], get_prom(value[0], total[0])],
+            [value[1], get_prom(value[1], total[1])],
+            [value[2], get_prom(value[2], total[2])],
+            [value[3], get_prom(value[3], total[3])],
+            [value[4], get_prom(value[4], total[4])],
+            [value[5], get_prom(value[5], total[5])],
+            [value[6], get_prom(value[6], total[6])],
+            [value[7], get_prom(value[7], total[7])]]
+    return tabla2
 
 def get_prom_lista(tabla, total):
     tabla2 = {}
