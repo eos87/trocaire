@@ -84,6 +84,15 @@ a{
 .func_sprite:hover{
     background-position: 0 -28px;
 }
+.filtro_sprite{
+    background: url(/files/img/filtro_sprite.png) no-repeat;
+    display: inline-block;
+    width: 92px;
+    height: 28px;
+}
+.filtro_sprite:hover{
+    background-position: 0 -28px;
+}
 .banner{
     background: url(/files/img/banner.png) repeat-x;
     height: 286px;    
