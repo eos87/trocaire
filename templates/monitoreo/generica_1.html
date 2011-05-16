@@ -55,15 +55,21 @@
             }else if(id=='m18_mas'){
                 titulo = '{{totales.2}} Mujeres mayores de 18 años';
                 series = [{% for key, value in tabla.items %}{% if value.2.1 != 0 %}{name: '{{key}}',data: [{{value.2.1}}]}, {% endif %}{% endfor %}]
+            }else if(id=='todas'){
+                titulo = '{{totales.3}} Todas las mujeres';
+                series = [{% for key, value in tabla.items %}{% if value.3.1 != 0 %}{name: '{{key}}',data: [{{value.3.1}}]}, {% endif %}{% endfor %}]
             }else if(id=='h10_13'){
                 titulo = '{{totales.4}} Hombres de 10-13 años';
-                series = [{% for key, value in tabla.items %}{% if value.3.1 != 0 %}{name: '{{key}}',data: [{{value.3.1}}]}, {% endif %}{% endfor %}]
+                series = [{% for key, value in tabla.items %}{% if value.4.1 != 0 %}{name: '{{key}}',data: [{{value.4.1}}]}, {% endif %}{% endfor %}]
             }else if(id=='h14_18'){
                 titulo = '{{totales.5}} Hombres de 14-18 años';
-                series = [{% for key, value in tabla.items %}{% if value.4.1 != 0 %}{name: '{{key}}',data: [{{value.4.1}}]}, {% endif %}{% endfor %}]
+                series = [{% for key, value in tabla.items %}{% if value.5.1 != 0 %}{name: '{{key}}',data: [{{value.5.1}}]}, {% endif %}{% endfor %}]
             }else if(id=='h18_mas'){
                 titulo = '{{totales.6}} Hombres mayores de 18 años';
-                series = [{% for key, value in tabla.items %}{% if value.5.1 != 0 %}{name: '{{key}}',data: [{{value.5.1}}]}, {% endif %}{% endfor %}]
+                series = [{% for key, value in tabla.items %}{% if value.6.1 != 0 %}{name: '{{key}}',data: [{{value.6.1}}]}, {% endif %}{% endfor %}]
+            }else if(id=='todos'){
+                titulo = '{{totales.7}} Todos los hombres';
+                series = [{% for key, value in tabla.items %}{% if value.7.1 != 0 %}{name: '{{key}}',data: [{{value.7.1}}]}, {% endif %}{% endfor %}]
             }
             chart = new Highcharts.Chart({
                 chart: {
@@ -108,12 +114,14 @@
     <div id= "grafosmujer" class="barra">
         <a href="#" id="m10_13" class="grafos">10-13 años</a>
         <a href="#" id="m14_18" class="grafos">14-18 años</a>
-        <a href="#" id="m18_mas" class="grafos">Mayores 18 años</a>        
+        <a href="#" id="m18_mas" class="grafos">18+ años</a>
+        <a href="#" id="todas" class="grafos">Todas</a>
     </div>
     <div id= "grafoshombre" class="barra">
         <a href="#" id="h10_13" class="grafos">10-13 años</a>
         <a href="#" id="h14_18" class="grafos">14-18 años</a>
-        <a href="#" id="h18_mas" class="grafos">Mayores 18 años</a><br>
+        <a href="#" id="h18_mas" class="grafos">18+ años</a>
+        <a href="#" id="todos" class="grafos">Todos</a>
     </div>
     <div class="clean"></div>
     <div id="container"></div>
