@@ -39,10 +39,10 @@
             var series;
             var titulo;
             if(id=='m10_13'){
-                titulo = 'Mujeres de 10-13 años';
+                titulo = '{{totales.0}} Mujeres';
                 series = [{data: [{% for key, value in tabla.items %}['{{key}}', {{value.0.0}}],{% endfor %}]}]
             }else if(id=='m14_18'){
-                titulo = 'Mujeres de 14-17 años';
+                titulo = '{{totales.1}} Hombres';
                 series = [{data: [{% for key, value in tabla.items %}['{{key}}', {{value.1.0}}],{% endfor %}]}]
             }
             chart = new Highcharts.Chart({
