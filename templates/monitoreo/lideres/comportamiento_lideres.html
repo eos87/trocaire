@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block extratitle %}Acciones prohibidas por la ley{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript" src="/files/js/highcharts.js"></script>
+<script type="text/javascript" src="/files/js/exporting.js"></script>
+<script type="text/javascript">
+    var plotOptions = {
+        column: {
+            stacking: 'normal'
+        },
+        series: {
+            dataLabels: {
+                enabled: true,
+                align: 'center',
+                color: '#000',
+                formatter: function() {
+                    if(this.percentage.toFixed(1)!=0.00){
+                        return this.percentage.toFixed(1);
+                    }
+                },
+                style: {
+                    font: '12px Trebuchet MS, Verdana, sans-serif'
+                }
+            }
+        }
+    }
+    var tooltip = {
+        formatter: function() {
+            return '<b>'+ this.x +'</b><br/>'+
+                this.series.name +': '+ this.y +'<br/>'+
+                'Total: '+ this.point.stackTotal;
+        }
+    }
+    var chart;
+    $(document).ready(function(){
+        $('.grafos').click(function(){
+            var id = $(this).attr('id');
+            var series;
+            var titulo;
+            if(id=='m10_13'){
+                titulo = 'Mujeres';
+                series = [{% for key, value in grafico.1.items %}{
+                        name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
+                        data: {{value}}}, {% endfor %}]
+            }else if(id=='m14_18'){
+                titulo = 'Hombres';
+                series = [{% for key, value in grafico.2.items %}{
+                        name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
+                        data: {{value}}}, {% endfor %}]
+            }   
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container',
+                    defaultSeriesType: 'column'
+                },
+                title: {
+                    text: 'Como deben comportarse los hombres y las mujeres'
+                },
+                subtitle: {
+                    text: titulo
+                },
+                xAxis: {
+                    categories: [{% for key, value in tabla.items %}'{{key}}',{% endfor %}]
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Respuesta'
+                    }
+                },
+
+                tooltip: tooltip,
+                plotOptions: plotOptions,
+                series: series
+            });
+            return false;
+        });
+    });
+</script>
+{% endblock %}
+
+{% block contenido %}
+<!-- BEGIN tabla de la MUERTE-->
+<div class="title_bar">
+    <div class="titulo">Como deben comportarse los hombres y las mujeres</div>
+    <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
+</div>
+<div class="contraparts"><br>
+    <div id= "grafosmujer" class="barra">
+        <a href="#" id="m10_13" class="grafos">Grafico Mujeres</a>
+    </div>
+    <div id= "grafoshombre" class="barra">
+        <a href="#" id="m14_18" class="grafos">Gr&aacute;fico Hombres</a>
+    </div>
+    <div class="clean"></div>
+    <div id="container"></div>
+</div>
+<br>
+<div>
+    <table class="tabla-resultados">
+        <caption>TOTALES</caption>
+        <thead>
+            <tr>
+                <th rowspan="2">Categorias</th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>TOTAL ENCUESTADOS</td>
+                <td>{{totales.0}}</td>
+                <td>{{totales.1}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>    
+    <table class="tabla-resultados">
+        <caption>Como deben comportarse los hombres y las mujeres</caption>
+        <thead>
+            <tr>
+                <th rowspan="3">Categorias</th>
+                <th colspan="4">Mujeres</th>
+                <th colspan="4">Hombres</th>
+            </tr>
+            <tr>
+                {% for grupo in tabla.items.0.1.items.0.1|slice:":2" %}
+                {% for k in CREENCIAS_VBG_RESP %}
+                <th>{{k.1}}</th>
+                {% endfor %}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, value in tabla.items %}
+            <tr>
+                <td>{{key}}</td>
+                {% for k,v in value.items|slice:":2" %}
+                {% for valor in v %}
+                <td>{{valor.0}} ({{valor.1}}%)</td>                
+                {% endfor %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br>
+<!--FIN tabla de la MUERTE UNO-->
+{% endblock %}

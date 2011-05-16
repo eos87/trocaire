@@ -1,0 +1,351 @@
+{% extends "base.html" %}
+
+{% block extratitle %}{{titulo}}{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript" src="/files/js/highcharts.js"></script>
+<script type="text/javascript" src="/files/js/exporting.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#tabs").tabs();
+    });
+    var plotOptions = {
+        column: {
+            stacking: 'normal'
+        },
+        series: {
+            dataLabels: {
+                enabled: true,
+                align: 'center',
+                color: '#000',
+                formatter: function() {
+                    if(this.percentage.toFixed(1)!=0.00){
+                        return this.percentage.toFixed(1);
+                    }
+                },
+                style: {
+                    font: '12px Trebuchet MS, Verdana, sans-serif'
+                }
+            }
+        }
+    }
+    var tooltip = {
+        formatter: function() {
+            return '<b>'+ this.x +'</b><br/>'+
+                this.series.name +': '+ this.y +'<br/>'+
+                'Total: '+ this.point.stackTotal;
+        }
+    }
+    var chart;
+    $(document).ready(function(){
+        $('.grafos').click(function(){
+            var id = $(this).attr('id');
+            var series;
+            var titulo;
+            if(id=='m10_13'){
+                titulo = 'Mujeres de 10-13 años';
+                series = [{% for key, value in grafico.1.items %}{
+                        name: "{% if key == 1 %}De acuerdo{% else %}En desacuerdo{% endif %}",
+                        data: {{value}}}, {% endfor %}]
+            }else if(id=='m14_18'){
+                titulo = 'Mujeres de 14-18 años';
+                series = [{% for key, value in grafico.2.items %}{
+                        name: "{% if key == 1 %}De acuerdo{% else %}En desacuerdo{% endif %}",
+                        data: {{value}}}, {% endfor %}]
+            }else if(id=='m18_mas'){
+                titulo = 'Mujeres mayores de 18 años';
+                series = [{% for key, value in grafico.3.items %}{
+                        name: "{% if key == 1 %}De acuerdo{% else %}En desacuerdo{% endif %}",
+                        data: {{value}}}, {% endfor %}]
+            }else if(id=='h10_13'){
+                titulo = 'Hombres de 10-13 años';
+                series = [{% for key, value in grafico.4.items %}{
+                        name: "{% if key == 1 %}De acuerdo{% else %}En desacuerdo{% endif %}",
+                        data: {{value}}}, {% endfor %}]
+            }else if(id=='h14_18'){
+                titulo = 'Hombres de 14-18 años';
+                series = [{% for key, value in grafico.5.items %}{
+                        name: "{% if key == 1 %}De acuerdo{% else %}En desacuerdo{% endif %}",
+                        data: {{value}}}, {% endfor %}]
+            }else if(id=='h18_mas'){
+                titulo = 'Hombres mayores de 18 años';
+                series = [{% for key, value in grafico.6.items %}{
+                        name: "{% if key == 1 %}De acuerdo{% else %}En desacuerdo{% endif %}",
+                        data: {{value}}}, {% endfor %}]
+            }
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container',
+                    defaultSeriesType: 'column'
+                },
+                title: {
+                    text: '¿Cuales de las siguientes actividades realiza usted en su hogar?'
+                },
+                subtitle: {
+                    text: titulo
+                },
+                xAxis: {
+                    categories: [{% for key, value in tabla.items %}'{{key}}',{% endfor %}]
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Respuesta'
+                    }
+                },
+
+                tooltip: tooltip,
+                plotOptions: plotOptions,
+                series: series
+            });
+            return false;
+        });
+    });
+</script>
+{% endblock %}
+
+{% block contenido %}
+<!-- BEGIN tabla de la MUERTE-->
+<div class="title_bar">
+    <div class="titulo">¿Qué se debe hacer para que la solucion a un conflicto sea exitosa?</div>
+    <div class="titulo der"><a href="/monitoreo/mujeres-hombres/">&larr; Volver</a></div>
+</div>
+<div class="contraparts"><br>
+        <div id= "grafosmujer" class="barra">
+            <a href="#" id="m10_13" class="grafos">10-13 años</a>
+            <a href="#" id="m14_18" class="grafos">14-18 años</a>
+            <a href="#" id="m18_mas" class="grafos">Mayores 18 años</a>
+        </div>
+        <div id= "grafoshombre" class="barra">
+            <a href="#" id="h10_13" class="grafos">10-13 años</a>
+            <a href="#" id="h14_18" class="grafos">14-18 años</a>
+            <a href="#" id="h18_mas" class="grafos">Mayores 18 años</a><br>
+        </div>
+        <div class="clean"></div>
+<div id="container"></div>
+<br>
+    <table class="tabla-resultados" style="width:100%;">
+        <caption>TOTALES</caption>
+        <thead>
+            <tr>
+                <th rowspan="2"></th>
+                <th colspan="3">Mujeres</th>
+                <th colspan="3">Hombres</th>
+            </tr>
+            <tr>
+                <th>10-13</th>
+                <th>14-18</th>
+                <th>18-mas</th>
+                <th>10-13</th>
+                <th>14-18</th>
+                <th>18-mas</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>TOTALES ENCUESTADOS</td>
+                <td>{{totales.0}}</td>
+                <td>{{totales.1}}</td>
+                <td>{{totales.2}}</td>
+                <td>{{totales.3}}</td>
+                <td>{{totales.4}}</td>
+                <td>{{totales.5}}</td>
+            </tr>
+        </tbody>
+    </table><br>
+<div id="tabs" style="font-size:70%;">
+    <ul>
+        <li><a href="#tabla-m10-13">Mujeres 10-13 a&ntilde;os</a></li>
+        <li><a href="#tabla-m14-18">Mujeres 14-18 a&ntilde;os</a></li>
+        <li><a href="#tabla-m18mas">Mujeres 18-mas a&ntilde;os</a></li>
+        <li><a href="#tabla-h10-13">Hombres 10-13 a&ntilde;os</a></li>
+        <li><a href="#tabla-h14-18">Hombres 14-18 a&ntilde;os</a></li>
+        <li><a href="#tabla-h18mas">Hombres 18-mas a&ntilde;os</a></li>
+    </ul>
+    <div id="tabla-m10-13">
+        <table class="tabla-resultados" style="width:100%;">
+            <caption>{{titulo}} (Mujeres 13-14 años)</caption>
+            <thead>
+                <tr>
+                    <th rowspan="2">Categorias</th>
+                    <th colspan="5">Mujeres 10-13 años</th>
+                </tr>
+                <tr>
+                    {% for grupo in tabla.items.0.1.items.0.1|slice:":1" %}
+                    {% for k in DES_AC %}
+                    <th>{{k.1}}</th>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in tabla.items %}
+                <tr>
+                    <td>{{key}}</td>
+                    {% for k,v in value.items|slice:":1" %}
+                    {% for valor in v %}
+                    <td>{{valor.0}} ({{valor.1}}%)</td>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="tabla-m14-18">
+        <table class="tabla-resultados" style="width:100%;">
+            <caption>{{titulo}} (Mujeres 14-18 años)</caption>
+            <thead>
+                <tr>
+                    <th rowspan="2">Categorias</th>
+                    <th colspan="5">Mujeres 14-18 años</th>
+                </tr>
+                <tr>
+                    {% for grupo in tabla.items.0.1.items.0.1|slice:":1" %}
+                    {% for k in DES_AC %}
+                    <th>{{k.1}}</th>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in tabla.items %}
+                <tr>
+                    <td>{{key}}</td>
+                    {% for k,v in value.items|slice:"1:2" %}
+                    {% for valor in v %}
+                    <td>{{valor.0}} ({{valor.1}}%)</td>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="tabla-m18mas">
+        <table class="tabla-resultados" style="width:100%;">
+            <caption>{{titulo}} (Mujeres 18-m&aacute;s años)</caption>
+            <thead>
+                <tr>
+                    <th rowspan="2">Categorias</th>
+                    <th colspan="5">Mujeres 18-m&aacute;s años</th>
+                </tr>
+                <tr>
+                    {% for grupo in tabla.items.0.1.items.0.1|slice:":1" %}
+                    {% for k in DES_AC %}
+                    <th>{{k.1}}</th>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in tabla.items %}
+                <tr>
+                    <td>{{key}}</td>
+                    {% for k,v in value.items|slice:"2:3" %}
+                    {% for valor in v %}
+                    <td>{{valor.0}} ({{valor.1}}%)</td>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="tabla-h10-13">
+        <table class="tabla-resultados" style="width:100%;">
+            <caption>{{titulo}} (Hombres 13-14 años)</caption>
+            <thead>
+                <tr>
+                    <th rowspan="2">Categorias</th>
+                    <th colspan="5">Hombres 10-13 años</th>
+                </tr>
+                <tr>
+                    {% for grupo in tabla.items.0.1.items.0.1|slice:":1" %}
+                    {% for k in DES_AC %}
+                    <th>{{k.1}}</th>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in tabla.items %}
+                <tr>
+                    <td>{{key}}</td>
+                    {% for k,v in value.items|slice:"3:4" %}
+                    {% for valor in v %}
+                    <td>{{valor.0}} ({{valor.1}}%)</td>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="tabla-h14-18">
+        <table class="tabla-resultados">
+            <caption>{{titulo}} (Hombres 14-18 años)</caption>
+            <thead>
+                <tr>
+                    <th rowspan="2">Categorias</th>
+                    <th colspan="5">Hombres 14-18 años</th>
+                </tr>
+                <tr>
+                    {% for grupo in tabla.items.0.1.items.0.1|slice:":1" %}
+                    {% for k in DES_AC %}
+                    <th>{{k.1}}</th>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in tabla.items %}
+                <tr>
+                    <td>{{key}}</td>
+                    {% for k,v in value.items|slice:"4:5" %}
+                    {% for valor in v %}
+                    <td>{{valor.0}} ({{valor.1}}%)</td>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="tabla-h18mas">
+        <table class="tabla-resultados" style="width:100%;">
+            <caption>{{titulo}} (Hombres 18-m&aacute;s años)</caption>
+            <thead>
+                <tr>
+                    <th rowspan="2">Categorias</th>
+                    <th colspan="5">Hombres 18-m&aacute;s años</th>
+                </tr>
+                <tr>
+                    {% for grupo in tabla.items.0.1.items.0.1|slice:":1" %}
+                    {% for k in DES_AC %}
+                    <th>{{k.1}}</th>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in tabla.items %}
+                <tr>
+                    <td>{{key}}</td>
+                    {% for k,v in value.items|slice:"5:6" %}
+                    {% for valor in v %}
+                    <td>{{valor.0}} ({{valor.1}}%)</td>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+<!--FIN tabla de la MUERTE UNO-->
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+{% if not nografo %}
+<script type="text/javascript" src="/files/js/highcharts.js"></script>
+<script type="text/javascript" src="/files/js/exporting.js"></script>
+<script type="text/javascript">
+    var plotOptions = {
+        column: {
+            groupPadding: 0,
+            pointPadding: 0.9,
+            borderWidth: 0
+        },
+        series: {
+            pointWidth: 25,
+            minPointLength : 0.5
+        }
+    }
+    var tooltip = {
+        formatter: function() {
+            return ''+
+                this.series.name +': '+ this.y +'%';
+        }
+    }
+    var leyenda = {
+        layout: 'horizontal',
+        align: 'center',
+        verticalAlign: 'bottom',
+        shadow: true
+    }
+    var chart;
+    $(document).ready(function() {
+        $('.grafos').click(function(){
+            var id = $(this).attr('id');
+            var series;
+            var titulo;
+            if(id=='mujeres'){
+                titulo = 'Mujeres';
+                series = [{% for key, value in tabla.items %}{name: '{{key}}',data: [{{value.0.1}}]}, {% endfor %}]
+            }else if(id=='hombres'){
+                titulo = 'Hombres';
+                series = [{% for key, value in tabla.items %}{name: '{{key}}',data: [{{value.1.1}}]}, {% endfor %}]
+            }
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container',
+                    defaultSeriesType: 'column'
+                },
+                title: {
+                    text: '{{titulo}}'
+                },
+                subtitle: {
+                    text: titulo
+                },
+                xAxis: {
+                    categories: [
+                        'Opciones'
+                    ]
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Porcentajes'
+                    }
+                },
+                legend: leyenda,
+                tooltip: tooltip,
+                plotOptions: plotOptions,
+                series: series
+            });
+            return false;
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}
+
+{% block contenido %}
+<div class="title_bar">
+    <div class="titulo">{{titulo}}</div>
+    <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
+</div>
+<div class="contraparts">
+    {% if not nografo %}
+    <br>
+    <div id= "grafosmujer" class="barra">
+        <a href="#"  id="mujeres" class="grafos">Gráfico Mujeres</a>
+    </div>
+    <div id= "grafoshombre" class="barra">
+        <a href="#" id="hombres" class="grafos">Gráfico Hombres</a>
+    </div>
+    <br>
+    <div class="clean"></div>    
+    <div id="container"></div><br>
+    {% endif %}
+    <table class="tabla-resultados" style="width:100%;">
+        <caption>TOTALES</caption>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>TOTALES ENCUESTADOS</td>
+                <td>{{totales.0}}</td>
+                <td>{{totales.1}}</td>
+            </tr>
+        </tbody>
+    </table><br>
+    <div class="tabla-container">
+        <table class="tabla-resultados">
+            <caption>{{titulo}}</caption>
+            <thead>
+                <tr>
+                    <th>Categorias</th>
+                    <th>Mujeres</th>
+                    <th>Hombres</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in tabla.items %}
+                <tr>
+                    <td>{{key}}</td>                
+                    <td>{{value.0.0}} ({{value.0.1}}%)</td>
+                    <td>{{value.1.0}} ({{value.1.1}}%)</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -57,6 +57,33 @@ a{
 .salir_sprite:hover{
     background-position: 0 -28px;
 }
+.mh_sprite{
+    background: url(/files/img/mh_sprite.png) no-repeat;
+    display: inline-block;
+    width: 140px;
+    height: 28px;
+}
+.mh_sprite:hover{
+    background-position: 0 -28px;
+}
+.lider_sprite{
+    background: url(/files/img/lider_sprite.png) no-repeat;
+    display: inline-block;
+    width: 75px;
+    height: 28px;
+}
+.lider_sprite:hover{
+    background-position: 0 -28px;
+}
+.func_sprite{
+    background: url(/files/img/func_sprite.png) no-repeat;
+    display: inline-block;
+    width: 106px;
+    height: 28px;
+}
+.func_sprite:hover{
+    background-position: 0 -28px;
+}
 .banner{
     background: url(/files/img/banner.png) repeat-x;
     height: 286px;    
@@ -113,7 +140,6 @@ a{
 }
 .title_bar{
     height: 46px;
-    width: 100%;
     background: url(/files/img/title_bar.png) repeat-x;    
 }
 .content .wrapper{
@@ -163,6 +189,9 @@ a{
     text-decoration: none;
     color: #3f3f3f;
 }
+.tabla-resultados{
+    width: 100%;
+}
 .tabla-resultados caption{
     font-size: 14px;
     background-color: #e1e1e1;
@@ -197,3 +226,170 @@ a{
 .tabla-resultados td a:visited{
     color: #003956;
 }
+
+/*Css agregado por Byron */
+
+.der{float:right;}
+.izq{float:left;}
+
+.titulo{
+    border:#ececec 1px solid;
+    padding:4px 10px 4px 10px;
+    float:left;
+    background:#fff;
+    color:#a91051;
+    font-weight:bold;
+    font-size:17px;
+    margin:5px;
+    border-radius: 20px;
+    -webkit-border-radius: 20x ;
+    -moz-border-radius: 20px ;
+}
+
+.titulo a, 
+.titulo a:visited{
+    color:#4086ad;
+    text-decoration:none;
+}
+
+.titulo a:hover{
+    color:#306480;
+}
+
+.marco-interior{padding:15px;}
+
+#id_year, #id_iglesia, #id_nivel_educativo{
+    background:#d8e2e6;
+    border-top:#fff 1px solid;
+    border-left:#fff 1px solid;
+    border-right:#90aab6 1px solid;
+    border-bottom:#90aab6 1px solid;
+    width:100%;
+    height:30px;
+}
+
+label #id_year{
+    font-size:12px;
+}
+
+.formseccion{
+    background:url(/files/img/degradadoazul.png) repeat-x;
+    height:24px;
+    color:#fff;
+    padding-left:8px;
+    font-size:14px !important;
+    width:450px;
+    margin-left:10px;
+}
+
+#tabla-form table{
+    margin-left:15px;
+    font-size:12px;
+ table-layout:fixed;
+}
+
+
+#consultar{
+    background:url(/files/img/consultar.png);
+    width:165px;
+    height:34px;
+    border:0;
+    margin-left:15px;
+}
+
+#menufiltros{
+    background:#eef7f7;
+    height:80px;
+    width:100%;
+}
+
+#menufiltros img{ margin:10px;}
+
+#menu-indicadores ul{
+    width:400px;
+    float: left;
+    font-size:13px;
+    list-display:none;
+}
+
+#menu-indicadores ul span{
+    font-size:14px;
+    font-weight:bold;
+}
+
+#menu-indicadores ul li{
+    border: #000 1px solid;
+    background:grey;
+    margin:5px;
+}
+
+#menu-indicadores ul a{
+    display:block;
+    float:left;
+    margin:5px;
+    background:#eef7f7;
+    width:100%;
+    text-decoration:none;
+    color:#397da4;
+    padding:5px;
+    border:#cae4f2 1px dashed;
+}
+
+#menu-indicadores ul a:hover{
+    background:#d4ebeb;
+
+}
+
+#grafosmujer{
+    float:left;
+    width:350px;
+    background:#a1476d url(/files/img/mujeresbarra.png) no-repeat;
+    height:30px;
+    padding-left:130px;
+}
+
+#grafoshombre{
+    float:left;
+    width:350px;
+    background:#4086ad url(/files/img/hombresbarra.png) no-repeat;
+    height:30px;
+    padding-left:130px;
+}
+
+#grafosmujer a{
+    color:#5c3566;
+}
+
+#grafoshombre a{
+    color:#204356;
+}
+
+.barra{
+    font-size:12px;
+}
+
+.barra a, .barra a:visited{
+    display:block;
+    margin:4px 5px 0px 5px;
+    float:left;
+    padding:1px 10px 1px 10px;
+    background:url(/files/img/fondobotonbarra.png) repeat-x;
+    border-radius: 20px;
+    -webkit-border-radius: 20x ;
+    -moz-border-radius: 20px ;
+    text-decoration:none;
+    font-weight:bold;
+    border:#fff solid 1px;
+    -moz-box-shadow: 0px 0px 10px #3b1a28;
+    -webkit-box-shadow: 0px 0px 10px #3b1a28;
+}
+
+.barra a:hover{
+    background:#fff;
+}
+#container{
+    padding-left: 1px;
+}
+
+
+

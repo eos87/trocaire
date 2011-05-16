@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block extratitle %}{{titulo}}{% endblock %}
+
+{% block contenido %}
+<div class="title_bar">
+    <div class="titulo">{{titulo}}</div>
+    <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
+</div>
+<div class="contraparts"><br>
+    <table class="tabla-resultados" style="width:100%;">
+        <caption>TOTALES</caption>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>TOTALES ENCUESTADOS</td>
+                <td>{{totales.0}}</td>
+                <td>{{totales.1}}</td>
+            </tr>
+        </tbody>
+    </table><br>
+    <table class="tabla-resultados" style="width:100%;">
+        <caption>TOTALES DE CASOS REGISTRADOS</caption>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>CASOS REGISTRADOS</td>
+                <td>{{tabla.1}}</td>
+                <td>{{tabla.2}}</td>
+            </tr>
+        </tbody>
+    </table><br>
+
+</div>
+{% endblock %}

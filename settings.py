@@ -53,7 +53,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-#    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 #INTERNAL_IPS = ('127.0.0.1',)
 
@@ -76,3 +76,13 @@ INSTALLED_APPS = (
     #'debug_toolbar',
 )
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+TEMPLATE_CONTEXT_PROCESSORS=(
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    #"django.core.context_processors.static",
+    "django.contrib.messages.context_processors.messages",
+    "trocaire.context.variables",
+)

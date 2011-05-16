@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad?{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript" src="/files/js/highcharts.js"></script>
+<script type="text/javascript" src="/files/js/exporting.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var plotOptions = {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: false
+            },
+            showInLegend: true
+        },
+        series: {
+            dataLabels: {
+                enabled: true,
+                align: "center",
+                formatter: function() {
+                    return ''+ this.percentage.toFixed(2) + ' %';
+                },
+                color: '#000',
+                style: {
+                    font: '12px Trebuchet MS, Verdana, sans-serif'
+                }
+            }
+        }
+    }
+    var tooltip = {
+        formatter: function() {
+            return '<b>'+ this.point.name +'</b>: '+ this.percentage.toFixed(2) +'%';
+        }
+    }
+
+    $(document).ready(function(){
+        $("#tabs").tabs();
+        $(".graficos").tabs();
+        $(".graficos1").tabs();
+    });
+    $(document).ready(function(){
+        {% for key, value in grafico.items %}
+        var mchart{{forloop.counter}} = new Highcharts.Chart({
+            chart: {
+                renderTo: 'mujeres-{{forloop.counter}}',
+                defaultSeriesType: 'pie',
+                height: 480,
+                width: 900
+            },
+            title: {
+                text: 'Opcion {{key}}'
+            },            
+            tooltip: tooltip,
+            plotOptions: plotOptions,
+            series: [{data: [{% for valor in value|slice:"5" %}['{{valor.items.0.0}}', {{valor.items.0.1.0}}],{% endfor %}]}]
+        });    
+        {% endfor %}
+        {% for key, value in grafico.items %}
+        var hchart{{forloop.counter}} = new Highcharts.Chart({
+            chart: {
+                renderTo: 'hombres-{{forloop.counter}}',
+                defaultSeriesType: 'pie',
+                height: 480,
+                width: 900
+            },
+            title: {
+                text: 'Opcion {{key}}'
+            },            
+            tooltip: tooltip,
+            plotOptions: plotOptions,
+            series: [{data: [{% for valor in value|slice:"5:10" %}['{{valor.items.0.0}}', {{valor.items.0.1.0}}],{% endfor %}]}]
+        });
+        {% endfor %}
+    });
+</script>
+{% endblock %}
+
+{% block contenido %}
+<div class="title_bar">
+    <div class="titulo">¿Menciones los pasos de la ruta cr&iacute;tica de la violencia?</div>
+    <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
+</div>
+<div class="contraparts"><br>
+<table class="tabla-resultados" style="width:100%;">
+        <caption>TOTALES</caption>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>TOTALES ENCUESTADOS</td>
+                <td>{{totales.0}}</td>
+                <td>{{totales.1}}</td>
+            </tr>
+        </tbody>
+    </table><br>
+<div id="tabs" style="font-size:70%;">
+    <ul>
+        <li><a href="#tabla-mujeres">Mujeres</a></li>
+        <li><a href="#tabla-hombres">Hombres</a></li>
+    </ul>
+    <div id="tabla-mujeres">        
+        <table class="tabla-resultados">
+            <caption>¿Menciones los pasos de la ruta cr&iacute;tica de la violencia? (Mujeres)</caption>
+            <thead>
+                <tr>
+                    <th rowspan="2">Categorias</th>
+                    <th colspan="6">Mujeres</th>
+                </tr>
+                <tr>
+                    {% for a in opciones %}
+                    <th>{{a}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in tabla.items %}
+                <tr>
+                    <td>{{key}}</td>
+                    {% for k, valor in value.items|slice:":1" %}
+                    {% for a, b in valor.items %}
+                    <td>{{b.0}} ({{b.1}} %)</td>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td>Totales</td>
+                    {% for total in totales_vertical|slice:"5" %}
+                    <td>
+                        {{total}}
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <h2>Gr&aacute;ficos</h2>
+        <div class="graficos1">
+             <ul>
+                {% for opcion in opciones %}
+                <li><a href="#mujeres-{{opcion}}">Opcion {{opcion}}</a></li>
+                {% endfor %}
+            </ul>
+            {% for key, value in tabla.items %}
+            <div id="mujeres-{{forloop.counter}}"></div>
+            {% endfor %}
+            <div class="clean"></div>
+        </div>
+    </div>
+    <div id="tabla-hombres">
+        <table class="tabla-resultados">
+            <caption>¿Menciones los pasos de la ruta cr&iacute;tica de la violencia? (Hombres)</caption>
+            <thead>
+                <tr>
+                    <th rowspan="2">Categorias</th>
+                    <th colspan="6">Hombres</th>
+                </tr>
+                <tr>
+                    {% for a in opciones %}
+                    <th>{{a}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, value in tabla.items %}
+                <tr>
+                    <td>{{key}}</td>
+                    {% for k, valor in value.items|slice:"1:2" %}
+                    {% for a, b in valor.items %}
+                    <td>{{b.0}} ({{b.1}} %)</td>
+                    {% endfor %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td>Totales</td>
+                    {% for total in totales_vertical|slice:"5:10" %}
+                    <td>
+                        {{total}}
+                    </td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <h2>Gr&aacute;ficos</h2>
+        <div class="graficos">
+             <ul>
+                {% for opcion in opciones %}
+                <li><a href="#hombres-{{opcion}}">Opcion {{opcion}}</a></li>
+                {% endfor %}
+            </ul>
+            {% for key, value in tabla.items %}
+            <div id="hombres-{{forloop.counter}}" style="width: 900px;"></div>
+            {% endfor %}            
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

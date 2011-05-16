@@ -10,16 +10,86 @@
 {% endblock %}
 
 {% block contenido %}
-<form action="." method="POST">{% csrf_token %}
-    <table>
-        {{form.as_table}}
-    </table>
-    <input type="submit" value="Consultar"/>
-</form>
-{% if centinela == 1 %}
-<div><br>
-    <a href="/monitoreo/mujeres-hombres/">Mujeres y Hombres</a> | <a href="/monitoreo/lideres/">Lideres, Lideresas y Docentes</a> | <a href="/monitoreo/funcionarios/">Funcionarios</a>
-    <br>
+<div class="title_bar">
+    <div class="titulo">Seleccion de Filtros</div>
+    <div class="clean"></div>
 </div>
-{% endif %}
+<div class="contraparts">
+<br>
+    <form action="." method="POST">{% csrf_token %}
+        <div id="tabla-form">
+        <div class="formseccion izq">1. GENERALES</div>
+        <div class="formseccion der">2. UBICACION</div>
+            <table width="460" class="izq">
+                <tr>
+                    <td width="30%">
+                        {{ form.year.label_tag }}
+                    </td>
+                    <td width="70%">
+                        {{form.year}}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="30%">
+                        {{ form.nivel_educativo.label_tag }}
+                    </td>
+                    <td width="70%">
+                        {{form.nivel_educativo}}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="30%">
+                        {{ form.iglesia.label_tag }}
+                    </td>
+                    <td width="70%">
+                        {{form.iglesia}}
+                    </td>
+                </tr>
+            </table>
+            <table width="460" class="der">
+                <tr>
+                    <td width="30%">
+                        {{ form.pais.label_tag }}
+                    </td>
+                    <td width="70%">
+                        {{form.pais}}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="30%">
+                        {{ form.departamento.label_tag }}
+                    </td>
+                    <td width="70%">
+                        {{form.departamento}}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="30%">
+                        {{ form.organizacion.label_tag }}
+                    </td>
+                    <td width="70%">
+                        {{form.organizacion}}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="30%">
+                        {{ form.municipio.label_tag }}
+                    </td>
+                    <td width="70%">
+                        {{form.municipio}}
+                    </td>
+                </tr>                
+            </table>
+            <div class="clean"></div>
+        </div>
+        <input id="consultar" type="submit" value=""/>
+    </form>
+    {% if centinela == 1 %}
+    <br>
+    <div id="menufiltros">
+        <a href="/monitoreo/mujeres-hombres/"><img src="/files/img/mujeres.jpg"></a> <a href="/monitoreo/lideres/"><img src="/files/img/docentes.jpg"></a> <a href="/monitoreo/funcionarios/"><img src="/files/img/funcionarios.jpg"></a>
+        <br>
+    </div>
+    {%endif%}
+</div>
 {% endblock %}

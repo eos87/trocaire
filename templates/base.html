@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
     <head>
-        <title>Programa contra Violencia Basada en G&eacute;nero | {% block extratitle %}{% endblock %}</title>
+        <title>Trocaire VBG | {% block extratitle %}{% endblock %}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
         <link type="text/css" rel="stylesheet"  href="/files/css/trocaire.css" >
@@ -17,6 +17,11 @@
                     <a href="/" title="Inicio"><img src="/files/img/trocaire-logo-front.png" alt="trocaire logo"></a>
                 </div>
                 <div class="nav">
+                    {% if centinela == 1 %}
+                    <a href="/monitoreo/mujeres-hombres/" class="mh_sprite"></a>
+                    <a href="/monitoreo/lideres/" class="lider_sprite"></a>
+                    <a href="/monitoreo/funcionarios/" class="func_sprite"></a>
+                    {% endif %}
                     <a href="/admin/" class="admin_sprite"></a>
                     {% if user.is_authenticated %}
                     <a href="/logout/" class="salir_sprite"></a>

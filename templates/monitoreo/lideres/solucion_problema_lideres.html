@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block extratitle %}{{titulo}}{% endblock %}
+
+{% block extrahead %}
+{% if not nografo %}
+<script type="text/javascript" src="/files/js/highcharts.js"></script>
+<script type="text/javascript" src="/files/js/exporting.js"></script>
+<script type="text/javascript">
+    var plotOptions = {
+        column: {
+            stacking: 'normal'
+        },
+        series: {
+            dataLabels: {
+                enabled: true,
+                align: 'center',
+                color: '#000',
+                formatter: function() {
+                    if(this.percentage.toFixed(1)!=0.00){
+                        return this.percentage.toFixed(1);
+                    }
+                },
+                style: {
+                    font: '12px Trebuchet MS, Verdana, sans-serif'
+                }
+            }
+        }
+    }
+    var tooltip = {
+        formatter: function() {
+            return '<b>'+ this.x +'</b><br/>'+
+                this.series.name +': '+ this.y +'<br/>'+
+                'Total: '+ this.point.stackTotal;
+        }
+    }
+    var chart;
+    $(document).ready(function(){
+        $('.grafos').click(function(){
+            var id = $(this).attr('id');
+            var series;
+            var titulo;
+            if(id=='m10_13'){
+                titulo = 'Mujeres de 10-13 años';
+                series = [{% for key, value in grafico.1.items %}{
+                        name: "{% if key == 1 %}De acuerdo{% else %}En desacuerdo{% endif %}",
+                        data: {{value}}}, {% endfor %}]
+            }else if(id=='m14_18'){
+                titulo = 'Mujeres de 14-18 años';
+                series = [{% for key, value in grafico.2.items %}{
+                        name: "{% if key == 1 %}De acuerdo{% else %}En desacuerdo{% endif %}",
+                        data: {{value}}}, {% endfor %}]
+            }
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container',
+                    defaultSeriesType: 'column'
+                },
+                title: {
+                    text: '¿Cuales de las siguientes actividades realiza usted en su hogar?'
+                },
+                subtitle: {
+                    text: titulo
+                },
+                xAxis: {
+                    categories: [{% for key, value in tabla.items %}'{{key}}',{% endfor %}]
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Respuesta'
+                    }
+                },
+
+                tooltip: tooltip,
+                plotOptions: plotOptions,
+                series: series
+            });
+            return false;
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}
+
+{% block contenido %}
+<div class="title_bar">
+    <div class="titulo">{{titulo}}</div>
+    <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
+</div>
+<div class="contraparts"><br>
+    {% if not nografo %}
+    <div id= "grafosmujer" class="barra">
+        <a href="#" id="m10_13" class="grafos">Gr&aacute;fico Mujeres</a>
+    </div>
+    <div id= "grafoshombre" class="barra">
+        <a href="#" id="m14_18" class="grafos">Gr&aacute;fico Hombres</a>
+    </div>
+    <div class="clean"></div>
+    <div id="container"></div>
+    {% endif %}
+</div>
+<div>
+    <table class="tabla-resultados">
+        <caption>TOTALES</caption>
+        <thead>
+            <tr>
+                <th rowspan="2">Categorias</th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>TOTAL ENCUESTADOS</td>
+                <td>{{totales.0}}</td>
+                <td>{{totales.1}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <table class="tabla-resultados">
+        <caption>{{titulo}}:</caption>
+        <thead>
+            <tr>
+                <th rowspan="2">Categoría</th>
+                <th colspan="2">Mujeres</th>
+                <th colspan="2">Hombres</th>
+            </tr>
+            <tr>
+                <th>De acuerdo</th>
+                <th>En desacuerdo</th>
+                <th>De acuerdo</th>
+                <th>En desacuerdo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, value in tabla.items %}
+            <tr>
+                <td>{{key}}</td>
+                {% for llave, valor in value.items %}
+                {% for a in valor %}
+                <td>{{a.0}} ({{a.1}} %)</td>
+                {% endfor %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
