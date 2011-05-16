@@ -45,7 +45,7 @@
                         name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
             }else if(id=='m14_18'){
-                titulo = 'Mujeres de 14-18 años';
+                titulo = 'Mujeres de 14-17 años';
                 series = [{% for key, value in grafico.2.items %}{
                         name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]

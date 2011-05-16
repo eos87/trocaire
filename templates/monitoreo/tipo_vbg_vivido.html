@@ -39,7 +39,7 @@
                 titulo = 'Mujeres de 10-13 años';
                 series = [{% for key, value in tabla.items %}{name: '{{key}}',data: [{{value.0.1}}]}, {% endfor %}]
             }else if(id=='m14_18'){
-                titulo = 'Mujeres de 14-18 años';
+                titulo = 'Mujeres de 14-17 años';
                 series = [{% for key, value in tabla.items %}{name: '{{key}}',data: [{{value.1.1}}]}, {% endfor %}]
             }else if(id=='m18_mas'){
                 titulo = 'Mujeres mayores de 18 años';
@@ -86,7 +86,7 @@
 <div class="contraparts"><br>
         <div id= "grafosmujer" class="barra">
             <a href="#" id="m10_13" class="grafos">10-13 años</a>
-            <a href="#" id="m14_18" class="grafos">14-18 años</a>
+            <a href="#" id="m14_18" class="grafos">14-17 años</a>
             <a href="#" id="m18_mas" class="grafos">Mayores 18 años</a>
         </div>
         <div class="clean"></div>
@@ -101,7 +101,7 @@
             </tr>
             <tr>
                 <th>10-13</th>
-                <th>14-18</th>
+                <th>14-17</th>
                 <th>18-mas</th>
             </tr>
         </thead>
@@ -124,7 +124,7 @@
         </tr>
         <tr>
             <th>10-13</th>
-            <th>14-18</th>
+            <th>14-17</th>
             <th>18-mas</th>
         </tr>
     </thead>

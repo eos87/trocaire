@@ -51,7 +51,7 @@
                         name: "{% if key == 1 %}Siempre{% else %}{% if key == 2 %}Frecuentemente{% else %}{% if key == 3 %}A veces{% else %}{% if key == 4 %}Nunca{% else %}No aplica{% endif %}{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
             }else if(id=='m14_18'){
-                titulo = 'Mujeres de 14-18 años';
+                titulo = 'Mujeres de 14-17 años';
                 series = [{% for key, value in grafico.2.items %}{
                         name: "{% if key == 1 %}Siempre{% else %}{% if key == 2 %}Frecuentemente{% else %}{% if key == 3 %}A veces{% else %}{% if key == 4 %}Nunca{% else %}No aplica{% endif %}{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
@@ -66,7 +66,7 @@
                         name: "{% if key == 1 %}Siempre{% else %}{% if key == 2 %}Frecuentemente{% else %}{% if key == 3 %}A veces{% else %}{% if key == 4 %}Nunca{% else %}No aplica{% endif %}{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
             }else if(id=='h14_18'){
-                titulo = 'Hombres de 14-18 años';
+                titulo = 'Hombres de 14-17 años';
                 series = [{% for key, value in grafico.5.items %}{
                         name: "{% if key == 1 %}Siempre{% else %}{% if key == 2 %}Frecuentemente{% else %}{% if key == 3 %}A veces{% else %}{% if key == 4 %}Nunca{% else %}No aplica{% endif %}{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
@@ -146,7 +146,7 @@
     <div id="tabs" style="font-size:70%;">
         <ul>
             <li><a href="#tabla-m10-13">Mujeres</a></li>
-            <li><a href="#tabla-m14-18">Hombres</a></li>
+            <li><a href="#tabla-m14-17">Hombres</a></li>
         </ul>
         <div id="tabla-m10-13">
             <table class="tabla-resultados">
@@ -178,7 +178,7 @@
                 </tbody>
             </table>
         </div>
-        <div id="tabla-m14-18">
+        <div id="tabla-m14-17">
             <table class="tabla-resultados">
                 <caption>Cuales de las siguientes actividades realiza usted en su hogar? (Hombres)</caption>
                 <thead>

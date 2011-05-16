@@ -50,7 +50,7 @@
                 titulo = '{{totales.0}} Mujeres de 10-13 años';
                 series = [{% for key, value in tabla.items %}{% if value.0.1 != 0 %}{name: '{{key}}',data: [{{value.0.1}}]}, {% endif %}{% endfor %}]
             }else if(id=='m14_18'){
-                titulo = '{{totales.1}} Mujeres de 14-18 años';
+                titulo = '{{totales.1}} Mujeres de 14-17 años';
                 series = [{% for key, value in tabla.items %}{% if value.1.1 != 0 %}{name: '{{key}}',data: [{{value.1.1}}]}, {% endif %}{% endfor %}]
             }else if(id=='m18_mas'){
                 titulo = '{{totales.2}} Mujeres mayores de 18 años';
@@ -62,7 +62,7 @@
                 titulo = '{{totales.4}} Hombres de 10-13 años';
                 series = [{% for key, value in tabla.items %}{% if value.4.1 != 0 %}{name: '{{key}}',data: [{{value.4.1}}]}, {% endif %}{% endfor %}]
             }else if(id=='h14_18'){
-                titulo = '{{totales.5}} Hombres de 14-18 años';
+                titulo = '{{totales.5}} Hombres de 14-17 años';
                 series = [{% for key, value in tabla.items %}{% if value.5.1 != 0 %}{name: '{{key}}',data: [{{value.5.1}}]}, {% endif %}{% endfor %}]
             }else if(id=='h18_mas'){
                 titulo = '{{totales.6}} Hombres mayores de 18 años';
@@ -113,13 +113,13 @@
     <br>
     <div id= "grafosmujer" class="barra">
         <a href="#" id="m10_13" class="grafos">10-13 años</a>
-        <a href="#" id="m14_18" class="grafos">14-18 años</a>
+        <a href="#" id="m14_18" class="grafos">14-17 años</a>
         <a href="#" id="m18_mas" class="grafos">18+ años</a>
         <a href="#" id="todas" class="grafos">Todas</a>
     </div>
     <div id= "grafoshombre" class="barra">
         <a href="#" id="h10_13" class="grafos">10-13 años</a>
-        <a href="#" id="h14_18" class="grafos">14-18 años</a>
+        <a href="#" id="h14_18" class="grafos">14-17 años</a>
         <a href="#" id="h18_mas" class="grafos">18+ años</a>
         <a href="#" id="todos" class="grafos">Todos</a>
     </div>
@@ -136,11 +136,11 @@
             </tr>
             <tr>
                 <th>10-13</th>
-                <th>14-18</th>
+                <th>14-17</th>
                 <th>18-mas</th>
                 <th>Todas</th>
                 <th>10-13</th>
-                <th>14-18</th>
+                <th>14-17</th>
                 <th>18-mas</th>
                 <th>Todos</th>
             </tr>
@@ -170,11 +170,11 @@
             </tr>
             <tr>
                 <th>10-13</th>
-                <th>14-18</th>
+                <th>14-17</th>
                 <th>18-mas</th>
                 <th>Todas</th>
                 <th>10-13</th>
-                <th>14-18</th>
+                <th>14-17</th>
                 <th>18-mas</th>
                 <th>Todos</th>
             </tr>
