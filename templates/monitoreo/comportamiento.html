@@ -40,32 +40,32 @@
             var series;
             var titulo;
             if(id=='m10_13'){
-                titulo = 'Mujeres de 10-13 años';
+                titulo = '{{totales.0}} Mujeres de 10-13 años';
                 series = [{% for key, value in grafico.1.items %}{
                         name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
             }else if(id=='m14_18'){
-                titulo = 'Mujeres de 14-18 años';
+                titulo = '{{totales.1}} Mujeres de 14-17 años';
                 series = [{% for key, value in grafico.2.items %}{
                         name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
             }else if(id=='m18_mas'){
-                titulo = 'Mujeres mayores de 18 años';
+                titulo = '{{totales.2}} Mujeres mayores de 18 años';
                 series = [{% for key, value in grafico.3.items %}{
                         name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
             }else if(id=='h10_13'){
-                titulo = 'Hombres de 10-13 años';
+                titulo = '{{totales.3}} Hombres de 10-13 años';
                 series = [{% for key, value in grafico.4.items %}{
                         name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
             }else if(id=='h14_18'){
-                titulo = 'Hombres de 14-18 años';
+                titulo = '{{totales.4}} Hombres de 14-17 años';
                 series = [{% for key, value in grafico.5.items %}{
                         name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
             }else if(id=='h18_mas'){
-                titulo = 'Hombres mayores de 18 años';
+                titulo = '{{totales.5}} Hombres mayores de 18 años';
                 series = [{% for key, value in grafico.6.items %}{
                         name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
@@ -111,12 +111,12 @@
 <div class="contraparts"><br>
         <div id= "grafosmujer" class="barra">
             <a href="#" id="m10_13" class="grafos">10-13 años</a>
-            <a href="#" id="m14_18" class="grafos">14-18 años</a>
+            <a href="#" id="m14_18" class="grafos">14-17 años</a>
             <a href="#" id="m18_mas" class="grafos">Mayores 18 años</a>
         </div>
         <div id= "grafoshombre" class="barra">
             <a href="#" id="h10_13" class="grafos">10-13 años</a>
-            <a href="#" id="h14_18" class="grafos">14-18 años</a>
+            <a href="#" id="h14_18" class="grafos">14-17 años</a>
             <a href="#" id="h18_mas" class="grafos">Mayores 18 años</a><br>
         </div>
         <div class="clean"></div>
@@ -133,10 +133,10 @@
                 </tr>
                 <tr>
                     <th>10-13</th>
-                    <th>14-18</th>
+                    <th>14-17</th>
                     <th>18-mas</th>
                     <th>10-13</th>
-                    <th>14-18</th>
+                    <th>14-17</th>
                     <th>18-mas</th>
                 </tr>
             </thead>
@@ -161,7 +161,7 @@
                 </tr>
                 <tr>
                     <th colspan="4">10-13</th>
-                    <th colspan="4">14-18</th>
+                    <th colspan="4">14-17</th>
                     <th colspan="4">18-mas</th>
                 </tr>
                 <tr>
@@ -198,7 +198,7 @@
             </tr>
             <tr>
                 <th colspan="4">10-13</th>
-                <th colspan="4">14-18</th>
+                <th colspan="4">14-17</th>
                 <th colspan="4">18-mas</th>
             </tr>
             <tr>

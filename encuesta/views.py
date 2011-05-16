@@ -57,20 +57,20 @@ def _query_set_filtrado(request, tipo='mujer'):
     dicc = {}
     if tipo == 'mujer':
         dicc[1] = Mujer.objects.filter(edad__range=(10, 13), ** params)
-        dicc[2] = Mujer.objects.filter(edad__range=(14, 18), ** params)
+        dicc[2] = Mujer.objects.filter(edad__range=(14, 17), ** params)
         dicc[3] = Mujer.objects.filter(edad__gt=18, ** params)        
         dicc[4] = Hombre.objects.filter(edad__range=(10, 13), ** params)
-        dicc[5] = Hombre.objects.filter(edad__range=(14, 18), ** params)
+        dicc[5] = Hombre.objects.filter(edad__range=(14, 17), ** params)
         dicc[6] = Hombre.objects.filter(edad__gt=18, ** params)
         return dicc
 
     if tipo == 'especial':
         dicc[1] = Mujer.objects.filter(edad__range=(10, 13), ** params)
-        dicc[2] = Mujer.objects.filter(edad__range=(14, 18), ** params)
+        dicc[2] = Mujer.objects.filter(edad__range=(14, 17), ** params)
         dicc[3] = Mujer.objects.filter(edad__gt=18, ** params)
         dicc[4] = Mujer.objects.filter(** params)
         dicc[5] = Hombre.objects.filter(edad__range=(10, 13), ** params)
-        dicc[6] = Hombre.objects.filter(edad__range=(14, 18), ** params)
+        dicc[6] = Hombre.objects.filter(edad__range=(14, 17), ** params)
         dicc[7] = Hombre.objects.filter(edad__gt=18, ** params)
         dicc[8] = Hombre.objects.filter(** params)
         return dicc
