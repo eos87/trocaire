@@ -119,7 +119,7 @@ def hablan_de(request):
 def expresion_vbg(request):
     """Vista sobre: De que manera cree usted que se expresa la VBG"""
     titulo = '¿De que manera cree usted que se expresa la VBG?'
-    resultados = _query_set_filtrado(request)
+    resultados = _query_set_filtrado(request, tipo='especial')
     tabla = {}
     campos = [field for field in ExpresionVBG._meta.fields if field.get_internal_type() == 'CharField']
     for field in campos:
@@ -138,9 +138,9 @@ def expresion_vbg(request):
             tabla[field.verbose_name].append(ExpresionVBG.objects.filter(content_type=content, object_id__in=lista, ** {field.name: 'si'}).count())
     
     totales = get_total(resultados)
-    tabla = get_prom_lista(tabla, totales)
+    tabla = get_prom_lista_con_total(tabla, totales)
 
-    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
 
 def hombres_vbg(request):
     """Conoce usted si en su comunidad existen hombres que ejerven VBG"""
