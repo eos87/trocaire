@@ -1,5 +1,9 @@
 def variables(request):
+    try:
+        centinela = request.session['centinela']
+    except:
+        pass
     dicc = {
-        'centinela': request.session['centinela'],
+        'centinela': centinela,
     }
     return dicc
