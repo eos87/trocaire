@@ -251,7 +251,7 @@ class MujeresAdmin(admin.ModelAdmin):
     list_filter = ['contraparte', ]
     fields = ['codigo', 'contraparte', 'encuestador', 'usuario', 'fecha', 'cuanto_tiempo', 'sexo', 'edad', 'comunidad', 'municipio', 'estado_civil', 'lugar_origen', 'asiste_iglesia', 'cual_iglesia']
     #list_display_links = ['contraparte', 'encuestador', 'fecha']
-    #list_editable = ['encuestador', 'fecha']    
+    list_editable = ['contraparte',]
     search_fields = ['codigo']
 
 #    def queryset(self, request):

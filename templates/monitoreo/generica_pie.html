@@ -41,7 +41,7 @@
             var series;
             var titulo;
             if(id=='m10_13'){
-                titulo = '{{totales.0}} Mujeres de 10-13 años';
+                titulo = '{{totales.0}} Mujeres de 10-13 anos';
                 series = [{data: [{% for key, value in tabla.items %}['{{key}}', {{value.0.1}}],{% endfor %}]}]
             }else if(id=='m14_18'){
                 titulo = '{{totales.1}} Mujeres de 14-18 años';
@@ -65,7 +65,7 @@
                     defaultSeriesType: 'pie'
                 },
                 title: {
-                    text: '{{titulo}}'
+                    text: ''
                 },
                 subtitle: {
                     text: titulo
