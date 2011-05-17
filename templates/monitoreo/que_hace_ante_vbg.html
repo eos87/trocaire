@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad?{% endblock %}
+{% block extratitle %}¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad?{% endblock %}
 
 {% block extrahead %}
 <script type="text/javascript" src="/files/js/highcharts.js"></script>
@@ -82,7 +82,7 @@
 
 {% block contenido %}
 <div class="title_bar">
-    <div class="titulo">¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad?</div>
+    <div class="titulo">{{tipo|title}} | ¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad?</div>
     <div class="titulo der"><a href="/monitoreo/mujeres-hombres/">&larr; Volver</a></div>
 </div>
 <div class="contraparts"><br>
@@ -92,16 +92,13 @@
             <thead>
                 <tr>
                     <th rowspan="2"></th>
-                    <th colspan="3">Mujeres</th>
-                    <th colspan="3">Hombres</th>
+                    <th colspan="4">{{tipo|title}}</th>                    
                 </tr>
                 <tr>
                     <th>10-13</th>
                     <th>14-17</th>
-                    <th>18-mas</th>
-                    <th>10-13</th>
-                    <th>14-17</th>
-                    <th>18-mas</th>
+                    <th>18+ años</th>
+                    <th>{% if tipo == 'mujeres' %}Todas{% else %}Todos{% endif %}</th>                    
                 </tr>
             </thead>
             <tbody>
@@ -110,25 +107,25 @@
                     <td>{{totales.0}}</td>
                     <td>{{totales.1}}</td>
                     <td>{{totales.2}}</td>
-                    <td>{{totales.3}}</td>
-                    <td>{{totales.4}}</td>
-                    <td>{{totales.5}}</td>
+                    <td>{{totales.3}}</td>                    
                 </tr>
             </tbody>
         </table><br>
     </div>
     <div id="tabs" style="font-size:70%;">
         <ul>
-            <li><a href="#tabla-mujeres">Mujeres</a></li>
-            <li><a href="#tabla-hombres">Hombres</a></li>
+            <li><a href="#10_13">{{tipo|title}} 10-13</a></li>
+            <li><a href="#14_17">{{tipo|title}} 14-17</a></li>
+            <li><a href="#18_mas">{{tipo|title}} 18+ años</a></li>
+            <li><a href="#todos">{% if tipo == 'mujeres' %}Todas las{% else %}Todos los{% endif %} {{tipo|title}}</a></li>
         </ul>
-        <div id="tabla-mujeres">
+        <div id="10_13">        
             <table class="tabla-resultados" style="width:100%;">
-                <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Mujeres 10-13 a&ntilde;os)</caption>
+                <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? ({{tipo|title}} 10-13 a&ntilde;os)</caption>
                 <thead>
                     <tr>
                         <th rowspan="2">Categorias</th>
-                        <th colspan="6">Mujeres 10-13 a&ntilde;os</th>
+                        <th colspan="6">{{tipo|title}} 10-13 a&ntilde;os</th>
                     </tr>
                     <tr>
                         {% for a in opciones %}
@@ -149,13 +146,14 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <br>
+            </div>
+            <div id="14_17">
             <table class="tabla-resultados" style="width:100%;">
-                <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Mujeres 14-17 a&ntilde;os)</caption>
+                <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? ({{tipo|title}} 14-17 a&ntilde;os)</caption>
                 <thead>
                     <tr>
                         <th rowspan="2">Categorias</th>
-                        <th colspan="6">Mujeres 14-17 a&ntilde;os</th>
+                        <th colspan="6">{{tipo|title}} 14-17 a&ntilde;os</th>
                     </tr>
                     <tr>
                         {% for a in opciones %}
@@ -176,13 +174,14 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <br>
+            </div>
+            <div id="18_mas">            
             <table class="tabla-resultados" style="width:100%;">
-                <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Mujeres 18 a m&aacute;s a&ntilde;os)</caption>
+                <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? ({{tipo|title}} 18 a m&aacute;s a&ntilde;os)</caption>
                 <thead>
                     <tr>
                         <th rowspan="2">Categorias</th>
-                        <th colspan="6">Mujeres 18 a m&aacute;s</th>
+                        <th colspan="6">{{tipo|title}} 18 a m&aacute;s</th>
                     </tr>
                     <tr>
                         {% for a in opciones %}
@@ -202,28 +201,15 @@
                     </tr>
                     {% endfor %}
                 </tbody>
-            </table>
-            <br>
-            <h2>Gr&aacute;ficos</h2>
-            <div class="graficos1">
-                <ul>
-                    {% for opcion in opciones %}
-                    <li><a href="#mujeres-{{opcion}}">Opcion {{opcion}}</a></li>
-                    {% endfor %}
-                </ul>
-                {% for key, value in tabla.items %}
-                <div id="mujeres-{{forloop.counter}}"></div>
-                {% endfor %}
-                <div class="clean"></div>
-            </div>
+            </table>            
         </div>
-        <div id="tabla-hombres">
+        <div id="todos">
             <table class="tabla-resultados" style="width:100%;">
-                <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Hombres 10-13 a&ntilde;os)</caption>
+                <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? ({% if tipo == 'mujeres' %}Todas las{% else %}Todos los{% endif %} {{tipo|title}})</caption>
                 <thead>
                     <tr>
                         <th rowspan="2">Categorias</th>
-                        <th colspan="6">Hombres 10-13 a&ntilde;os</th>
+                        <th colspan="6">{% if tipo == 'mujeres' %}Todas las{% else %}Todos los{% endif %} {{tipo|title}}</th>
                     </tr>
                     <tr>
                         {% for a in opciones %}
@@ -243,73 +229,7 @@
                     </tr>
                     {% endfor %}
                 </tbody>
-            </table>
-            <br>            
-            <table class="tabla-resultados" style="width:100%;">
-                <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Hombres 14-17 a&ntilde;os)</caption>
-                <thead>
-                    <tr>
-                        <th rowspan="2">Categorias</th>
-                        <th colspan="6">Hombres 14-17 a&ntilde;os</th>
-                    </tr>
-                    <tr>
-                        {% for a in opciones %}
-                        <th>{{a}}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for key, value in tabla.items %}
-                    <tr>
-                        <td>{{key}}</td>
-                        {% for k, valor in value.items|slice:"4:5" %}
-                        {% for a,b in valor.items %}
-                        <td>{{b}}</td>
-                        {% endfor %}
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <br>
-            <table class="tabla-resultados" style="width:100%;">
-                <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Hombres 18 a m&aacute;s a&ntilde;os)</caption>
-                <thead>
-                    <tr>
-                        <th rowspan="2">Categorias</th>
-                        <th colspan="6">Hombres 18 a m&aacute;s</th>
-                    </tr>
-                    <tr>
-                        {% for a in opciones %}
-                        <th>{{a}}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for key, value in tabla.items %}
-                    <tr>
-                        <td>{{key}}</td>
-                        {% for k, valor in value.items|slice:"5:6" %}
-                        {% for a,b in valor.items %}
-                        <td>{{b}}</td>
-                        {% endfor %}
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <br>
-            <h2>Gr&aacute;ficos</h2>
-            <div class="graficos">
-                <ul>
-                    {% for opcion in opciones %}
-                    <li><a href="#hombres-{{opcion}}">Opcion {{opcion}}</a></li>
-                    {% endfor %}
-                </ul>
-                {% for key, value in tabla.items %}
-                <div id="hombres-{{forloop.counter}}" style="width: 900px;"></div>
-                {% endfor %}
-            </div>
+            </table>   
         </div>
     </div>
 </div>
