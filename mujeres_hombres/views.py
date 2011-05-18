@@ -10,6 +10,8 @@ from trocaire.utils import convertir_grafico
 from trocaire.utils import get_content_type
 from trocaire.utils import get_list_with_total
 from trocaire.utils import get_prom_dead_list
+from trocaire.utils import get_prom_dead_list2
+from trocaire.utils import get_prom_dead_list3
 from trocaire.utils import get_total
 
 def hablan_de(request, tipo='mujeres'):    
@@ -180,10 +182,9 @@ def afeccion_vbg(request, tipo):
 
     return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
-def como_afecta(request):
-    """Como afecta la VBG a las mujeres, comunidad y la familia"""
+def como_afecta(request, tipo):
     titulo = u'¿Como afecta la VBG a las mujeres, comunidad y la familia?'
-    resultados = _query_set_filtrado(request)
+    resultados = _query_set_filtrado(request, tipo)
     tabla = {}
     opciones = ComoAfecta.objects.all()
 
@@ -194,12 +195,8 @@ def como_afecta(request):
         lista = []
         [lista.append(encuesta.id) for encuesta in grupo]
 
-        if key < 4:
-            content = ContentType.objects.get(app_label="1-principal", model="mujer")
-        else:
-            content = ContentType.objects.get(app_label="1-principal", model="hombre")
         for op in opciones:
-            tabla[op].append(EfectoVBG.objects.filter(content_type=content, object_id__in=lista, como_afecta=op).count())
+            tabla[op].append(EfectoVBG.objects.filter(content_type=get_content_type(tipo), object_id__in=lista, como_afecta=op).count())
 
     checkvalue = lambda x: sum(x)
     for key, value in tabla.items():
@@ -207,14 +204,13 @@ def como_afecta(request):
             del tabla[key]
 
     totales = get_total(resultados)
-    tabla = get_prom_lista(tabla, totales)
+    tabla = get_list_with_total(tabla, totales)
     
-    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
 
-def conoce_leyes(request):
-    """Conoce alguna ley que penaliza la VBG"""
+def conoce_leyes(request, tipo):
     titulo = u'¿Sabe usted si en Nicaragua existe alguna ley que penaliza la violencia contra las mujeres?'
-    resultados = _query_set_filtrado(request)
+    resultados = _query_set_filtrado(request, tipo)
     tabla = {}
 
     for op in SI_NO_RESPONDE:
@@ -224,22 +220,18 @@ def conoce_leyes(request):
         lista = []
         [lista.append(encuesta.id) for encuesta in grupo]
 
-        if key < 4:
-            content = ContentType.objects.get(app_label="1-principal", model="mujer")
-        else:
-            content = ContentType.objects.get(app_label="1-principal", model="hombre")
         for op in SI_NO_RESPONDE:
-            tabla[op[1]].append(ConocimientoLey.objects.filter(content_type=content, object_id__in=lista, existe_ley=op[0]).count())
+            tabla[op[1]].append(ConocimientoLey.objects.filter(content_type=get_content_type(tipo), object_id__in=lista, existe_ley=op[0]).count())
     totales = get_total(resultados)
-    tabla = get_prom_lista(tabla, totales)
+    tabla = get_list_with_total(tabla, totales)
     
     return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
-def prohibido_por_ley(request):
+def prohibido_por_ley(request, tipo):
     """Acciones prohibidas por la ley"""
-    from models import SI_NO_RESPONDE
+    from trocaire.encuesta.models import SI_NO_RESPONDE
 
-    resultados = _query_set_filtrado(request)
+    resultados = _query_set_filtrado(request, tipo)
     tabla = {}
     campos = [field for field in ConocimientoLey._meta.fields if field.get_internal_type() == 'IntegerField' and not (field.name == 'existe_ley' or field.name == 'object_id')]
     
@@ -501,10 +493,10 @@ def tipo_vbg_ejercido(request, tipo):
     tabla = get_list_with_total(tabla, totales)
     return render_to_response("monitoreo/tipo_vbg_ejercido.html", RequestContext(request, locals()))
 
-def actividades_hogar(request):
+def actividades_hogar(request, tipo):
     """Cuales de las siguientes actividades realiza usted en su hogar"""
-    from models import HOGAR
-    resultados = _query_set_filtrado(request)
+    from trocaire.encuesta.models import HOGAR
+    resultados = _query_set_filtrado(request, tipo)
     tabla = {}
     campos = [field for field in Corresponsabilidad._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
 
@@ -515,23 +507,18 @@ def actividades_hogar(request):
             [lista.append(encuesta.id) for encuesta in grupo]
 
             tabla[field.verbose_name][key] = []
-            if key < 4:
-                content = ContentType.objects.get(app_label="1-principal", model="mujer")
-            else:
-                content = ContentType.objects.get(app_label="1-principal", model="hombre")
-
             for op in HOGAR:
-                tabla[field.verbose_name][key].append(Corresponsabilidad.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op[0]}).count())
+                tabla[field.verbose_name][key].append(Corresponsabilidad.objects.filter(content_type=get_content_type(tipo), object_id__in=lista, ** {field.name: op[0]}).count())
 
     totales = get_total(resultados)
     grafico = convertir_grafico(tabla)
     tabla = get_prom_dead_list2(tabla, totales)
     return render_to_response("monitoreo/actividades_hogar.html", RequestContext(request, locals()))
 
-def solucion_problema(request):    
+def solucion_problema(request, tipo):
     titulo = u'¿Que se debe hacer para que la solucion a un conflicto entre la pareja sea exitoso?'
-    from models import DES_AC    
-    resultados = _query_set_filtrado(request)
+    from trocaire.encuesta.models import DES_AC
+    resultados = _query_set_filtrado(request, tipo)
     tabla = {}
     campos = [field for field in ComunicacionAsertiva._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
     for field in campos:
@@ -540,14 +527,9 @@ def solucion_problema(request):
             lista = []
             [lista.append(encuesta.id) for encuesta in grupo]
 
-            tabla[field.verbose_name][key] = []
-            if key < 4:
-                content = ContentType.objects.get(app_label="1-principal", model="mujer")
-            else:
-                content = ContentType.objects.get(app_label="1-principal", model="hombre")
-            
+            tabla[field.verbose_name][key] = []            
             for op in DES_AC:
-                tabla[field.verbose_name][key].append(ComunicacionAsertiva.objects.filter(content_type=content, object_id__in=lista, ** {field.name: op[0]}).count())
+                tabla[field.verbose_name][key].append(ComunicacionAsertiva.objects.filter(content_type=get_content_type(tipo), object_id__in=lista, ** {field.name: op[0]}).count())
 
     totales = get_total(resultados)
     grafico = convertir_grafico(tabla)

@@ -97,6 +97,23 @@ def get_prom_dead_list(tabla, totales):
             [value[3], get_prom(value[3], totales[key-1])]]
     return tabla
 
+def get_prom_dead_list2(tabla, totales):
+    for k, v in tabla.items():
+        for key, value in v.items():
+            tabla[k][key] = [[value[0], get_prom(value[0], totales[key-1])],
+            [value[1], get_prom(value[1], totales[key-1])],
+            [value[2], get_prom(value[2], totales[key-1])],
+            [value[3], get_prom(value[3], totales[key-1])],
+            [value[4], get_prom(value[4], totales[key-1])]]
+    return tabla
+
+def get_prom_dead_list3(tabla, totales):
+    for k, v in tabla.items():
+        for key, value in v.items():
+            tabla[k][key] = [[value[0], get_prom(value[0], totales[key-1])],
+            [value[1], get_prom(value[1], totales[key-1])]]
+    return tabla
+
 def convertir_grafico(tabla):
     """ funcion donde primeros numeros igual: 1 -> m10-13, 2 -> m14-18....
     los siguientes numeros son las opciones "1 -> Si", "2 -> No", "3 -> No sabe", "No responde"
