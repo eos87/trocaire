@@ -17,7 +17,7 @@ from trocaire.utils import get_total
 
 def index(request, tipo):
     if not tipo in ['mujeres', 'hombres']:
-        return Http404
+        raise Http404
     return render_to_response('monitoreo/mujeres-hombres.html', {'tipo': tipo}, RequestContext(request))
 
 def hablan_de(request, tipo='mujeres'):    
@@ -312,9 +312,28 @@ def que_hace_ante_vbg(request, tipo):
             
             for op in opciones:
                 tabla[field.verbose_name][key][op] = AccionVBG.objects.filter(content_type=get_content_type(tipo), object_id__in=lista, ** {field.name: op-1}).count()
-    totales = get_total(resultados)   
+    totales = get_total(resultados)
+    
+    #---------------Inicia transformacion para grafico ------------------------
+    grafico = {}
+    for key, value in tabla.items():
+        grafico[key] = {}
+        for i in range(1, 5):
+            grafico[key][i] = obtener_indice(tabla[key][i])   
             
     return render_to_response("monitoreo/que_hace_ante_vbg.html", RequestContext(request, locals()))
+
+#---- funcion para multiplicar la llave por su valor
+calc_llave_valor = lambda x: x[0]*x[1]
+
+def obtener_indice(dicc):    
+    aux = 0        
+    for valor in dicc.items():
+        aux += calc_llave_valor(valor)    
+    #obtener y retornar total de los values del dicc
+    total = float(sum(dicc.values()))
+    return aux/total
+    
 
 def donde_buscar_ayuda(request, tipo):
     titulo = '¿Donde debe buscar ayuda una mujer que vive VBG?'
