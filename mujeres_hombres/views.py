@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import ViewDoesNotExist
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, Http404
 from django.template import RequestContext
 from trocaire.encuesta.models import *
 from trocaire.lugar.models import *
@@ -13,6 +13,12 @@ from trocaire.utils import get_prom_dead_list
 from trocaire.utils import get_prom_dead_list2
 from trocaire.utils import get_prom_dead_list3
 from trocaire.utils import get_total
+
+
+def index(request, tipo):
+    if not tipo in ['mujeres', 'hombres']:
+        return Http404
+    return render_to_response('monitoreo/mujeres-hombres.html', {'tipo': tipo}, RequestContext(request))
 
 def hablan_de(request, tipo='mujeres'):    
     titulo = "¿Cuando alguien le habla de VBG usted cree que le estan hablando de?"
