@@ -4,7 +4,7 @@ body{
     font-family: "Trebuchet MS", sans-serif;
     margin-bottom: 20px;
 }
-.degradado { 
+.degradado {
     height: 8px;
     width: 100%;
     background: url(/files/img/degradado.png) repeat-x;
@@ -95,16 +95,16 @@ a{
 }
 .banner{
     background: url(/files/img/banner.png) repeat-x;
-    height: 286px;    
+    height: 286px;
 }
 .intro{
     width: 320px;
     float: left;
     padding-top: 25px;
     height: 261px;
-    font-size: 12px;        
+    font-size: 12px;
 }
-.intro .title{    
+.intro .title{
     font-size: 20px;
     font-weight: bold;
     color: #333333;
@@ -128,7 +128,7 @@ a{
     width: 185px;
     margin-left: 10px;
 }
-.mapeo{    
+.mapeo{
     background: url(/files/img/mapeo.png) no-repeat;
     -moz-box-shadow: 0px 2px 7px #9e7707;
     -webkit-box-shadow: 0px 2px 7px #9e7707;
@@ -137,19 +137,19 @@ a{
     -moz-box-shadow: 0px 2px 7px #000;
     -webkit-box-shadow: 0px 2px 7px #000;
 }
-.monitoreo{    
+.monitoreo{
     background: url(/files/img/monitoreo.png) no-repeat;
     -moz-box-shadow: 0px 2px 7px #942406;
     -webkit-box-shadow: 0px 2px 7px #942406;
 }
-.recursos{    
+.recursos{
     background: url(/files/img/recursos.png) no-repeat;
     -moz-box-shadow: 0px 2px 7px #4e0726;
     -webkit-box-shadow: 0px 2px 7px #4e0726;
 }
 .title_bar{
     height: 46px;
-    background: url(/files/img/title_bar.png) repeat-x;    
+    background: url(/files/img/title_bar.png) repeat-x;
 }
 .content .wrapper{
     border-left: 1px #d7d7d7 solid;
@@ -172,7 +172,7 @@ a{
     background: url(/files/img/contraparts.png) repeat-x top;
 }
 .logos{
-    margin-left: 20px;    
+    margin-left: 20px;
     margin-right: 20px;
     padding-top: 30px;
     padding-bottom: 20px;
@@ -183,14 +183,14 @@ a{
     margin-left: 12px;
 }
 .logos img.line{
-    float: left;    
+    float: left;
 }
 .footer{
     text-align: center;
     font-size: 11px;
     color: #3f3f3f;
     padding-top: 8px;
-	padding-bottom: 30px;
+    padding-bottom: 30px;
     background: url(/files/img/footer_back.png) no-repeat center -70px;
 }
 .footer a{
@@ -255,7 +255,7 @@ a{
     -moz-border-radius: 20px ;
 }
 
-.titulo a, 
+.titulo a,
 .titulo a:visited{
     color:#4086ad;
     text-decoration:none;
@@ -297,7 +297,31 @@ label #id_year{
  table-layout:fixed;
 }
 
+.introform{
+    font-size:12px;
+    padding:5px 15px 5px 15px;
+}
+.formblock{
+    width:480px;
+    float:left;
+}
 
+.paso{
+    font-size:30px;
+    color:#979b91;
+    font-weight:bold;
+    font-family:Arial;
+    padding-left:15px;
+    padding-top:12px;
+    background:url(/files/img/pasoform.png) no-repeat;
+    height:60px;
+}
+
+small{
+    font-size:10px;
+    font-weigth:bold;
+    font-family:Arial;
+}
 #consultar{
     background:url(/files/img/consultar.png);
     width:165px;
@@ -306,13 +330,45 @@ label #id_year{
     margin-left:15px;
 }
 
+
 #menufiltros{
     background:#eef7f7;
-    height:80px;
     width:100%;
 }
 
-#menufiltros img{ margin:10px;}
+#menufiltros a{
+    display:block;
+    width:398px;
+    height:54px;
+    float:left;
+    background-position:top;
+    margin:0px 0px 5px 15px;
+}
+
+#menufiltros a:hover{
+    background-position:bottom;
+}
+
+
+#funcionarios-link{
+    background:url(/files/img/funcionarios.jpg) no-repeat;
+}
+
+#lideres-link{
+    background:url(/files/img/lideres.jpg) no-repeat;
+}
+
+#hombres-link{
+    background:url(/files/img/hombres.jpg) no-repeat;
+}
+
+#mujeres-link{
+    background:url(/files/img/mujeres.jpg) no-repeat;
+}
+
+#organizaciones-link{
+    background:url(/files/img/organizacion.jpg) no-repeat;
+}
 
 #menu-indicadores ul{
     width:400px;
