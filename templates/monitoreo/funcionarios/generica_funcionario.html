@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block extratitle %}{{titulo}}{% endblock %}
+
 {% block extrahead %}
 {% if not nografo %}
 <script type="text/javascript" src="/files/js/highcharts.js"></script>
@@ -13,7 +15,18 @@
         },
         series: {
             pointWidth: 25,
-            minPointLength : 0.5
+            minPointLength : 0.5,
+            dataLabels: {
+                enabled: true,
+                align: "center",
+                formatter: function() {
+                    return ''+ this.y + ' %';
+                },
+                color: '#000',
+                style: {
+                    font: '12px Trebuchet MS, Verdana, sans-serif'
+                }
+            }
         }
     }
     var tooltip = {
@@ -44,7 +57,9 @@
             chart = new Highcharts.Chart({
                 chart: {
                     renderTo: 'container',
-                    defaultSeriesType: 'column'
+                    defaultSeriesType: 'column',
+                    height: 480,
+                    width: 960
                 },
                 title: {
                     text: '{{titulo}}'
@@ -77,7 +92,7 @@
 
 {% block contenido %}
 <div class="title_bar">
-    <div class="titulo">{{titulo}}</div>
+    <div class="titulo">Funcionarios | {{titulo|truncatewords:"12"}}</div>
     <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
 </div>
 <div class="contraparts">

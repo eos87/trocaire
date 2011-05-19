@@ -212,6 +212,28 @@ def ruta_critica(request):
 
     return render_to_response("monitoreo/funcionarios/ruta_critica.html", RequestContext(request, locals()))
 
+def mencione_instrumentos(request):
+    titulo = u'¿Mencione algunos de los instrumentos jurídicos que utilizan en la atención a casos de VBG?'
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    opciones = Instrumento.objects.all()
+    for op in opciones:
+        tabla[op] = []
+
+    for op in opciones:
+        for key, grupo in resultados.items():
+            tabla[op].append(RutaCritica.objects.filter(content_type=cfunc, object_id__in=[encuesta.id for encuesta in grupo], \
+                             instrumentos=op).count())
+    for key, value in tabla.items():
+        if verificar(value) == 0:
+            del tabla[key]
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+
+    return render_to_response("monitoreo/funcionarios/generica_funcionario.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales,},
+                              RequestContext(request))
+
 def registro_datos(request):
     titulo = u'¿Su institución lleva un registro de datos sobre los casos de VBG?'
     resultados = _query_set_filtrado(request, tipo='funcionario')
@@ -367,6 +389,55 @@ def cuales_acciones(request):
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
                               RequestContext(request))
 
+def donde_buscar_ayuda(request):
+    titulo = u'¿Dónde debe buscar ayuda una mujer que vive VBG?'    
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    opciones = BuscarAyuda.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]      
+
+        for op in opciones:
+            tabla[op].append(AccionVBGFuncionario.objects.filter(content_type=cfunc, object_id__in=lista, donde_buscar=op).count())
+
+    for key, value in tabla.items():
+        if verificar(value) < 5:
+            del tabla[key]
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    
+    return render_to_response("monitoreo/funcionarios/generica_funcionario.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))    
+
+def que_debe_hacer_funcionario(request):
+    titulo = "¿Si un hombre le pega a su pareja que acciones deberia de tomar?"
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    opciones = QueDebeHacer.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in opciones:
+            tabla[op].append(AccionVBGFuncionario.objects.filter(content_type=cfunc, object_id__in=lista, accion_tomar=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/funcionarios/generica_funcionario.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
 #obtener la vista adecuada para los indicadores
 def _get_view_funcionario(request, vista):
     if vista in VALID_VIEWS_FUNCIONARIO:
@@ -391,6 +462,9 @@ VALID_VIEWS_FUNCIONARIO = {
     'que-acciones': que_acciones,
     'prevenir-vbg': prevenir_vbg,
     'cuales-acciones': cuales_acciones,
+    'mencione-instrumentos': mencione_instrumentos,
+    'donde-buscar-ayuda': donde_buscar_ayuda,
+    'que-debe-hacer': que_debe_hacer_funcionario,
 }
 
 def get_prom_lista_con_total(tabla, total):
