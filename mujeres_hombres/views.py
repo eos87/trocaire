@@ -233,6 +233,19 @@ def conoce_leyes(request, tipo):
     
     return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
+#def mencione_leyes(request, tipo):
+#    titulo = u'Mencione la ley que penaliza la VBG contra las mujeres'
+#    resultados = _query_set_filtrado(request, tipo)
+#    tabla = {}
+#    
+#    for key, grupo in resultados.items():
+#        lista = []
+#        [lista.append(encuesta.id) for encuesta in grupo]
+#        
+#        tabla[key] = ConocimientoLey.objects.filter(content_type=get_content_type(tipo), object_id__in=lista)
+#        
+#    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
+
 def prohibido_por_ley(request, tipo):
     """Acciones prohibidas por la ley"""
     from trocaire.encuesta.models import SI_NO_RESPONDE
@@ -432,6 +445,31 @@ def participacion_en_espacios(request, tipo):
     tabla = get_list_with_total(tabla, totales)
     return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
 
+def motivo_participacion(request, tipo):
+    titulo = u'¿Qué le motiva a participar en esta organización?'
+    resultados = _query_set_filtrado(request, tipo)
+    tabla = {}
+    opciones = MotivoParticipacion.objects.all()
+    
+    for op in opciones:
+        tabla[op] = []
+        
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in opciones:
+            tabla[op].append(ParticipacionPublica.objects.filter(content_type=get_content_type(tipo), object_id__in=lista, motivo=op).count())
+    
+    checkvalue = lambda x: sum(x)
+    for key, value in tabla.items():
+        if checkvalue(value) < 10:
+            del tabla[key]
+    
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
+
 def ha_vivido_vbg(request, tipo):
     """Considera usted que alguna vez ha vivido VBG"""
     resultados = _query_set_filtrado(request, 'mujeres')
@@ -562,10 +600,10 @@ def solucion_problema(request, tipo):
 
     return render_to_response("monitoreo/solucion_problema.html", RequestContext(request, locals()))
 
-def negociacion_pareja(request):
+def negociacion_pareja(request, tipo):
     """Que se debe hacer para que una negociacion de pareja sea exitosa"""
     titulo = u'¿Que se debe hacer para que una negociacion de pareja sea exitosa?'
-    resultados = _query_set_filtrado(request)
+    resultados = _query_set_filtrado(request, tipo)
     tabla = {}
     opciones = NegociacionExitosa.objects.all()
 
@@ -576,16 +614,182 @@ def negociacion_pareja(request):
         lista = []
         [lista.append(encuesta.id) for encuesta in grupo]
 
-        if key < 4:
-            content = ContentType.objects.get(app_label="1-principal", model="mujer")
-        else:
-            content = ContentType.objects.get(app_label="1-principal", model="hombre")
         for op in opciones:
-            tabla[op].append(ComunicacionAsertiva.objects.filter(content_type=content, object_id__in=lista, negociacion_exitosa=op).count())
+            tabla[op].append(ComunicacionAsertiva.objects.filter(content_type=get_content_type(tipo), object_id__in=lista, negociacion_exitosa=op).count())
 
     totales = get_total(resultados)
-    tabla = get_prom_lista(tabla, totales)
-    return render_to_response("monitoreo/generica.html", RequestContext(request, locals()))
+    tabla = get_list_with_total(tabla, totales)
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
+
+def mujeres_representan(request, tipo):    
+    titulo = u'¿En su comunidad existen mujeres que representan a otras mujeres?'
+    resultados = _query_set_filtrado(request, tipo)
+    tabla = {}
+
+    for op in ['si', 'no']:
+        tabla[op.title()] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        
+        for op in ['si', 'no']:
+            tabla[op.title()].append(IncidenciaPolitica.objects.filter(content_type=get_content_type(tipo), object_id__in=lista, existen_mujeres=op).count())
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)
+    return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
+
+def nivel_educativo(request, tipo):
+    from trocaire.encuesta.models import NIVEL_EDUCATIVO
+    titulo = u'¿Cuál es su nivel educativo más alto?'
+    resultados = _query_set_filtrado(request, tipo)
+    tabla = {}
+    
+    opciones = NIVEL_EDUCATIVO
+
+    for op in opciones:
+        tabla[op[1]] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in opciones:
+            tabla[op[1]].append(InformacionSocioEconomica.objects.filter(content_type=get_content_type(tipo), 
+                                                                      object_id__in=lista, 
+                                                                      nivel_educativo=op[0]).count())
+
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)    
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
+
+def viven_con_pareja(request, tipo):
+    from trocaire.encuesta.models import SI_NO
+    titulo = u'¿Actualmente tiene esposo/a o compañero/a?'
+    resultados = _query_set_filtrado(request, tipo)
+    tabla = {}
+
+    for op in SI_NO:
+        tabla[op[1]] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        
+        for op in SI_NO:
+            tabla[op[1]].append(ComposicionHogar.objects.filter(content_type=get_content_type(tipo), object_id__in=lista, tiene_pareja=op[0]).count())
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)
+    return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
+
+def trabaja_fuera(request, tipo):
+    titulo = u'¿Trabaja usted fuera del hogar?'
+    resultados = _query_set_filtrado(request, tipo)
+    tabla ={}
+    
+    for op in ['si', 'no']:
+        tabla[op.title()] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        
+        for op in ['si', 'no']:
+            tabla[op.title()].append(InformacionSocioEconomica.objects.filter(content_type=get_content_type(tipo), 
+                                                                              object_id__in=lista, trabaja_fuera=op).count())
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)
+    return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
+
+def aporte_ingresos(request, tipo):
+    titulo = u'¿Quién a quienes aportan ingresos al hogar?'
+    resultados = _query_set_filtrado(request, tipo)
+    tabla = {}
+    
+    opciones = Aporta.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in opciones:
+            tabla[op].append(InformacionSocioEconomica.objects.filter(content_type=get_content_type(tipo), 
+                                                                      object_id__in=lista, 
+                                                                      aportan=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)    
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
+
+def mencione_recursos(request, tipo):
+    titulo = u'¿Mencione los recursos de los que es dueña/o?'
+    resultados = _query_set_filtrado(request, tipo)
+    tabla = {}
+    opciones = Recurso.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in opciones:
+            tabla[op].append(AccesoControlRecurso.objects.filter(content_type=get_content_type(tipo), 
+                                                                      object_id__in=lista, 
+                                                                      recursos=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)    
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
+
+def decide_recursos(request, tipo):
+    titulo = u'¿Mencione los recursos sobre los cuales ud decide?'
+    resultados = _query_set_filtrado(request, tipo)
+    tabla = {}
+    opciones = Recurso.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in opciones:
+            tabla[op].append(AccesoControlRecurso.objects.filter(content_type=get_content_type(tipo), 
+                                                                      object_id__in=lista, 
+                                                                      recursos_decide=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)    
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
+
+def que_hace_dinero(request, tipo):
+    from trocaire.encuesta.models import QUE_HACE_DINERO
+    titulo = u'¿Que hace usted con el dinero que gana?'
+    resultados = _query_set_filtrado(request, tipo)
+    tabla = {}
+    opciones = QUE_HACE_DINERO
+
+    for op in opciones:
+        tabla[op[1]] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in opciones:
+            tabla[op[1]].append(InformacionSocioEconomica.objects.filter(content_type=get_content_type(tipo), 
+                                                                      object_id__in=lista, 
+                                                                      hace_dinero=op[0]).count())
+
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)    
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
 
 #obtener la vista adecuada para los indicadores
 def _get_view(request, tipo, vista):
@@ -606,6 +810,7 @@ VALID_VIEWS = {
     'afeccion-vbg': afeccion_vbg,
     'como-afecta': como_afecta,
     'conoce-leyes': conoce_leyes,
+    #'mencione-leyes': mencione_leyes,
     'prohibido-por-ley': prohibido_por_ley,
     'hombres-violentos-por': hombres_violentos,
     'hombres-violencia-mujeres': hombres_violencia_mujeres,
@@ -616,6 +821,7 @@ VALID_VIEWS = {
     'que-debe-hacer': que_debe_hacer,
     'que-acciones-realizar': que_acciones_realizar,
     'participacion-en-espacios': participacion_en_espacios,
+    'motivo-participacion': motivo_participacion,
     'ha-vivido-vbg': ha_vivido_vbg,
     'tipo-vbg-vivido': tipo_vbg_vivido,
     'ha-ejercido-vbg': ha_ejercido_vbg,
@@ -623,4 +829,12 @@ VALID_VIEWS = {
     'actividades-hogar': actividades_hogar,
     'solucion-problema': solucion_problema,
     'negociacion-pareja': negociacion_pareja,
+    'mujeres-representan': mujeres_representan,
+    'nivel-educativo': nivel_educativo,
+    'viven-con-pareja': viven_con_pareja,
+    'trabaja-fuera': trabaja_fuera,
+    'aporte-ingresos': aporte_ingresos,
+    'mencione-recursos': mencione_recursos,
+    'decide-recursos': decide_recursos,
+    'que-hace-dinero': que_hace_dinero,
     }
