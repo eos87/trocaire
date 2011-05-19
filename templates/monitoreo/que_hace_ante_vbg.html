@@ -23,7 +23,7 @@
                 enabled: true,
                 align: "center",
                 formatter: function() {
-                    return ''+ this.percentage.toFixed(2) + ' %';
+                    return ''+ this.y;
                 },
                 color: '#000',
                 style: {
@@ -34,53 +34,41 @@
     }
     var tooltip = {
         formatter: function() {
-            return '<b>'+ this.point.name +'</b>: '+ this.percentage.toFixed(2) +'%';
+            return '<b>'+ this.series.name +'</b>: '+ this.y;
         }
     }
-
+    
     $(document).ready(function(){
-        $("#tabs").tabs();
-        $(".graficos").tabs();
-        $(".graficos1").tabs();
-    });
-    $(document).ready(function(){
-        {% for key, value in grafico.items %}
+    	$("#tabs").tabs();        
         var mchart{{forloop.counter}} = new Highcharts.Chart({
             chart: {
-                renderTo: 'mujeres-{{forloop.counter}}',
-                defaultSeriesType: 'pie',
+                renderTo: 'primergrafo',
+                defaultSeriesType: 'column',
                 height: 480,
                 width: 900
             },
             title: {
                 text: 'Opcion {{key}}'
-            },            
+            },
+            xAxis: {
+                categories: [{% for key, value in tabla.items %}'{{key}}',{% endfor %}]
+            },
             tooltip: tooltip,
-            plotOptions: plotOptions,
-            series: [{data: [{% for valor in value|slice:"5" %}['{{valor.items.0.0}}', {{valor.items.0.1.0}}],{% endfor %}]}]
+            plotOptions: plotOptions,            
+            series : [
+			{% for key, value in grafico.items %}
+                {name: "{{key}}",
+                data: [{{value.1}}]},
+        	{% endfor %}
+             ]
         });    
-        {% endfor %}
-        {% for key, value in grafico.items %}
-        var hchart{{forloop.counter}} = new Highcharts.Chart({
-            chart: {
-                renderTo: 'hombres-{{forloop.counter}}',
-                defaultSeriesType: 'pie',
-                height: 480,
-                width: 900
-            },
-            title: {
-                text: 'Opcion {{key}}'
-            },            
-            tooltip: tooltip,
-            plotOptions: plotOptions,
-            series: [{data: [{% for valor in value|slice:"5:10" %}['{{valor.items.0.0}}', {{valor.items.0.1.0}}],{% endfor %}]}]
-        });
-        {% endfor %}
+                
     });
 </script>
 {% endblock %}
 
 {% block contenido %}
+{{grafico}}<br>
 <div class="title_bar">
     <div class="titulo">{{tipo|title}} | ¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad?</div>
     <div class="titulo der"><a href="/monitoreo/mujeres-hombres/">&larr; Volver</a></div>
@@ -111,6 +99,7 @@
                 </tr>
             </tbody>
         </table><br>
+        <div id="primergrafo"></div>
     </div>
     <div id="tabs" style="font-size:70%;">
         <ul>

@@ -14,7 +14,7 @@ def _query_set_filtrado(request, tipo='mujer'):
     #validar y crear los filtros de la consulta
     if request.session['year']:
         params['fecha__year'] = request.session['year']
-
+       
     if request.session['pais']:
         if request.session['departamento']:
             if request.session['organizacion']:
@@ -25,7 +25,7 @@ def _query_set_filtrado(request, tipo='mujer'):
                 params['municipio__in'] = Municipio.objects.filter(departamento__in=request.session['departamento'])
         else:
             params['municipio__in'] = Municipio.objects.filter(departamento__in=Departamento.objects.filter(pais__in=request.session['pais']))
-
+            
     dicc = {}
     if tipo == 'mujer':
         dicc[1] = Mujer.objects.filter(edad__range=(10, 13), ** params)

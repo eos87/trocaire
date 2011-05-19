@@ -16,13 +16,7 @@
                 <div class="logo">
                     <a href="/" title="Inicio"><img src="/files/img/trocaire-logo-front.png" alt="trocaire logo"></a>
                 </div>
-                <div class="nav">
-                    <a href="/monitoreo/consultar/" class="filtro_sprite"></a>
-                    {% if centinela == 1 %}
-                    <a href="/monitoreo/mujeres-hombres/" class="mh_sprite"></a>
-                    <a href="/monitoreo/lideres/" class="lider_sprite"></a>
-                    <a href="/monitoreo/funcionarios/" class="func_sprite"></a>
-                    {% endif %}
+                <div class="nav">                    
                     <a href="/admin/" class="admin_sprite"></a>
                     {% if user.is_authenticated %}
                     <a href="/logout/" class="salir_sprite"></a>

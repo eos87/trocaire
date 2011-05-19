@@ -104,7 +104,7 @@ defaultOptions.exporting = {
 	//filename: 'chart',
 	type: 'image/png',
 	url: 'http://grafos.simas1.webfactional.com/',
-	width: 800,
+	width: 960,	
 	buttons: {
 		exportButton: {
 			//enabled: true,

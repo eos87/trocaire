@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block extratitle %}Acciones prohibidas por la ley{% endblock %}
+{% block extratitle %}Como deben comportarse hombres y mujeres{% endblock %}
 
 {% block extrahead %}
 <script type="text/javascript" src="/files/js/highcharts.js"></script>
@@ -12,23 +12,17 @@
     $(document).ready(function(){
         $("#tabs").tabs();
     });
-    var plotOptions = {
-        column: {
-            stacking: 'normal'
-        },
-        series: {
-            dataLabels: {
-                enabled: true,
-                align: 'center',
-                color: '#000',
-                formatter: function() {                    
-                    return this.y;
-                },
-                style: {
-                    font: '12px Trebuchet MS, Verdana, sans-serif'
+    var plotOptions = {    		
+    		column: {
+    			stacking: 'normal',
+                dataLabels: {
+                   enabled: true,
+                   color: '#000',
+                   style: {
+                       font: '12px Trebuchet MS, Verdana, sans-serif'
+                   }
                 }
-            }
-        }
+             }        
     }
     var tooltip = {
         formatter: function() {
@@ -44,17 +38,17 @@
             var series;
             var titulo;
             if(id=='m10_13'){
-                titulo = '{{totales.0}} Mujeres de 10-13 años';
+                titulo = '{{totales.0}} {{tipo|title}} de 10-13 años';
                 series = [{% for key, value in grafico.1.items %}{
                         name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
             }else if(id=='m14_18'){
-                titulo = '{{totales.1}} Mujeres de 14-17 años';
+                titulo = '{{totales.1}} {{tipo|title}} de 14-17 años';
                 series = [{% for key, value in grafico.2.items %}{
                         name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
             }else if(id=='m18_mas'){
-                titulo = '{{totales.2}} Mujeres mayores de 18 años';
+                titulo = '{{totales.2}} {{tipo|title}} mayores de 18 años';
                 series = [{% for key, value in grafico.3.items %}{
                         name: "{% if key == 1 %}De acuerdo{% else %}{% if key == 2 %}En desacuerdo{% else %}{% if key == 3 %}No sabe{% else %}No responde{% endif %}{% endif %}{% endif %}",
                         data: {{value}}}, {% endfor %}]
@@ -67,7 +61,9 @@
             chart = new Highcharts.Chart({
                 chart: {
                     renderTo: 'container',
-                    defaultSeriesType: 'column'
+                    defaultSeriesType: 'column',
+                    height: 480,
+                    width: 960
                 },
                 title: {
                     text: 'Como deben comportarse los hombres y las mujeres'
@@ -105,7 +101,7 @@
 
 <div class="title_bar">
     <div class="titulo">{{tipo|title}} | Como deben comportarse los hombres y las mujeres</div>
-    <div class="titulo der"><a href="/monitoreo/mujeres-hombres/">&larr; Volver</a></div>
+    <div class="titulo der"><a href="/monitoreo/{{tipo}}/">&larr; Volver</a></div>
 </div>
 <div class="contraparts"><br>
     <div {% if tipo == 'mujeres' %}id="grafosmujer"{% else %}id="grafoshombre"{% endif %} class="barra">
