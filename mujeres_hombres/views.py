@@ -345,7 +345,7 @@ def obtener_indice(dicc):
         aux += calc_llave_valor(valor)    
     #obtener y retornar total de los values del dicc
     total = float(sum(dicc.values()))
-    return aux/total
+    return round(aux/total, 1)
     
 
 def donde_buscar_ayuda(request, tipo):
@@ -413,7 +413,7 @@ def que_acciones_realizar(request, tipo):
 
     checkvalue = lambda x: sum(x)
     for key, value in tabla.items():
-        if checkvalue(value) == 0:
+        if checkvalue(value) < 10:
             del tabla[key]
 
     totales = get_total(resultados)
@@ -471,7 +471,7 @@ def motivo_participacion(request, tipo):
     return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
 
 def ha_vivido_vbg(request, tipo):
-    """Considera usted que alguna vez ha vivido VBG"""
+    titulo = u'¿Considera usted que alguna vez ha vivido VBG?'
     resultados = _query_set_filtrado(request, 'mujeres')
     tabla = {}
 
@@ -486,7 +486,7 @@ def ha_vivido_vbg(request, tipo):
             tabla[op.title()].append(PrevalenciaVBG.objects.filter(content_type=get_content_type('mujeres'), object_id__in=lista, ha_vivido_vbg=op).count())
     totales = get_total(resultados)
     tabla = get_list_with_total(tabla, totales)
-    return render_to_response("monitoreo/ha_vivido_vbg.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
 def tipo_vbg_vivido(request, tipo):
     titulo = u"¿Qué tipo de VBG ha vivido?"
@@ -511,10 +511,10 @@ def tipo_vbg_vivido(request, tipo):
 
     totales = get_total(resultados)
     tabla = get_list_with_total(tabla, totales)
-    return render_to_response("monitoreo/tipo_vbg_vivido.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
 
 def ha_ejercido_vbg(request, tipo):
-    """Considera usted que ejercido VBG contra una mujer el ultimo año"""
+    titulo = u'Considera usted que ejercido VBG contra una mujer el ultimo año?'
     resultados = _query_set_filtrado(request, 'hombres')
     tabla = {}
 
@@ -529,7 +529,7 @@ def ha_ejercido_vbg(request, tipo):
             tabla[op.title()].append(PrevalenciaVBGHombre.objects.filter(content_type=get_content_type('hombres'), object_id__in=lista, ha_vivido_vbg=op).count())
     totales = get_total(resultados)
     tabla = get_list_with_total(tabla, totales)
-    return render_to_response("monitoreo/ha_ejercido_vbg.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
 def tipo_vbg_ejercido(request, tipo):
     titulo = u"¿Qué tipo de VBG ha ejercido?"
@@ -588,7 +588,6 @@ def frecuencia(request, tipo):
     tabla = get_list_with_total(tabla, totales)
     return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
         
-
 def parentesco_ha_ejercido(request, tipo):
     titulo = u'¿Qué parentesco tiene con la persona que ha ejercido VBG?'
     resultados = _query_set_filtrado(request, 'hombres')
@@ -694,6 +693,50 @@ def mujeres_representan(request, tipo):
     tabla = get_list_with_total(tabla, totales)
     return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
+def satisfaccion(request, tipo):
+    titulo = u'¿Qué tan satisfechas están las mujeres con quienes las representan?'
+    from trocaire.encuesta.models import SATISFECHAS    
+    resultados = _query_set_filtrado(request, tipo)
+    tabla = {}
+    opciones = SATISFECHAS
+        
+    for op in opciones:
+        tabla[op[1]] = []
+    
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+       
+        for op in opciones:            
+            tabla[op[1]].append(IncidenciaPolitica.objects.filter(content_type=get_content_type(tipo), 
+                                                                    object_id__in=lista, 
+                                                                    satisfecha=op[0]).count())    
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
+
+def calidad_servicios(request, tipo):
+    titulo = u'¿Cómo Ud los servicios que las intituciones ofrecen a las mujeres que viven VBG?'
+    from trocaire.encuesta.models import SERVICIOS
+    resultados = _query_set_filtrado(request, tipo)
+    tabla = {}
+    opciones = SERVICIOS
+        
+    for op in opciones:
+        tabla[op[1]] = []
+    
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+       
+        for op in opciones:            
+            tabla[op[1]].append(CalidadAtencion.objects.filter(content_type=get_content_type(tipo), 
+                                                                    object_id__in=lista, 
+                                                                    valor_servicio=op[0]).count())    
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
+
 def nivel_educativo(request, tipo):
     from trocaire.encuesta.models import NIVEL_EDUCATIVO
     titulo = u'¿Cuál es su nivel educativo más alto?'
@@ -713,7 +756,6 @@ def nivel_educativo(request, tipo):
             tabla[op[1]].append(InformacionSocioEconomica.objects.filter(content_type=get_content_type(tipo), 
                                                                       object_id__in=lista, 
                                                                       nivel_educativo=op[0]).count())
-
     totales = get_total(resultados)
     tabla = get_list_with_total(tabla, totales)    
     return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
@@ -774,7 +816,6 @@ def aporte_ingresos(request, tipo):
             tabla[op].append(InformacionSocioEconomica.objects.filter(content_type=get_content_type(tipo), 
                                                                       object_id__in=lista, 
                                                                       aportan=op).count())
-
     totales = get_total(resultados)
     tabla = get_list_with_total(tabla, totales)    
     return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
@@ -796,7 +837,6 @@ def mencione_recursos(request, tipo):
             tabla[op].append(AccesoControlRecurso.objects.filter(content_type=get_content_type(tipo), 
                                                                       object_id__in=lista, 
                                                                       recursos=op).count())
-
     totales = get_total(resultados)
     tabla = get_list_with_total(tabla, totales)    
     return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
@@ -818,7 +858,6 @@ def decide_recursos(request, tipo):
             tabla[op].append(AccesoControlRecurso.objects.filter(content_type=get_content_type(tipo), 
                                                                       object_id__in=lista, 
                                                                       recursos_decide=op).count())
-
     totales = get_total(resultados)
     tabla = get_list_with_total(tabla, totales)    
     return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
@@ -841,7 +880,6 @@ def que_hace_dinero(request, tipo):
             tabla[op[1]].append(InformacionSocioEconomica.objects.filter(content_type=get_content_type(tipo), 
                                                                       object_id__in=lista, 
                                                                       hace_dinero=op[0]).count())
-
     totales = get_total(resultados)
     tabla = get_list_with_total(tabla, totales)    
     return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
@@ -917,4 +955,6 @@ VALID_VIEWS = {
     'que-hace-dinero': que_hace_dinero,
     'persona-ejercido': persona_ejercido,
     'parentesco-ha-ejercido': parentesco_ha_ejercido,
+    'satisfaccion': satisfaccion,
+    'calidad-servicios': calidad_servicios,
     }

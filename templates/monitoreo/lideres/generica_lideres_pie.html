@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block extratitle %}{{titulo}}{% endblock %}
+
 {% block extrahead %}
 <script type="text/javascript" src="/files/js/highcharts.js"></script>
 <script type="text/javascript" src="/files/js/exporting.js"></script>
@@ -48,7 +50,9 @@
             chart = new Highcharts.Chart({
                 chart: {
                     renderTo: 'container',
-                    defaultSeriesType: 'pie'
+                    defaultSeriesType: 'pie',
+                    height: 480,
+                    width: 960
                 },
                 title: {
                     text: '{{titulo}}'
@@ -68,7 +72,7 @@
 
 {% block contenido %}
 <div class="title_bar">
-    <div class="titulo">{{titulo}}</div>
+    <div class="titulo">L&iacute;deres | {{titulo}}</div>
     <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
 </div>
 <div class="contraparts"><br>

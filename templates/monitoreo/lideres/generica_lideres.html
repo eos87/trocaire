@@ -46,7 +46,9 @@
             chart = new Highcharts.Chart({
                 chart: {
                     renderTo: 'container',
-                    defaultSeriesType: 'column'
+                    defaultSeriesType: 'column',
+                    height: 480,
+                    width: 960
                 },
                 title: {
                     text: '{{titulo}}'
@@ -79,7 +81,7 @@
 
 {% block contenido %}
 <div class="title_bar">
-    <div class="titulo">{{titulo}}</div>
+    <div class="titulo">L&iacute;deres | {{titulo}}</div>
     <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
 </div>
 <div class="contraparts"><br>

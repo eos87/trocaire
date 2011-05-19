@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block extratitle %}¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad?{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript" src="/files/js/highcharts.js"></script>
+<script type="text/javascript" src="/files/js/exporting.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var plotOptions = {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: false
+            },
+            showInLegend: true
+        },
+        series: {
+            dataLabels: {
+                enabled: true,
+                align: "center",
+                formatter: function() {
+                    return ''+ this.y;
+                },
+                color: '#000',
+                x: 20,
+                style: {
+                    font: '12px Trebuchet MS, Verdana, sans-serif'
+                }
+            }
+        }
+    }
+    var tooltip = {
+        formatter: function() {
+            return '<b>'+ this.point.name +'</b>: '+ this.y;
+        }
+    }   
+    
+    $(document).ready(function(){
+    	$("#tabs").tabs();
+    	$('.grafos').click(function(){
+    		var id = $(this).attr('id');
+            var series;
+            var subtitulo;
+            if(id=='m10_13'){
+                subtitulo = 'Mujeres';
+                series = [{data: [{% for key, value in grafico.items %}{name: '{{key}}', color: "{% cycle '#89A54E' '#373BFF' '#E58B16' '#E82C0C' '#E87271' '#A6986F' %}", y: {{value.1}}}, {% endfor %}]}]
+            }else if(id=='m14_18'){
+                subtitulo = 'Hombres';
+                series = [{data: [{% for key, value in grafico.items %}{name: '{{key}}', color: "{% cycle '#89A54E' '#373BFF' '#E58B16' '#E82C0C' '#E87271' '#A6986F' %}", y: {{value.2}}}, {% endfor %}]}]                
+            }   		
+    	
+        	var mchart = new Highcharts.Chart({
+            	chart: {
+                	renderTo: 'container',
+                	defaultSeriesType: 'bar',
+                	height: 480,
+                	width: 900
+            	},
+            	legend:{
+            		enabled: false
+            	},
+            	title: {
+                    text: '¿Qué hace usted cuando hay una situación de violencia en su comunidad?'
+                },
+            	subtitle:{
+            		text: subtitulo
+            	},
+            	xAxis: {
+                	categories: [{% for key, value in tabla.items %}'{{key}}',{% endfor %}]
+            	},
+            	yAxis: {
+                	min: 0,
+                	title: {
+                   		text: 'Promedio de selección',                   
+                	}
+             	},
+            	tooltip: tooltip,
+            	plotOptions: plotOptions,            
+            	series : series
+        	});
+    	});
+    });
+</script>
+{% endblock %}
+
+{% block contenido %}
+<div class="title_bar">
+    <div class="titulo">L&iacute;deres | ¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad?</div>
+    <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
+</div>
+<div class="contraparts"><br>
+	<div id= "grafosmujer" class="barra">
+        <a href="#" id="m10_13" class="grafos">Gr&aacute;fico Mujeres</a>
+    </div>
+    <div id= "grafoshombre" class="barra">
+        <a href="#" id="m14_18" class="grafos">Gr&aacute;fico Hombres</a>
+    </div>
+    <div class="clean"></div>
+    <div id="container"></div>   
+    <div class="tabla-container">
+        <table class="tabla-resultados" style="width:100%;">
+            <caption>TOTALES</caption>
+            <thead>
+                <tr>
+                    <th rowspan="2"></th>
+                    <th>Mujeres</th>
+                    <th>Hombres</th>                    
+                </tr>                
+            </thead>
+            <tbody>
+                <tr>
+                    <td>TOTALES ENCUESTADOS</td>
+                    <td>{{totales.0}}</td>
+                    <td>{{totales.1}}</td>                                       
+                </tr>
+            </tbody>
+        </table><br>        
+    </div>    
+    <div id="tabs" style="font-size:70%;">
+        <ul>
+            <li><a href="#10_13">Mujeres</a></li>
+            <li><a href="#14_17">Hombres</a></li>            
+        </ul>
+        <div id="10_13">                
+            <table class="tabla-resultados" style="width:100%;">
+                <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Mujeres)</caption>
+                <thead>
+                    <tr>
+                        <th rowspan="2">Categorias</th>
+                        <th colspan="6">Mujeres</th>
+                    </tr>
+                    <tr>
+                        {% for a in opciones %}
+                        <th>{{a}}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, value in tabla.items %}
+                    <tr>
+                        <td>{{key}}</td>
+                        {% for k, valor in value.items|slice:":1" %}
+                        {% for a,b in valor.items %}
+                        <td>{{b}}</td>
+                        {% endfor %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table><br>            
+            </div>
+            <div id="14_17">
+            <table class="tabla-resultados" style="width:100%;">
+                <caption>¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad? (Hombres)</caption>
+                <thead>
+                    <tr>
+                        <th rowspan="2">Categorias</th>
+                        <th colspan="6">Hombres</th>
+                    </tr>
+                    <tr>
+                        {% for a in opciones %}
+                        <th>{{a}}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, value in tabla.items %}
+                    <tr>
+                        <td>{{key}}</td>
+                        {% for k, valor in value.items|slice:"1:2" %}
+                        {% for a,b in valor.items %}
+                        <td>{{b}}</td>
+                        {% endfor %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>            
+            <br>
+            </div>
+    </div>
+</div>
+{% endblock %}

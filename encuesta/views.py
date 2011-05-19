@@ -467,12 +467,6 @@ def convertir_grafico(tabla):
     return dicc
 
 #------------------------LIDERES Y LIDEREZAS------------------------------------
-def _get_vista_lideres(request, vista):
-    if vista in VALID_VIEWS_LIDERES:
-        return VALID_VIEWS_LIDERES[vista](request)
-    else:
-        raise ViewDoesNotExist("Tried %s in module %s Error: View not define in VALID_VIEWS." % (vista, 'encuesta.views'))
-
 verificar_dicc = lambda x: x[1] + x[2]
 
 #content type para lider
@@ -710,6 +704,28 @@ def ha_vivido_vbg(request):
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
+def mujeres_vbg_comunidad(request):
+    from trocaire.encuesta.models import SI_NO_SIMPLE2
+    titulo = u'¿Piensa que en su comunidad existen mujeres que han vivido alguna vez VBG?'
+    tabla = {}
+    resultados = _query_set_filtrado(request, tipo='lider')
+
+    for op in SI_NO_SIMPLE2:
+        tabla[op[1]] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in SI_NO_SIMPLE2:
+            tabla[op[1]].append(PrevalenciaVBGLider.objects.filter(content_type=clider, object_id__in=lista, piensa_existe=op[0]).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/lideres/generica_lideres_pie.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
 def tipo_vbg_ha_vivido(request):
     resultados = _query_set_filtrado(request, tipo='lider')
     titulo = u'¿Qué tipo de VBG ha vivido?'
@@ -797,6 +813,28 @@ def conocimiento_leyes(request):
     tabla = get_prom_dead_list(tabla, totales)
     return render_to_response("monitoreo/lideres/prohibido_por_ley.html",
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'grafico': grafico, 'SI_NO_RESPONDE': SI_NO_RESPONDE},
+                              RequestContext(request))
+    
+def existe_ley_penaliza_vbg(request):
+    titulo = u'¿Sabe usted si existe alguna ley que penaliza la VBG contra las mujeres?'
+    from models import SI_NO_RESPONDE
+    resultados = _query_set_filtrado(request, tipo='lider')
+    tabla = {}
+    
+    for op in SI_NO_RESPONDE:
+        tabla[op[1]] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in SI_NO_RESPONDE:
+            tabla[op[1]].append(ConocimientoLey.objects.filter(content_type=clider, object_id__in=lista, existe_ley=op[0]).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/lideres/generica_lideres_pie.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
 def decisiones(request):
@@ -1075,6 +1113,40 @@ def negociacion_exitosa(request):
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
+def que_hace_ante_vbg(request):
+    from trocaire.mujeres_hombres.views import obtener_indice
+    resultados = _query_set_filtrado(request, 'lider')
+    tabla = {}
+    campos = [field for field in AccionVBG._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
+
+    opciones = [1, 2, 3, 4, 5, 6]
+
+    for field in campos:        
+        tabla[field.verbose_name] = {}
+        for key, grupo in resultados.items():
+            lista = []
+            [lista.append(encuesta.id) for encuesta in grupo]
+            tabla[field.verbose_name][key] = {}            
+            
+            for op in opciones:
+                tabla[field.verbose_name][key][op] = AccionVBGLider.objects.filter(content_type=clider, object_id__in=lista, ** {field.name: op-1}).count()
+    totales = get_total(resultados)
+    
+    #---------------Inicia transformacion para grafico ------------------------
+    grafico = {}
+    for key, value in tabla.items():
+        grafico[key] = {}
+        for i in range(1, 3):
+            grafico[key][i] = obtener_indice(tabla[key][i])
+            
+    return render_to_response("monitoreo/lideres/que_hace_ante_vbg.html", RequestContext(request, locals()))
+
+def _get_vista_lideres(request, vista):
+    if vista in VALID_VIEWS_LIDERES:
+        return VALID_VIEWS_LIDERES[vista](request)
+    else:
+        raise ViewDoesNotExist("Tried %s in module %s Error: View not define in VALID_VIEWS." % (vista, 'encuesta.views'))
+
 VALID_VIEWS_LIDERES = {
     'le-hablan-de': lideres_le_hablan_de, 
     'hombres-violentos': lideres_hombres_violentos, 
@@ -1085,11 +1157,13 @@ VALID_VIEWS_LIDERES = {
     'expresion-violencia': expresion_violencia_lideres,
     'conoce-hombres-violentos': conoce_hombres_violentos,
     'conoce-mujeres-vbg': conoce_mujeres_vbg,
+    'mujeres-vbg-comunidad': mujeres_vbg_comunidad,
     'ha-vivido-vbg': ha_vivido_vbg,
     'tipo-vbg-ha-vivido': tipo_vbg_ha_vivido,
     'frecuencia-vbg': frecuencia_vbg,
     'quien-ejercio-vbg': quien_ejercio_vbg,
     'conocimiento-leyes': conocimiento_leyes,
+    'existe-ley-penaliza-vbg': existe_ley_penaliza_vbg,
     'decisiones': decisiones,
     'corresponsabilidad': corresponsabilidad,
     #aca la tabla fea
@@ -1104,4 +1178,5 @@ VALID_VIEWS_LIDERES = {
     'tipo-propuesta-negociada': tipo_propuesta_negociada,
     'solucion-problema-lideres': solucion_problema_lideres,
     'negociacion-exitosa': negociacion_exitosa,
+    'que-hace-ante-vbg': que_hace_ante_vbg,
 }

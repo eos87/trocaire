@@ -50,7 +50,7 @@
                 titulo = '{{totales.2}} {{tipo|title}} mayores de 18 años';
                 series = [{data: [{% for key, value in tabla.items %}['{{key}}', {{value.2.1}}],{% endfor %}]}]
             }else if(id=='todos'){
-                titulo = '{{totales.3}} {% if tipo == 'mujeres' %}Todas{% else %}Todos{% endif %} {{tipo|title}}';
+                titulo = '{{totales.3}} {% if tipo == 'mujeres' %}Todas las mujeres{% else %}Todos los hombres{% endif %} {{tipo|title}}';
                 series = [{data: [{% for key, value in tabla.items %}['{{key}}', {{value.3.1}}],{% endfor %}]}]
             }
             chart = new Highcharts.Chart({
