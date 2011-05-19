@@ -554,7 +554,62 @@ def tipo_vbg_ejercido(request, tipo):
 
     totales = get_total(resultados)
     tabla = get_list_with_total(tabla, totales)
-    return render_to_response("monitoreo/tipo_vbg_ejercido.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
+
+def frecuencia(request, tipo):
+    from trocaire.encuesta.models import FRECUENCIA2, FRECUENCIA    
+    resultados = _query_set_filtrado(request, tipo)
+    tabla = {}
+    
+    if tipo == 'mujeres':
+        opciones = FRECUENCIA
+        titulo = u'¿Con que frecuencia ha vivido VBG este último año?'
+    elif tipo == 'hombres':
+        titulo = u'¿Con que frecuencia ha ejercido VBG este último año?'
+        opciones = FRECUENCIA2
+        
+    for op in opciones:
+        tabla[op[1]] = []
+    
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+       
+        for op in opciones:
+            if tipo == 'mujeres':
+                tabla[op[1]].append(PrevalenciaVBG.objects.filter(content_type=get_content_type(tipo), 
+                                                                    object_id__in=lista, 
+                                                                    frecuencia=op[0]).count())
+            elif tipo == 'hombres':
+                tabla[op[1]].append(PrevalenciaVBGHombre.objects.filter(content_type=get_content_type(tipo), 
+                                                                    object_id__in=lista, 
+                                                                    frecuencia=op[0]).count())    
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
+        
+
+def parentesco_ha_ejercido(request, tipo):
+    titulo = u'¿Qué parentesco tiene con la persona que ha ejercido VBG?'
+    resultados = _query_set_filtrado(request, 'hombres')
+    tabla = {}
+    opciones = Quien2.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in opciones:
+            tabla[op].append(PrevalenciaVBGHombre.objects.filter(content_type=get_content_type('hombres'), 
+                                                                 object_id__in=lista, 
+                                                                 quien=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
 
 def actividades_hogar(request, tipo):
     """Cuales de las siguientes actividades realiza usted en su hogar"""
@@ -791,6 +846,27 @@ def que_hace_dinero(request, tipo):
     tabla = get_list_with_total(tabla, totales)    
     return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
 
+def persona_ejercido(request, tipo):
+    titulo = u'¿Quién es la persona que ha ejercido VBG sobre usted?'
+    resultados = _query_set_filtrado(request, 'mujeres')
+    tabla = {}
+    
+    opciones = Quien.objects.all()
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in opciones:
+            tabla[op].append(PrevalenciaVBG.objects.filter(content_type=get_content_type('mujeres'), 
+                                                                      object_id__in=lista, 
+                                                                      quien=op).count())
+    totales = get_total(resultados)
+    tabla = get_list_with_total(tabla, totales)    
+    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))    
+
 #obtener la vista adecuada para los indicadores
 def _get_view(request, tipo, vista):
     if vista in VALID_VIEWS:
@@ -826,6 +902,8 @@ VALID_VIEWS = {
     'tipo-vbg-vivido': tipo_vbg_vivido,
     'ha-ejercido-vbg': ha_ejercido_vbg,
     'tipo-vbg-ejercido': tipo_vbg_ejercido,
+    'frecuencia-ejercido': frecuencia,
+    'frecuencia-vivido': frecuencia,
     'actividades-hogar': actividades_hogar,
     'solucion-problema': solucion_problema,
     'negociacion-pareja': negociacion_pareja,
@@ -837,4 +915,6 @@ VALID_VIEWS = {
     'mencione-recursos': mencione_recursos,
     'decide-recursos': decide_recursos,
     'que-hace-dinero': que_hace_dinero,
+    'persona-ejercido': persona_ejercido,
+    'parentesco-ha-ejercido': parentesco_ha_ejercido,
     }
