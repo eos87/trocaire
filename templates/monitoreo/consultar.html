@@ -9,73 +9,68 @@
 <script src="/files/js/jquery.multiselect.min.js" type="text/javascript"></script>
 <script src="/files/js/jquery.multiselect.filter.js" type="text/javascript"></script>
 <script src="/files/js/monitoreo.consultar.js" type="text/javascript"></script>
-{% endblock %}
-
-{% block contenido %}
+{% endblock %} {% block contenido %}
 <div class="title_bar">
     <div class="titulo">Seleccion de Filtros</div>
     <div class="clean"></div>
 </div>
 <div class="contraparts">
-<br>
-    <form action="." method="POST">{% csrf_token %}
-        <div id="tabla-form">
-        <div class="formseccion izq">1. GENERALES</div>
-        <div class="formseccion der">2. UBICACION</div>
-            <table width="460" class="izq">
-                <tr>
-                    <td width="30%">
-                        {{ form.year.label_tag }}
-                    </td>
-                    <td width="70%">
-                        {{form.year}}
-                    </td>
-                </tr>                
-            </table>
-            <table width="460" class="der">
-                <tr>
-                    <td width="30%">
-                        {{ form.pais.label_tag }}
-                    </td>
-                    <td width="70%">
-                        {{form.pais}}
-                    </td>
-                </tr>
-                <tr>
-                    <td width="30%">
-                        {{ form.departamento.label_tag }}
-                    </td>
-                    <td width="70%">
-                        {{form.departamento}}
-                    </td>
-                </tr>
-                <tr>
-                    <td width="30%">
-                        {{ form.organizacion.label_tag }}
-                    </td>
-                    <td width="70%">
-                        {{form.organizacion}}
-                    </td>
-                </tr>
-                <tr>
-                    <td width="30%">
-                        {{ form.municipio.label_tag }}
-                    </td>
-                    <td width="70%">
-                        {{form.municipio}}
-                    </td>
-                </tr>                
-            </table>
-            <div class="clean"></div>
-        </div>
-        <input id="consultar" type="submit" value=""/>
-    </form>
-    {% if centinela == 1 %}
+    <div class="introform"><br>Bienvenido al formulario de filtros del sistema. Usted es libre filtrar analisis del monitoreo bajo 5 variables globales, tales como el <b>año</b> de implementación del instrumento y el <b>pais</b> de origen, la cual a su vez habilita la posiblidad de seleccionar el <b>Departamento</b>, <b>Organización</b> y <b>Municipio</b>. Basicamente debe de seleccionar los filtros que quiere tomar en cuenta para su consulta y posteriormente hacer un Clic en el boton <b>"Consultar"</b> </div>
     <br>
-    <div id="menufiltros">
-        <a href="/monitoreo/mujeres-hombres/"><img src="/files/img/mujeres.jpg"></a> <a href="/monitoreo/lideres/"><img src="/files/img/docentes.jpg"></a> <a href="/monitoreo/funcionarios/"><img src="/files/img/funcionarios.jpg"></a>
-        <br>
+    <div class="formblock">
+        <div class="paso">
+            PASO 1 <br>
+            <small>Selección de filtros</small>
+        </div>
+        <form action="." method="POST">
+            {% csrf_token %}
+            <div id="tabla-form">
+                <table width="460">
+                    <tr>
+                        <td width="30%">{{ form.year.label_tag }}</td>
+                        <td width="60%">{{form.year}}</td>
+                    </tr>
+                    <tr>
+                        <td width="30%">{{ form.pais.label_tag }}</td>
+                        <td width="70%">{{form.pais}}</td>
+                    </tr>
+                    <tr>
+                        <td width="30%">{{ form.departamento.label_tag }}</td>
+                        <td width="70%">{{form.departamento}}</td>
+                    </tr>
+                    <tr>
+                        <td width="30%">{{ form.organizacion.label_tag }}</td>
+                        <td width="70%">{{form.organizacion}}</td>
+                    </tr>
+                    <tr>
+                        <td width="30%">{{ form.municipio.label_tag }}</td>
+                        <td width="70%">{{form.municipio}}</td>
+                    </tr>
+                </table>
+                <br>
+                <input id="consultar" type="submit" value="" />
+                <br><br>
+            </div>
+        </form>
     </div>
-    {%endif%}
+    <div class="formblock">
+        {% if centinela == 1 %}
+        <div class="paso">
+            PASO 2 <br>
+            <small>Selección de Instrumento</small>
+        </div>
+        <div id="menufiltros">
+            <br>
+            <a  id="hombres-link"href="/monitoreo/hombres/"></a>
+            <a id="mujeres-link" href="/monitoreo/mujeres/"></a>
+            <a id="lideres-link" href="/monitoreo/lideres/"></a>
+            <a id="funcionarios-link" href="/monitoreo/funcionarios/"></a>
+            <a id="organizaciones-link" href="/monitoreo/frganizaciones/"></a>
+            <div class="clean"></div>
+            <br>
+        </div>
+        {%endif%}
+    </div>
+    <div class="clean"></div>
 </div>
 {% endblock %}
