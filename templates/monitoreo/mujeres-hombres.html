@@ -1,72 +1,178 @@
 {% extends "base.html" %}
 
 {% block extratitle %}Indicadores{% endblock %}
+{% block extrahead%}
+    <script src="http://cdn.jquerytools.org/1.2.5/full/jquery.tools.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $(".activatooltip").tooltip({ effect: 'slide', position:'center right', events:{def:"click,mouseleave"}});
+        $(".activatooltipleft").tooltip({ effect: 'slide', position:'center left', events:{def:"click,mouseleave"}});
+    });
+    </script>
+{%endblock%}
 
 {% block contenido %}
 <div class="title_bar">
     <div class="titulo">Datos de {{tipo|title}}</div>
 </div>
 <div class="contraparts">
+
 <br>
+    <div class="paso pasoespecial">
+                PASO 3 <br>
+                <small>Selección de indicadores y variables</small>
+    </div>
     <div id="menu-indicadores">
-    	<ul>
+        <div id="panel-variable-header">
+            <div class="variable-header">
+                Incremento en el número de mujeres que están con conocimientos, capacidades y habilidades para desarrollar acciones preventivas y de apoyo a otras mujeres en situaciones de VBG.
+            </div>
+            <div class="variable-header">
+                Se incrementa el número de Mujeres que están tomando decisiones que disminuyen su riesgo de vivir situaciones de violencia basada en género.
+            </div>
+            <div class="variable-header">
+                Se incrementa el número de mujeres que están participando cualitativamente en los espacios públicos de toma de decisiones
+            </div>
+            <div class="variable-header">
+                Mujeres del grupo meta desarrollan condiciones socioeconómica equitativas
+            </div>
+            <div class="variable-header" style="margin-right:0px !important;">
+                Mujeres del grupo meta desarrollan condiciones de vida libre de VBG
+            </div>
+            <div class="clean"></div>
+        </div>
+        <div id="panel-variable-links">
+            <div class="variable-links">
+                <a id="conceptoviolencia" class="activatooltip"><div class="trans">El concepto y la expresión de violencia</div></a>
+                <div class="tooltip">
+                    <a href="hablan-de/">Cuando alguien le habla de VBG usted cree que refiere a:</a>
+                    <a href="expresion-vbg/">De que manera se expresa la violencia?</a>
+                </div>
+                <a id="conocimientoleyes" class="activatooltip"><div class="trans">Conocimiento sobre leyes</div></a>
+                <div class="tooltip">
+                    <a href="conoce-leyes/">¿Conoce ley que penaliza VBG?</a>
+                    <a href="mencione-leyes/">Mencione nombre de ley que penaliza VBG</a>
+                    <a href="prohibido-por-ley/">Acciones prohibidas por la ley?</a>
+                </div>
+                <a id="creenciascausas" class="activatooltip"><div class="trans">Creencias sobre las Causas de la VBG</div></a>
+                <div class="tooltip">
+                    <a href="hombres-violentos-por/">¿Cree usted que los hombres son violentos debido a?</a>
+                    <a href="hombres-violencia-mujeres/">Lo hombres ejercen violencia hacia las mujeres porque</a>
+                    <a href="comportamiento/">C&oacute;mo deben comportarse hombres y mujeres</a>
+                </div>
+                <a id="identificacionsituacion" class="activatooltip"><div class="trans">Identificación de la situación de VBG</div></a>
+                <div class="tooltip">
+                    <a href="hombres-que-ejercen-vbg/">Conoce hombres que ejercen VBG</a>
+                    <a href="mujeres-viven-vbg/">Mujeres que viven VBG</a>
+                </div>
+                <a id="accionessituacion" class="activatooltip"><div class="trans">Acciones ante una situación de VBG</div></a>
+                <div class="tooltip">
+                    <a href="ayuda-mujer-violencia/">Ha ayudado a alguna mujer que ha vivido VBG?</a>
+                    <a href="que-hace-ante-vbg/">Que hace cuando existe una situaci&oacute;n de VBG</a>
+                    <a href="donde-buscar-ayuda/">Donde debe buscar ayuda una mujer que vive VBG</a>
+                    <a href="que-debe-hacer/">Si hombre le pega a su pareja, que deber&iacute;a de hacer?</a>
+                </div>
+                <a id="comunicacionactiva" class="activatooltip"><div class="trans">Comunicación asertiva</div></a>
+                <div class="tooltip">
+                    <a href="solucion-problema/">¿Qu&eacute; se debe hacer para que la solucion a un conflicto sea exitosa?</a>
+                    <a href="negociacion-pareja/">¿Qu&eacute; se debe hacer para que una negociaci&oacute;n de pareja sea exitosa?</a>
+                </div>
+            </div>
+            <div class="variable-links">
+                <a id="tomadesicion" class="activatooltip"><div class="trans">Toma de decisiones</div></a>
+                <div class="tooltip">
+                    <a href="que-acciones-realizar/">¿Cuando una mujer vive VBG cuales acciones debe realizar?</a>
+                </div>
+            </div>
+            <div class="variable-links">
+                <a id="participacionpublico" class="activatooltip"><div class="trans">Participación en Espacios Públicos</div></a>
+                <div class="tooltip">
+                    <a href="participacion-en-espacios/">¿En que espacios est&aacute;s integrada/o?</a>
+                    <a href="motivo-participacion/">¿Que le motiva a participar en esta organizaci&oacute;n?</a>
+                </div>
+                <a id="incidenciapolitica" class="activatooltip"><div class="trans">Incidencia política</div></a>
+                <div class="tooltip">
+                    <a href="mujeres-representan/">¿En su comunidad existen mujeres que represetan a otras mujeres?</a>
+                </div>
+            </div>
+            <div class="variable-links">
+                <a id="educacioningreso" class="activatooltipleft"><div class="trans">Estado de educación e ingreso</div></a>
+                <div class="tooltip">
+                    <a href="nivel-educativo/">¿Cu&aacute;l es el su nivel educativo m&aacute;s alto?</a>
+                    <a href="viven-con-pareja/">¿En su hogar vive con su {% if tipo == 'mujeres' %}esposo/compa&ntilde;ero{% else %}esposa/compa&ntilde;era{% endif %}?</a>
+                    <a href="trabaja-fuera/">¿Trabaja usted fuera del hogar?</a>
+                    <a href="aporte-ingresos/">¿Qui&eacute;n o quienes aportan ingresos al hogar?</a>
+                </div>
+                <a id="accesorecurso" class="activatooltipleft"><div class="trans">Acceso y control femenino de recursos</div></a>
+                <div class="tooltip">
+                    <a href="mencione-recursos/">Mencione los recursos de los cuales usted es {% if tipo == 'mujeres' %}due&ntilde;a{% else %}due&ntilde;o{% endif %}?</a>
+                    <a href="decide-recursos/">Mencione los recursos de los cuales usted decide?</a>
+                    <a href="que-hace-dinero/">¿Qu&eacute; usted con el dinero que gana?</a>
+                </div>
+                <a id="corresponsabilidad" class="activatooltipleft"><div class="trans">Corresponsabilidad en el hogar</div></a>
+                <div class="tooltip">
+                    <a href="actividades-hogar/">¿Cu&aacute;les de las siguientes actividades realiza usted en su hogar?</a>
+                </div>
+            </div>
+            <div class="variable-links" style="margin-right:0px !important;">
+                <a id="prevalenciaviolencia" class="activatooltipleft"><div class="trans">Prevalencia de la VBG</div></a>
+                <div class="tooltip">
+                    {% if tipo == 'mujeres' %}
+                    <a href="ha-vivido-vbg/">Considera usted que alguna vez ha vivido VBG?</a>
+                    <a href="tipo-vbg-vivido/">Que tipo de VBG ha vivido?</a>
+                    <a href="frecuencia-vivido/">¿En este &uacute;ltimo a&ntilde; con que frecuencia ha vivido VBG?</a>
+                    <a href="persona-ejercido/">¿Qui&eacute;n es la persona que ha ejercido VBG sobre usted?</a>
+                    {% else %}
+                    <a href="ha-ejercido-vbg/">Considera usted que ha ejercido VBG hacia una mujer el &uacute;ltimo a&ntilde;o?</a>
+                    <a href="tipo-vbg-ejercido/">Que tipo de VBG ha ejercido?</a>
+                    <a href="frecuencia-ejercido/">¿En este &uacute;ltimo a&ntilde; con que frecuencia ha ejercido VBG?</a>
+                    <a href="parentesco-ha-ejercido/">¿Qu&eacute; parentesco tiene con la persona a la que ha ejercido VBG?</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="clean"></div>
+        </div>
+
+
+        <ul>
             <span>Estado de educaci&oacute;n e ingreso</span>
-            <a href="nivel-educativo/">¿Cu&aacute;l es el su nivel educativo m&aacute;s alto?</a>
-            <a href="viven-con-pareja/">¿En su hogar vive con su {% if tipo == 'mujeres' %}esposo/compa&ntilde;ero{% else %}esposa/compa&ntilde;era{% endif %}?</a>
-            <a href="trabaja-fuera/">¿Trabaja usted fuera del hogar?</a>
-            <a href="aporte-ingresos/">¿Qui&eacute;n o quienes aportan ingresos al hogar?</a>
+
         </ul>
         <ul>
             <span>Acceso y control femenino de recursos</span>
-            <a href="mencione-recursos/">Mencione los recursos de los cuales usted es {% if tipo == 'mujeres' %}due&ntilde;a{% else %}due&ntilde;o{% endif %}?</a>
-            <a href="decide-recursos/">Mencione los recursos de los cuales usted decide?</a>
-            <a href="que-hace-dinero/">¿Qu&eacute; usted con el dinero que gana?</a>        
+
         </ul>
         <ul>
             <span>Concepto de Violencia</span>
-            <a href="hablan-de/">Cuando alguien le habla de VBG usted cree que refiere a:</a>        
+
         </ul>
         <ul>
             <span>Expresiones de Violencia BG</span>
-            <a href="expresion-vbg/">De que manera se expresa la violencia?</a>
+
         </ul>
         <ul>
             <span>Creencias sobre VBG</span>
-            <a href="comportamiento/">C&oacute;mo deben comportarse hombres y mujeres</a>
+
         </ul>
         <ul>
             <span>Justificacion de la VBG</span>
-            <a href="hombres-violencia-mujeres/">Lo hombres ejercen violencia hacia las mujeres porque</a>
+
         </ul>
         <ul>
             <span>Causas de la VBG</span>
-            <a href="hombres-violentos-por/">¿Cree usted que los hombres son violentos debido a?</a>
+
         </ul>
         <ul>
             <span>Identificación de situaciones de  VBG</span>
-            <a href="hombres-que-ejercen-vbg/">Conoce hombres que ejercen VBG</a>
-            <a href="mujeres-viven-vbg/">Mujeres que viven VBG</a>
+
         </ul>
         <ul>
             <span>Acciones ante situaciones de VBG</span>
-            <a href="ayuda-mujer-violencia/">Ha ayudado a alguna mujer que ha vivido VBG?</a>
-            <a href="que-hace-ante-vbg/">Que hace cuando existe una situaci&oacute;n de VBG</a>
-            <a href="donde-buscar-ayuda/">Donde debe buscar ayuda una mujer que vive VBG</a>
-            <a href="que-debe-hacer/">Si hombre le pega a su pareja, que deber&iacute;a de hacer?</a>
+
         </ul>
         <ul>
             <span>Prevalencia de la VBG</span>
-            {% if tipo == 'mujeres' %}
-            <a href="ha-vivido-vbg/">Considera usted que alguna vez ha vivido VBG?</a>
-            <a href="tipo-vbg-vivido/">Que tipo de VBG ha vivido?</a>
-            <a href="frecuencia-vivido/">¿En este &uacute;ltimo a&ntilde; con que frecuencia ha vivido VBG?</a>
-            <a href="persona-ejercido/">¿Qui&eacute;n es la persona que ha ejercido VBG sobre usted?</a>
-            {% else %}
-            <a href="ha-ejercido-vbg/">Considera usted que ha ejercido VBG hacia una mujer el &uacute;ltimo a&ntilde;o?</a>
-            <a href="tipo-vbg-ejercido/">Que tipo de VBG ha ejercido?</a>
-            <a href="frecuencia-ejercido/">¿En este &uacute;ltimo a&ntilde; con que frecuencia ha ejercido VBG?</a>
-            <a href="parentesco-ha-ejercido/">¿Qu&eacute; parentesco tiene con la persona a la que ha ejercido VBG?</a>
-            {% endif %}            
+
         </ul>
         <ul>
             <span>VBG como asunto publico</span>
@@ -79,31 +185,27 @@
         </ul>
         <ul>
             <span>Conocimiento sobre leyes</span>
-            <a href="conoce-leyes/">¿Conoce ley que penaliza VBG?</a>
-            <a href="mencione-leyes/">Mencione nombre de ley que penaliza VBG</a>
-            <a href="prohibido-por-ley/">Acciones prohibidas por la ley?</a>
+
         </ul>
         <ul>
             <span>Toma de decisiones</span>
-            <a href="que-acciones-realizar/">¿Cuando una mujer vive VBG cuales acciones debe realizar?</a>
+
         </ul>
         <ul>
             <span>Participaci&oacute;n en Espacios P&uacute;blicos</span>
-            <a href="participacion-en-espacios/">¿En que espacios est&aacute;s integrada/o?</a>
-            <a href="motivo-participacion/">¿Que le motiva a participar en esta organizaci&oacute;n?</a>
+
         </ul>
         <ul>
-        	<span>Incidencia Pol&iacute;tica</span>
-        	<a href="mujeres-representan/">¿En su comunidad existen mujeres que represetan a otras mujeres?</a>
+            <span>Incidencia Pol&iacute;tica</span>
+
         </ul>
         <ul>
             <span>Corresponsabilidad en el hogar</span>
-            <a href="actividades-hogar/">¿Cu&aacute;les de las siguientes actividades realiza usted en su hogar?</a>
+
         </ul>
         <ul>
             <span>Comunicacion asertiva</span>
-            <a href="solucion-problema/">¿Qu&eacute; se debe hacer para que la solucion a un conflicto sea exitosa?</a>
-            <a href="negociacion-pareja/">¿Qu&eacute; se debe hacer para que una negociaci&oacute;n de pareja sea exitosa?</a>
+
         </ul>
     </div>
 </div>

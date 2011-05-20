@@ -4,6 +4,12 @@ body{
     font-family: "Trebuchet MS", sans-serif;
     margin-bottom: 20px;
 }
+
+.centrado{
+    margin: 0 auto;
+    padding: 0;
+}
+
 .degradado {
     height: 8px;
     width: 100%;
@@ -313,8 +319,14 @@ label #id_year{
     font-family:Arial;
     padding-left:15px;
     padding-top:12px;
-    background:url(/files/img/pasoform.png) no-repeat;
+    background:url(/files/img/pasoform.png) repeat-x;
     height:60px;
+}
+
+.pasoespecial{
+    background:url(/files/img/pasoform2.png) repeat-x !important;
+    width:927px !important;
+    margin:0px 10px 0px 10px;
 }
 
 small{
@@ -369,6 +381,84 @@ small{
 #organizaciones-link{
     background:url(/files/img/organizacion.jpg) no-repeat;
 }
+
+#panel-variable-header{
+    background:url(/files/img/fondoheaderfiltros.png) no-repeat;
+    width:942px;
+    height:141px;
+    margin:0px 10px;
+}
+
+#panel-variable-links{
+    background:url(/files/img/fondolinksfiltros.png) repeat-y;
+    width:942px;
+    margin:0px 10px;
+   /* border-bottom:#bfb9a2 1px solid;*/
+}
+
+.variable-header{
+    width:170px;
+    float:left;
+    font-size:12px;
+    font-weight:bold;
+    margin:10px;
+    color:#494941;
+    line-height:1.3;
+    padding-top:9px;
+}
+
+.variable-links{
+    width:170px;
+    float:left;
+    font-size:12px;
+    font-weight:bold;
+    margin:10px;
+    color:#494941;
+    line-height:1.3;
+    padding-top:9px;
+}
+
+.variable-links a{
+    display: block;
+    width:166px;
+    height:33px;
+    font-size:12px;
+    color:#fff;
+    text-decoration:none;
+    padding-top:34px;
+    border-top:1px solid #fff;
+    -moz-box-shadow: 0px -2px 7px #d4cbb9;
+    -webkit-box-shadow: 0px -2px 7px #d4cbb9;
+    margin-bottom:13px;
+    cursor:pointer;
+}
+
+.variable-links a:hover .trans{
+    background:#2c959a;
+    cursor:pointer;
+}
+
+.trans{
+     background:url(/files/img/trans.png);
+     height:34px;
+     padding:0px 3px;
+}
+
+#conceptoviolencia{background:url(/files/img/conceptoviolencia.jpg);}
+#conocimientoleyes{background:url(/files/img/conocimientoleyes.jpg);}
+#creenciascausas{background:url(/files/img/creenciascausas.jpg);}
+#identificacionsituacion{background:url(/files/img/identificacionsituacion.jpg);}
+#accionessituacion{background:url(/files/img/accionessituacion.jpg);}
+#comunicacionactiva{background:url(/files/img/comunicacionactiva.jpg);}
+#tomadesicion{background:url(/files/img/tomadesicion.jpg);}
+#participacionpublico{background:url(/files/img/participacionpublico.jpg);}
+#incidenciapolitica{background:url(/files/img/incidenciapolitica.jpg);}
+#educacioningreso{background:url(/files/img/educacioningreso.jpg);}
+#accesorecurso{background:url(/files/img/accesorecurso.jpg);}
+#corresponsabilidad{background:url(/files/img/corresponsabilidad.jpg);}
+#prevalenciaviolencia{background:url(/files/img/prevalenciaviolencia.jpg);}
+
+
 
 #menu-indicadores ul{
     width:400px;
@@ -458,3 +548,73 @@ small{
 
 
 
+/* trigger button */
+#download_now {
+    background:transparent url(http://flowplayer.org/img/home/download.png) no-repeat scroll 0 0;
+    display:block;
+    height:44px;
+    margin-bottom:30px;
+    overflow:hidden;
+    text-indent:-999em;
+    width:159px;
+    cursor:pointer;
+}
+
+/* mouseover state */
+#download_now:hover {
+    background-position:0 -44px ;
+}
+
+/* clicked state */
+#download_now:focus {
+    background-position:0 -88px;
+}
+
+/* tooltip styling */
+.tooltip {
+    display:none;
+    /*background:url(http://static.flowplayer.org/tools/img/tooltip/black_big.png);*/
+    background: url(/files/img/fondotooltip.png) repeat-x;
+    border:#fff 3px solid;
+    -moz-box-shadow: 0px 0px 15px #000;
+    -webkit-box-shadow: 0px 0px 15px #000;
+    border-radius: 3px;
+    -webkit-border-radius: 3x ;
+    -moz-border-radius: 3px ;
+    height:auto;
+    padding:15px 15px 15px 15px;
+    width:380px;
+    font-size:11px;
+    color:#fff;
+}
+
+/* a .label element inside tooltip */
+.tooltip .label {
+    color:yellow;
+    width:35px;
+}
+
+.tooltip a {
+    color:#fff;
+    font-size:11px;
+    font-weight:bold;
+    display:block;
+    width:auto;
+    height:auto;
+    padding: 7px 0px 7px 23px;
+    margin:0px 6px 5px 6px;
+    font-size:12px;
+    color:#fff;
+    text-decoration:none;
+    border-top:0px;
+    border-bottom:#6e6e6e 1px dotted;
+    -moz-box-shadow: 0px 0px 0px;
+    -webkit-box-shadow: 0px 0px 0px;
+    margin-bottom:0px;
+    background:url(/files/img/arrow.png) no-repeat;
+    background-position: center left;
+}
+
+.tooltip a:hover{
+    color:#63e8e8;
+}
