@@ -441,11 +441,13 @@ def que_debe_hacer_funcionario(request):
 def existe_ley_penaliza(request):
     titulo = u'¿Sabe usted si existe alguna ley que penaliza la VBG contra las mujeres?'
     from models import SI_NO_RESPONDE
-    resultados = _query_set_filtrado(request, tipo='funcionario')
+    resultados = _query_set_filtrado(request, tipo='funcionario')    
     tabla = {}
     
     for op in SI_NO_RESPONDE:
         tabla[op[1]] = []
+    
+    print tabla
 
     for key, grupo in resultados.items():
         lista = []
@@ -456,7 +458,7 @@ def existe_ley_penaliza(request):
 
     totales = get_total(resultados)
     tabla = get_prom_lista_func(tabla, totales)
-    return render_to_response("monitoreo/funcionarios/generica_pie_func.html",
+    return render_to_response("monitoreo/funcionarios/generica_pie_func2.html",
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
