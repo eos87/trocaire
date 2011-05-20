@@ -438,6 +438,28 @@ def que_debe_hacer_funcionario(request):
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
+def existe_ley_penaliza(request):
+    titulo = u'¿Sabe usted si existe alguna ley que penaliza la VBG contra las mujeres?'
+    from models import SI_NO_RESPONDE
+    resultados = _query_set_filtrado(request, tipo='funcionario')
+    tabla = {}
+    
+    for op in SI_NO_RESPONDE:
+        tabla[op[1]] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in SI_NO_RESPONDE:
+            tabla[op[1]].append(ConocimientoLey.objects.filter(content_type=cfunc, object_id__in=lista, existe_ley=op[0]).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/funcionarios/generica_pie_func.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              RequestContext(request))
+
 #obtener la vista adecuada para los indicadores
 def _get_view_funcionario(request, vista):
     if vista in VALID_VIEWS_FUNCIONARIO:
@@ -452,6 +474,7 @@ VALID_VIEWS_FUNCIONARIO = {
     'comportamiento': comportamiento_funcionario,
     'hombres-violentos-por': hombres_violentos_func,
     'hombres-violencia-mujeres': hombres_violencia_mujeres_func,
+    'existe-ley-penaliza': existe_ley_penaliza,
     'prohibido-por-ley': prohibido_por_ley_func,
     'ruta-critica': ruta_critica,
     'registro-datos': registro_datos,
