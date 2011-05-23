@@ -1,0 +1,16 @@
+@charset "utf-8";
+/* CSS Document */
+
+ul, li{margin:0; padding:0; list-style:none;}
+
+.menu_head{margin:3px 0px 2px 4px;}
+
+.nuevaconsulta{margin:3px 5px 0px 4px; float:right;}
+
+
+.menu_body {display:none; width:184px;border-right:1px solid #b6cacd;border-bottom:1px solid #b6cacd;border-left:1px solid #b6cacd; z-index:10; position:absolute;}
+.menu_body li{background:#e9f2f6;z-index:10;}
+.menu_body li img{float:right;margin-top:-3px;}
+.menu_body li.alt{background:#d1e3f6;z-index:10;}
+.menu_body li a{color:#445058; text-decoration:none; padding:10px; display:block;z-index:10; font-size:12px;}
+.menu_body li a:hover{}

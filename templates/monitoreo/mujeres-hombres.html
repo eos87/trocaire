@@ -3,15 +3,43 @@
 {% block extratitle %}Indicadores{% endblock %}
 {% block extrahead%}
     <script src="http://cdn.jquerytools.org/1.2.5/full/jquery.tools.min.js" type="text/javascript"></script>
+    <link type="text/css" rel="stylesheet"  href="/files/css/style.css" >
     <script type="text/javascript">
     $(document).ready(function(){
         $(".activatooltip").tooltip({ effect: 'slide', position:'center right', events:{def:"click,mouseleave"}});
         $(".activatooltipleft").tooltip({ effect: 'slide', position:'center left', events:{def:"click,mouseleave"}});
     });
     </script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+    $("ul.menu_body li:even").addClass("alt");
+    $('img.menu_head').click(function () {
+    $('ul.menu_body').slideToggle('medium');
+    });
+    $('ul.menu_body li a').mouseover(function () {
+    $(this).animate({ fontSize: "12px", paddingLeft: "20px" }, 50 );
+    });
+    $('ul.menu_body li a').mouseout(function () {
+    $(this).animate({ fontSize: "12px", paddingLeft: "10px" }, 50 );
+    });
+});
+</script>
+
+
 {%endblock%}
 
 {% block contenido %}
+<div id="cambiar-indicador">
+    <img src="/files/img/cambiarinstrumento.png" width="184" height="32" class="menu_head" />
+    <ul class="menu_body">
+        <li><a href="/monitoreo/mujeres/"><img src="/files/img/mujerespe.png">Mujeres</a></li>
+        <li><a href="/monitoreo/hombres/"><img src="/files/img/hombrespe.png">Hombres </a></li>
+        <li><a href="/monitoreo/lideres/"><img src="/files/img/funcionariospe.png">Lideres</a></li>
+        <li><a href="/monitoreo/funcionarios/"><img src="/files/img/liderespe.png">Funcionarios</a></li>
+    </ul>
+    <a href="/monitoreo/consultar/" ><img src="/files/img/nuevaconsulta.png" width="184" height="32" class="nuevaconsulta" /></a>
+</div>
 <div class="title_bar">
     <div class="titulo">Datos de {{tipo|title}}</div>
 </div>
@@ -132,11 +160,11 @@
                     <a href="parentesco-ha-ejercido/">¿Qu&eacute; parentesco tiene con la persona a la que ha ejercido VBG?</a>
                     {% endif %}
                     <a href="afeccion-vbg/">Afecta la VBG a las mujeres, familia y comunidad?</a>
-            		<a href="como-afecta/">Cómo afecta?</a>                    
+                    <a href="como-afecta/">Cómo afecta?</a>
                 </div>
             </div>
             <div class="clean"></div>
-        </div>         
+        </div>
     </div>
 </div>
 {% endblock %}

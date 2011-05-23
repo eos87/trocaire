@@ -5,6 +5,7 @@
 {% block extrahead %}
 <script type="text/javascript" src="/files/js/highcharts.js"></script>
 <script type="text/javascript" src="/files/js/exporting_patched.js"></script>
+    <link type="text/css" rel="stylesheet"  href="/files/css/style.css" >
 <script type="text/javascript">
     var plotOptions = {
         column: {
@@ -97,15 +98,47 @@
         width: 830px;
     }
 </style>
+<script type="text/javascript">
+$(document).ready(function () {
+    $("ul.menu_body li:even").addClass("alt");
+    $('img.menu_head').click(function () {
+    $('ul.menu_body').slideToggle('medium');
+    });
+    $('ul.menu_body li a').mouseover(function () {
+    $(this).animate({ fontSize: "12px", paddingLeft: "20px" }, 50 );
+    });
+    $('ul.menu_body li a').mouseout(function () {
+    $(this).animate({ fontSize: "12px", paddingLeft: "10px" }, 50 );
+    });
+});
+</script>
 {% endblock %}
 
 {% block contenido %}
+<div id="cambiar-indicador">
+    <img src="/files/img/cambiarinstrumento.png" width="184" height="32" class="menu_head" />
+    <ul class="menu_body">
+        <li><a href="/monitoreo/mujeres/"><img src="/files/img/mujerespe.png">Mujeres</a></li>
+        <li><a href="/monitoreo/hombres/"><img src="/files/img/hombrespe.png">Hombres </a></li>
+        <li><a href="/monitoreo/lideres/"><img src="/files/img/funcionariospe.png">Lideres</a></li>
+        <li><a href="/monitoreo/funcionarios/"><img src="/files/img/liderespe.png">Funcionarios</a></li>
+    </ul>
+    <a href="/monitoreo/consultar/" ><img src="/files/img/nuevaconsulta.png" width="184" height="32" class="nuevaconsulta" /></a>
+</div>
 <div class="title_bar">
     <div class="titulo">{{tipo|title}} | {{titulo}}</div>
     <div class="titulo der"><a href="/monitoreo/{{tipo}}/">&larr; Volver</a></div>
 </div>
 <div class="contraparts">
-    <br>    
+    <div class="filtros-seleccionados">
+        <center><div style="background:#add9d9; width:100%;">FILTROS SELECCIONADOS</div></center>
+        <div class="filtro"><b>Año</b><br>2011</div>
+        <div class="filtro"><b>Pais</b><br>Nicaragua</div>
+        <div class="filtro"><b>Departamento</b><br>Managua</div>
+        <div class="filtro"><b>Organización</b><br>SIMAS</div>
+        <div class="filtro"><b>Municipio</b><br>Tipitapa</div>
+        <div class="clean"></div>
+    </div>
     <div {% if tipo == 'mujeres' %}id="grafosmujer" {% else %}id="grafoshombre"{% endif %} class="barra">
         <a href="#" id="m10_13" class="grafos">10-13 años</a>
         <a href="#" id="m14_18" class="grafos">14-17 años</a>
@@ -135,7 +168,7 @@
                 <td>{{totales.0}}</td>
                 <td>{{totales.1}}</td>
                 <td>{{totales.2}}</td>
-                <td>{{totales.3}}</td>                
+                <td>{{totales.3}}</td>
             </tr>
         </tbody>
     </table>

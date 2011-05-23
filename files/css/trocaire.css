@@ -103,6 +103,18 @@ a{
     background: url(/files/img/banner.png) repeat-x;
     height: 286px;
 }
+
+.filtros-seleccionados{
+    border: #cae4f2 1px solid;
+    background:#eef7f7;
+}
+.filtro{
+    font-size:12px;
+    color:#4e4e4e;
+    float:left;
+    margin:4px 10px 4px 10px;
+}
+
 .intro{
     width: 320px;
     float: left;
@@ -546,7 +558,11 @@ small{
     padding-left: 1px;
 }
 
-
+#cambiar-indicador{
+    height:38px;
+    background:#c8c8c2;
+    border:#fff 1px solid;
+}
 
 /* trigger button */
 #download_now {

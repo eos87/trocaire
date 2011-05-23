@@ -3,15 +3,40 @@
 
 {% block extrahead%}
     <script src="http://cdn.jquerytools.org/1.2.5/full/jquery.tools.min.js" type="text/javascript"></script>
+    <link type="text/css" rel="stylesheet"  href="/files/css/style.css" >
     <script type="text/javascript">
     $(document).ready(function(){
         $(".activatooltip").tooltip({ effect: 'slide', position:'center right', events:{def:"click,mouseleave"}});
         $(".activatooltipleft").tooltip({ effect: 'slide', position:'center left', events:{def:"click,mouseleave"}});
     });
     </script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $("ul.menu_body li:even").addClass("alt");
+        $('img.menu_head').click(function () {
+        $('ul.menu_body').slideToggle('medium');
+        });
+        $('ul.menu_body li a').mouseover(function () {
+        $(this).animate({ fontSize: "12px", paddingLeft: "20px" }, 50 );
+        });
+        $('ul.menu_body li a').mouseout(function () {
+        $(this).animate({ fontSize: "12px", paddingLeft: "10px" }, 50 );
+        });
+    });
+    </script>
 {%endblock%}
 
 {% block contenido %}
+<div id="cambiar-indicador">
+    <img src="/files/img/cambiarinstrumento.png" width="184" height="32" class="menu_head" />
+    <ul class="menu_body">
+        <li><a href="/monitoreo/mujeres/"><img src="/files/img/mujerespe.png">Mujeres</a></li>
+        <li><a href="/monitoreo/hombres/"><img src="/files/img/hombrespe.png">Hombres </a></li>
+        <li><a href="/monitoreo/lideres/"><img src="/files/img/funcionariospe.png">Lideres</a></li>
+        <li><a href="/monitoreo/funcionarios/"><img src="/files/img/liderespe.png">Funcionarios</a></li>
+    </ul>
+    <a href="/monitoreo/consultar/" ><img src="/files/img/nuevaconsulta.png" width="184" height="32" class="nuevaconsulta" /></a>
+</div>
 <div class="title_bar">
     <div class="titulo">Datos de Funcionarios</div>
 </div>
@@ -22,50 +47,50 @@
                 <small>Selección de indicadores y variables</small>
     </div>
     <div id="menu-indicadores">
-    	<div id="panel-variable-header">
+        <div id="panel-variable-header">
             <div class="variable-header">
                 Incremento en el  numero de servidores públicos que están sensibilizados y con conocimientos sobre la VBG  y el derecho de las mujeres a vivir sin violencia
             </div>
             <div class="variable-header">
                 Incremento en el numero de  instituciones que han adoptado normas, políticas, programas, leyes, mecanismos, y/o protocolos para atender a las mujeres sobrevivientes de VBG
-            </div>            
+            </div>
             <div class="clean"></div>
         </div>
         <div id="panel-variable-links">
-        	<div class="variable-links">
-        		<a id="conceptoviolencia" class="activatooltip"><div class="trans">El concepto y la expresión de violencia</div></a>
+            <div class="variable-links">
+                <a id="conceptoviolencia" class="activatooltip"><div class="trans">El concepto y la expresión de violencia</div></a>
                 <div class="tooltip">
                     <a href="le-hablan-de/">Cuando alguien le habla de VBG usted cree que refiere a:</a>
-            		<a href="expresion-violencia/">¿De que manera se expresa la violencia?</a>
+                    <a href="expresion-violencia/">¿De que manera se expresa la violencia?</a>
                 </div>
                 <a id="creenciascausas" class="activatooltip"><div class="trans">Creencias sobre las Causas de la VBG</div></a>
                 <div class="tooltip">
                     <a href="comportamiento/">C&oacute;mo deben comportarse hombres y mujeres</a>
-            		<a href="hombres-violencia-mujeres/">Lo hombres ejercen violencia hacia las mujeres porque</a>
-            		<a href="hombres-violentos-por/">¿Cree usted que los hombres son violentos debido a?</a>
+                    <a href="hombres-violencia-mujeres/">Lo hombres ejercen violencia hacia las mujeres porque</a>
+                    <a href="hombres-violentos-por/">¿Cree usted que los hombres son violentos debido a?</a>
                 </div>
                 <a id="conocimientoleyes" class="activatooltip"><div class="trans">Conocimiento sobre Marco Jurídico de la VBG</div></a>
                 <div class="tooltip">
                     <a href="existe-ley-penaliza/">¿Sabe usted si existe alguna ley protege el derecho de las mujeres a vivir sin violencia?</a>
-            		<a href="prohibido-por-ley/">Acciones prohibidas por la ley?</a>
+                    <a href="prohibido-por-ley/">Acciones prohibidas por la ley?</a>
                 </div>
                 <a id="pendiente" class="activatooltip"><div class="trans">Ruta cr&iacute;tica y protocolos de actuación</div></a>
                 <div class="tooltip">
                     <a href="ruta-critica/">Pasos de la ruta cr&iacute;tica?</a>
-            		<a href="mencione-instrumentos/">Mencione algunos de los instrumentos jurídicos que utilizan en la atención a casos de VBG?</a>
+                    <a href="mencione-instrumentos/">Mencione algunos de los instrumentos jurídicos que utilizan en la atención a casos de VBG?</a>
                 </div>
                 <a id="accionessituacion" class="activatooltip"><div class="trans">Acciones ante una situación de VBG</div></a>
                 <div class="tooltip">
                     <a href="donde-buscar-ayuda/">¿Dónde debe buscar ayuda una mujer que vive VBG?</a>
-            		<a href="que-debe-hacer/">Si un hombre le pega a su mujer, que debe hacer ella?</a>
+                    <a href="que-debe-hacer/">Si un hombre le pega a su mujer, que debe hacer ella?</a>
                 </div>
-        	</div>
-        	<div class="variable-links">
-        		<a id="pendiente" class="activatooltip"><div class="trans">Registro de datos (incidencia)</div></a>
+            </div>
+            <div class="variable-links">
+                <a id="pendiente" class="activatooltip"><div class="trans">Registro de datos (incidencia)</div></a>
                 <div class="tooltip">
                     <a href="registro-datos/">¿Su instituci&oacute;n lleva un registro sobre casos de VBG?</a>
-            		<a href="casos-registrados/">¿Cuántos casos de VBG tienen registrados?</a>
-            		<a href="casos-registrados-por-tipo">¿Cantidad de casos por tipo de violencia?</a>
+                    <a href="casos-registrados/">¿Cuántos casos de VBG tienen registrados?</a>
+                    <a href="casos-registrados-por-tipo">¿Cantidad de casos por tipo de violencia?</a>
                 </div>
                 <a id="pendiente" class="activatooltip"><div class="trans">Percepción sobre la calidad de atención a mujeres</div></a>
                 <div class="tooltip">
@@ -74,15 +99,15 @@
                 <a id="pendiente" class="activatooltip"><div class="trans">Acciones para mejorar la atención</div></a>
                 <div class="tooltip">
                     <a href="mejorar-atencion/">¿Han tratado de mejorar la atenci&oacute;n de las mujeres que viven VBG?</a>
-            		<a href="que-acciones/">¿Cuáles fueron las acciones que su institución realizó?</a>
-            		<a href="aasdfasffdsg">Pendiente: ¿Recursos con que cuenta su institución para realizar la atención que brinda a las mujeres que viven VBG</a>
+                    <a href="que-acciones/">¿Cuáles fueron las acciones que su institución realizó?</a>
+                    <a href="aasdfasffdsg">Pendiente: ¿Recursos con que cuenta su institución para realizar la atención que brinda a las mujeres que viven VBG</a>
                 </div>
                 <a id="pendiente" class="activatooltip"><div class="trans">Acciones de prevención de VBG</div></a>
                 <div class="tooltip">
                     <a href="prevenir-vbg/">¿Su institución realizo algunas acciones dirigidas a prevenir la VBG?</a>
-            		<a href="cuales-acciones/">¿Cuáles fueron las acciones de prevención de la VBG que su institución realizo?</a>
+                    <a href="cuales-acciones/">¿Cuáles fueron las acciones de prevención de la VBG que su institución realizo?</a>
                 </div>
-        	</div>
+            </div>
         </div>
     </div>
 </div>
