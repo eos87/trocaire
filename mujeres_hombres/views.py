@@ -16,9 +16,12 @@ from trocaire.utils import get_total
 
 
 def index(request, tipo):
-    if not tipo in ['mujeres', 'hombres']:
-        raise Http404
-    return render_to_response('monitoreo/mujeres-hombres.html', {'tipo': tipo}, RequestContext(request))
+    if tipo == 'mujeres':
+        return render_to_response('monitoreo/mujeres.html', {'tipo': tipo}, RequestContext(request))
+    elif tipo == 'hombres':
+        return render_to_response('monitoreo/hombres.html', {'tipo': tipo}, RequestContext(request))
+    else:
+        raise Http404    
 
 def hablan_de(request, tipo='mujeres'):    
     titulo = "¿Cuando alguien le habla de VBG usted cree que le estan hablando de?"

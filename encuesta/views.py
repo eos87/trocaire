@@ -9,7 +9,12 @@ from models import *
 from trocaire.lugar.models import *
 from trocaire.utils import _query_set_filtrado, get_total, get_prom
 
-def consultar(request):
+def consultar(request, pf=False):
+    if pf:
+        request.session['pf'] = pf
+    else:
+        request.session['pf'] = pf
+        
     if request.method == 'POST':
         form = ConsultarForm(request.POST)
         if form.is_valid():
@@ -18,8 +23,8 @@ def consultar(request):
             request.session['departamento'] = form.cleaned_data['departamento']
             request.session['organizacion'] = form.cleaned_data['organizacion']
             request.session['municipio'] = form.cleaned_data['municipio']
-            request.session['centinela'] = 1
-            centinela = 1
+            request.session['centinela'] = 1            
+            centinela = request.session['centinela']          
     else:
         form = ConsultarForm()
         centinela = 0
@@ -171,7 +176,7 @@ def ruta_critica(request):
             tabla[field.verbose_name][key] = {}
 
             for op in opciones:
-                tabla[field.verbose_name][key][op] = RutaCritica.objects.filter(content_type=cfunc, object_id__in=lista, ** {field.name: op-1}).count()
+                tabla[field.verbose_name][key][op] = RutaCritica.objects.filter(content_type=cfunc, object_id__in=lista, ** {field.name: op - 1}).count()
 
     totales = get_total(resultados)
     #tomar todos los valores de la tabla y calcular promedio
@@ -231,7 +236,7 @@ def mencione_instrumentos(request):
     tabla = get_prom_lista_func(tabla, totales)
 
     return render_to_response("monitoreo/funcionarios/generica_funcionario.html",
-                              {'tabla': tabla, 'titulo': titulo, 'totales': totales,},
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, },
                               RequestContext(request))
 
 def registro_datos(request):
@@ -250,7 +255,7 @@ def registro_datos(request):
             cantidad = RegistroDato.objects.filter(content_type=cfunc, object_id__in=lista, lleva_registro=opcion).count()
             tabla[key][opcion] = [cantidad, get_prom(cantidad, grupo.count())]
 
-    return render_to_response("monitoreo/funcionarios/generica_pie_func.html", 
+    return render_to_response("monitoreo/funcionarios/generica_pie_func.html",
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
@@ -526,27 +531,27 @@ def get_prom_lista_func(tabla, total):
 def get_prom_dead_list(tabla, totales):
     for k, v in tabla.items():
         for key, value in v.items():                        
-            tabla[k][key] = [[value[0], get_prom(value[0], totales[key-1])],
-            [value[1], get_prom(value[1], totales[key-1])],
-            [value[2], get_prom(value[2], totales[key-1])],
-            [value[3], get_prom(value[3], totales[key-1])]]
+            tabla[k][key] = [[value[0], get_prom(value[0], totales[key - 1])],
+            [value[1], get_prom(value[1], totales[key - 1])],
+            [value[2], get_prom(value[2], totales[key - 1])],
+            [value[3], get_prom(value[3], totales[key - 1])]]
     return tabla
 
 def get_prom_dead_list2(tabla, totales):
     for k, v in tabla.items():
         for key, value in v.items():
-            tabla[k][key] = [[value[0], get_prom(value[0], totales[key-1])],
-            [value[1], get_prom(value[1], totales[key-1])],
-            [value[2], get_prom(value[2], totales[key-1])],
-            [value[3], get_prom(value[3], totales[key-1])],
-            [value[4], get_prom(value[4], totales[key-1])]]
+            tabla[k][key] = [[value[0], get_prom(value[0], totales[key - 1])],
+            [value[1], get_prom(value[1], totales[key - 1])],
+            [value[2], get_prom(value[2], totales[key - 1])],
+            [value[3], get_prom(value[3], totales[key - 1])],
+            [value[4], get_prom(value[4], totales[key - 1])]]
     return tabla
 
 def get_prom_dead_list3(tabla, totales):
     for k, v in tabla.items():
         for key, value in v.items():
-            tabla[k][key] = [[value[0], get_prom(value[0], totales[key-1])],
-            [value[1], get_prom(value[1], totales[key-1])]]
+            tabla[k][key] = [[value[0], get_prom(value[0], totales[key - 1])],
+            [value[1], get_prom(value[1], totales[key - 1])]]
     return tabla
 
 def convertir_grafico(tabla):
@@ -562,7 +567,7 @@ def convertir_grafico(tabla):
     for i in range(1, len(tabla.items()[0][1].keys()) + 1):
         for j in range(1, len(tabla.items()[0][1][1]) + 1):
             for key, value in tabla.items():
-                dicc[i][j].append(value[i][j-1])
+                dicc[i][j].append(value[i][j - 1])
     return dicc
 
 #------------------------LIDERES Y LIDEREZAS------------------------------------
@@ -1228,7 +1233,7 @@ def que_hace_ante_vbg(request):
             tabla[field.verbose_name][key] = {}            
             
             for op in opciones:
-                tabla[field.verbose_name][key][op] = AccionVBGLider.objects.filter(content_type=clider, object_id__in=lista, ** {field.name: op-1}).count()
+                tabla[field.verbose_name][key][op] = AccionVBGLider.objects.filter(content_type=clider, object_id__in=lista, ** {field.name: op - 1}).count()
     totales = get_total(resultados)
     
     #---------------Inicia transformacion para grafico ------------------------
@@ -1247,8 +1252,8 @@ def _get_vista_lideres(request, vista):
         raise ViewDoesNotExist("Tried %s in module %s Error: View not define in VALID_VIEWS." % (vista, 'encuesta.views'))
 
 VALID_VIEWS_LIDERES = {
-    'le-hablan-de': lideres_le_hablan_de, 
-    'hombres-violentos': lideres_hombres_violentos, 
+    'le-hablan-de': lideres_le_hablan_de,
+    'hombres-violentos': lideres_hombres_violentos,
     'comportamiento': comportamiento_lideres,
     'justificacion': hombres_violencia_mujeres_lideres,
     'ayuda-mujer': ayuda_mujer_violencia_lideres,

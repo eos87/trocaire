@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block extratitle %}Indicadores{% endblock %}
+{% block extrahead%}
+    <script src="http://cdn.jquerytools.org/1.2.5/full/jquery.tools.min.js" type="text/javascript"></script>
+    <link type="text/css" rel="stylesheet"  href="/files/css/style.css" >
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $(".activatooltip").tooltip({ effect: 'slide', position:'center right', events:{def:"click,mouseleave"}});
+        $(".activatooltipleft").tooltip({ effect: 'slide', position:'center left', events:{def:"click,mouseleave"}});
+    });
+    </script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+    $("ul.menu_body li:even").addClass("alt");
+    $('img.menu_head').click(function () {
+    $('ul.menu_body').slideToggle('medium');
+    });
+    $('ul.menu_body li a').mouseover(function () {
+    $(this).animate({ fontSize: "12px", paddingLeft: "20px" }, 50 );
+    });
+    $('ul.menu_body li a').mouseout(function () {
+    $(this).animate({ fontSize: "12px", paddingLeft: "10px" }, 50 );
+    });
+});
+</script>
+
+
+{%endblock%}
+
+{% block contenido %}
+<div id="cambiar-indicador">
+    <img src="/files/img/cambiarinstrumento.png" width="184" height="32" class="menu_head" />
+    <ul class="menu_body">
+        <li><a href="/monitoreo/mujeres/"><img src="/files/img/mujerespe.png">Mujeres</a></li>
+        <li><a href="/monitoreo/hombres/"><img src="/files/img/hombrespe.png">Hombres </a></li>
+        <li><a href="/monitoreo/lideres/"><img src="/files/img/funcionariospe.png">Lideres</a></li>
+        <li><a href="/monitoreo/funcionarios/"><img src="/files/img/liderespe.png">Funcionarios</a></li>
+    </ul>
+    <a href="/monitoreo/consultar/" ><img src="/files/img/nuevaconsulta.png" width="184" height="32" class="nuevaconsulta" /></a>
+</div>
+<div class="title_bar">
+    <div class="titulo">Datos de {{tipo|title}}</div>
+</div>
+<div class="contraparts">
+
+<br>
+    <div class="paso pasoespecial">
+                PASO 3 <br>
+                <small>Selección de indicadores y variables</small>
+    </div>
+    <div id="menu-indicadores">
+        <div id="panel-variable-header">
+            <div class="variable-header">
+                Incremento en el número de hombres que están sensibilizados y con conocimientos sobre la VBG y los derechos humanos de las mujeres.
+            </div>
+            <div class="variable-header">
+                Incremento en el número de hombres que están aplicando técnicas de escucha activa, comunicación asertiva y la negociación de conflictos ante situaciones de VBG.
+            </div>
+            <div class="variable-header">
+                Incremento en el número de hombres que están asumiendo tareas domésticas en el hogar y compartiendo las responsabilidades reproductivas con las mujeres.
+            </div>
+            <div class="variable-header">
+                Mujeres del grupo meta desarrollan condiciones de vida libre de VBG
+            </div>            
+            <div class="clean"></div>
+        </div>
+        <div id="panel-variable-links">
+            <div class="variable-links">
+                <a id="conceptoviolencia" class="activatooltip"><div class="trans">El concepto y la expresión de violencia</div></a>
+                <div class="tooltip">
+                    <a href="hablan-de/">Cuando alguien le habla de VBG usted cree que refiere a:</a>
+                    <a href="expresion-vbg/">De que manera se expresa la violencia?</a>
+                </div>
+                <a id="conocimientoleyes" class="activatooltip"><div class="trans">Conocimiento sobre leyes</div></a>
+                <div class="tooltip">
+                    <a href="conoce-leyes/">¿Conoce ley que penaliza VBG?</a>
+                    <a href="mencione-leyes/">Mencione nombre de ley que penaliza VBG</a>
+                    <a href="prohibido-por-ley/">Acciones prohibidas por la ley?</a>
+                </div>
+                <a id="creenciascausas" class="activatooltip"><div class="trans">Creencias sobre las Causas de la VBG</div></a>
+                <div class="tooltip">
+                    <a href="hombres-violentos-por/">¿Cree usted que los hombres son violentos debido a?</a>
+                    <a href="hombres-violencia-mujeres/">Lo hombres ejercen violencia hacia las mujeres porque</a>
+                    <a href="comportamiento/">C&oacute;mo deben comportarse hombres y mujeres</a>
+                    <a href="vbg-se-resuelve-con/">La VBG debe resolverse con:</a>
+                </div>
+                <a id="identificacionsituacion" class="activatooltip"><div class="trans">Identificación de la situación de VBG</div></a>
+                <div class="tooltip">
+                    <a href="hombres-que-ejercen-vbg/">Conoce hombres que ejercen VBG</a>
+                    <a href="mujeres-viven-vbg/">Mujeres que viven VBG</a>
+                </div>
+                <a id="accionessituacion" class="activatooltip"><div class="trans">Acciones ante una situación de VBG</div></a>
+                <div class="tooltip">
+                    <a href="ayuda-mujer-violencia/">Ha ayudado a alguna mujer que ha vivido VBG?</a>
+                    <a href="que-hace-ante-vbg/">Que hace cuando existe una situaci&oacute;n de VBG</a>
+                    <a href="donde-buscar-ayuda/">Donde debe buscar ayuda una mujer que vive VBG</a>
+                    <a href="que-debe-hacer/">Si hombre le pega a su pareja, que deber&iacute;a de hacer?</a>
+                </div>
+                <a id="tomadesicion" class="activatooltip"><div class="trans">Toma de decisiones</div></a>
+                <div class="tooltip">
+                    <a href="que-acciones-realizar/">¿Cuando una mujer vive VBG cuales acciones debe realizar?</a>
+                </div>
+                <a id="participacionpublico" class="activatooltip"><div class="trans">Participación en Espacios Públicos</div></a>
+                <div class="tooltip">
+                    <a href="participacion-en-espacios/">¿En que espacios est&aacute;s integrada/o?</a>
+                    <a href="motivo-participacion/">¿Que le motiva a participar en esta organizaci&oacute;n?</a>
+                </div>
+            </div>
+            <div class="variable-links">
+                <a id="comunicacionactiva" class="activatooltip"><div class="trans">Comunicación asertiva</div></a>
+                <div class="tooltip">
+                    <a href="solucion-problema/">¿Qu&eacute; se debe hacer para que la solucion a un conflicto sea exitosa?</a>
+                    <a href="negociacion-pareja/">¿Qu&eacute; se debe hacer para que una negociaci&oacute;n de pareja sea exitosa?</a>
+                </div>
+                <a id="incidenciapolitica" class="activatooltip"><div class="trans">Incidencia política</div></a>
+                <div class="tooltip">
+                    <a href="mujeres-representan/">¿En su comunidad existen mujeres que represetan a otras mujeres?</a>
+                    <a href="satisfaccion/">¿Satisfacci&oacute;n con quienes las representan?</a>
+                </div>
+            </div>            
+            <div class="variable-links">
+                <a id="educacioningreso" class="activatooltipleft"><div class="trans">Estado de educación e ingreso</div></a>
+                <div class="tooltip">
+                    <a href="nivel-educativo/">¿Cu&aacute;l es el su nivel educativo m&aacute;s alto?</a>
+                    <a href="viven-con-pareja/">¿En su hogar vive con su {% if tipo == 'mujeres' %}esposo/compa&ntilde;ero{% else %}esposa/compa&ntilde;era{% endif %}?</a>
+                    <a href="trabaja-fuera/">¿Trabaja usted fuera del hogar?</a>
+                    <a href="aporte-ingresos/">¿Qui&eacute;n o quienes aportan ingresos al hogar?</a>
+                </div>
+                <a id="accesorecurso" class="activatooltipleft"><div class="trans">Acceso y control de recursos</div></a>
+                <div class="tooltip">
+                    <a href="mencione-recursos/">Mencione los recursos de los cuales usted es due&ntilde;o?</a>
+                    <a href="decide-recursos/">Mencione los recursos de los cuales usted decide?</a>
+                    <a href="que-hace-dinero/">¿Qu&eacute; hace usted con el dinero que gana?</a>
+                </div>
+                <a id="corresponsabilidad" class="activatooltipleft"><div class="trans">Corresponsabilidad en el hogar</div></a>
+                <div class="tooltip">
+                    <a href="actividades-hogar/">¿Cu&aacute;les de las siguientes actividades realiza usted en su hogar?</a>
+                </div>
+            </div>
+            <div class="variable-links" style="margin-right:0px !important;">
+                <a id="prevalenciaviolencia" class="activatooltipleft"><div class="trans">Prevalencia de la VBG</div></a>
+                <div class="tooltip">                    
+                    <a href="ha-ejercido-vbg/">Considera usted que ha ejercido VBG hacia una mujer el &uacute;ltimo a&ntilde;o?</a>
+                    <a href="tipo-vbg-ejercido/">Que tipo de VBG ha ejercido?</a>
+                    <a href="frecuencia-ejercido/">¿En este &uacute;ltimo a&ntilde; con que frecuencia ha ejercido VBG?</a>
+                    <a href="parentesco-ha-ejercido/">¿Qu&eacute; parentesco tiene con la persona a la que ha ejercido VBG?</a>                    
+                    <a href="afeccion-vbg/">Afecta la VBG a las mujeres, familia y comunidad?</a>
+                    <a href="como-afecta/">Cómo afecta la VBG?</a>
+                </div>
+            </div>
+            <div class="clean"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

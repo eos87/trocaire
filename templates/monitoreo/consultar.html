@@ -10,6 +10,9 @@
 <script src="/files/js/jquery.multiselect.filter.js" type="text/javascript"></script>
 <script src="/files/js/monitoreo.consultar.js" type="text/javascript"></script>
 {% endblock %} {% block contenido %}
+{% if request.session.pf %}
+la reconcha, PF está activo
+{% endif %}
 <div class="title_bar">
     <div class="titulo">Seleccion de Filtros</div>
     <div class="clean"></div>
