@@ -389,7 +389,12 @@ small{
 #mujeres-link{
     background:url(/files/img/mujeres.jpg) no-repeat;
 }
-
+#proposito-link{
+	background: url(/files/img/propositobarra.png);
+}
+#fin-link{
+	background: url(/files/img/finbarra.png);
+}
 #organizaciones-link{
     background:url(/files/img/organizacion.jpg) no-repeat;
 }

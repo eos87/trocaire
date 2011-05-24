@@ -12,18 +12,24 @@
     </script>
 
 <script type="text/javascript">
-$(document).ready(function () {
-    $("ul.menu_body li:even").addClass("alt");
-    $('img.menu_head').click(function () {
-    $('ul.menu_body').slideToggle('medium');
-    });
-    $('ul.menu_body li a').mouseover(function () {
-    $(this).animate({ fontSize: "12px", paddingLeft: "20px" }, 50 );
-    });
-    $('ul.menu_body li a').mouseout(function () {
-    $(this).animate({ fontSize: "12px", paddingLeft: "10px" }, 50 );
-    });
-});
+	$(document).ready(function() {
+		$("ul.menu_body li:even").addClass("alt");
+		$('img.menu_head').click(function() {
+			$('ul.menu_body').slideToggle('medium');
+		});
+		$('ul.menu_body li a').mouseover(function() {
+			$(this).animate({
+				fontSize : "12px",
+				paddingLeft : "20px"
+			}, 50);
+		});
+		$('ul.menu_body li a').mouseout(function() {
+			$(this).animate({
+				fontSize : "12px",
+				paddingLeft : "10px"
+			}, 50);
+		});
+	});
 </script>
 
 

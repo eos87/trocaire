@@ -10,9 +10,7 @@
 <script src="/files/js/jquery.multiselect.filter.js" type="text/javascript"></script>
 <script src="/files/js/monitoreo.consultar.js" type="text/javascript"></script>
 {% endblock %} {% block contenido %}
-{% if request.session.pf %}
-la reconcha, PF está activo
-{% endif %}
+
 <div class="title_bar">
     <div class="titulo">Seleccion de Filtros</div>
     <div class="clean"></div>
@@ -64,11 +62,16 @@ la reconcha, PF está activo
         </div>
         <div id="menufiltros">
             <br>
+            {% if request.session.pf %}            
+            <a id="proposito-link" href="/monitoreopf/proposito/"></a>
+            <a id="fin-link"href="/monitoreopf/fin/"></a>
+            {% else %}
             <a id="mujeres-link" href="/monitoreo/mujeres/"></a>
-            <a  id="hombres-link"href="/monitoreo/hombres/"></a>
+            <a id="hombres-link"href="/monitoreo/hombres/"></a>
             <a id="lideres-link" href="/monitoreo/lideres/"></a>
             <a id="funcionarios-link" href="/monitoreo/funcionarios/"></a>
             <a id="organizaciones-link" href="/monitoreo/frganizaciones/"></a>
+            {% endif %}
             <div class="clean"></div>
             <br>
         </div>

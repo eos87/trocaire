@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block extratitle %}Resultado de propósito{% endblock %}
+{% block extrahead%}
+    <script src="http://cdn.jquerytools.org/1.2.5/full/jquery.tools.min.js" type="text/javascript"></script>
+    <link type="text/css" rel="stylesheet"  href="/files/css/style.css" >
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $(".activatooltip").tooltip({ effect: 'slide', position:'center right', events:{def:"click,mouseleave"}});
+        $(".activatooltipleft").tooltip({ effect: 'slide', position:'center left', events:{def:"click,mouseleave"}});
+    });
+    </script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("ul.menu_body li:even").addClass("alt");
+		$('img.menu_head').click(function() {
+			$('ul.menu_body').slideToggle('medium');
+		});
+		$('ul.menu_body li a').mouseover(function() {
+			$(this).animate({
+				fontSize : "12px",
+				paddingLeft : "20px"
+			}, 50);
+		});
+		$('ul.menu_body li a').mouseout(function() {
+			$(this).animate({
+				fontSize : "12px",
+				paddingLeft : "10px"
+			}, 50);
+		});
+	});
+</script>
+
+
+{%endblock%}
+
+{% block contenido %}
+<div id="cambiar-indicador">
+    <img src="/files/img/cambiarinstrumento.png" width="184" height="32" class="menu_head" />
+    <ul class="menu_body">
+        <li><a href="/monitoreo/mujeres/"><img src="/files/img/mujerespe.png">Mujeres</a></li>
+        <li><a href="/monitoreo/hombres/"><img src="/files/img/hombrespe.png">Hombres </a></li>
+        <li><a href="/monitoreo/lideres/"><img src="/files/img/funcionariospe.png">Lideres</a></li>
+        <li><a href="/monitoreo/funcionarios/"><img src="/files/img/liderespe.png">Funcionarios</a></li>
+    </ul>
+    <a href="/monitoreo/consultar/" ><img src="/files/img/nuevaconsulta.png" width="184" height="32" class="nuevaconsulta" /></a>
+</div>
+<div class="title_bar">
+    <div class="titulo">Datos de {{tipo|title}}</div>
+</div>
+<div class="contraparts">
+
+<br>
+    <div class="paso pasoespecial">
+                PASO 3 <br>
+                <small>Selección de indicadores y variables</small>
+    </div>
+    <div id="menu-indicadores">
+        <div id="panel-variable-header">
+            <div class="variable-header">
+                Se incrementa el número de personas que reconocen la VBG como un problema público que afecta el desarrollo de las mujeres, familias  y comunidades
+            </div>
+            <div class="variable-header">
+                Se incrementa el número de Mujeres que tienen acceso con calidad a los servicios que prestan las instituciones públicas que atienden situaciones de VBG
+            </div>
+            <div class="variable-header">
+                Incremento en el número de mujeres que están denunciando casos de VBG en las instituciones públicas que atienden situaciones de VBG
+            </div>            
+            <div class="clean"></div>
+        </div>
+        <div id="panel-variable-links">
+            <div class="variable-links">
+                <a id="prevalenciaviolencia" class="activatooltip"><div class="trans">Prevalencia VBG mujeres</div></a>
+                <div class="tooltip">
+                    <a href="/monitoreopf/mujeres/afeccion-vbg/">¿Afecta la VBG a las mujeres, familia y comunidad?</a>
+                    <a href="/monitoreopf/mujeres/como-afecta/">¿Cómo afecta la VBG a las mujeres, familia y comunidad?</a>
+                </div>
+                <a id="prevalenciaviolencia" class="activatooltip"><div class="trans">Prevalencia VBG hombres</div></a>
+                <div class="tooltip">
+                    <a href="/monitoreopf/hombres/afeccion-vbg/">¿Afecta la VBG a las mujeres, familia y comunidad?</a>
+                    <a href="/monitoreopf/hombres/como-afecta/">¿Cómo afecta la VBG a las mujeres, familia y comunidad?</a>
+                </div>
+                <a id="prevalenciaviolencia" class="activatooltip"><div class="trans">Prevalencia VBG lideres</div></a>
+                <div class="tooltip">
+                    <a href="/monitoreopf/mujeres-vbg-comunidad/">¿Piensa usted que en su comunidad existen mujeres que viven VBG?</a>                    
+                </div>
+            </div>
+            <div class="variable-links">
+            	<a id="prevalenciaviolencia" class="activatooltip"><div class="trans">Prevalencia VBG mujeres</div></a>
+                <div class="tooltip">
+                    <a href="/monitoreopf/mujeres/calidad-servicios/">Mujeres: ¿C&oacute;mo valora los servicios que ofrecen las instituciones a mujeres que viven VBG?</a>
+                </div>
+                <a id="tiposapoyo" class="activatooltip"><div class="trans">Tipos de apoyo que brindan a las mujeres</div></a>
+                <div class="tooltip">
+                    <a href="/monitoreopf/prevenir-vbg/">¿En su organizaci&oacute;n, escuela o usted realizan algunas acciones dirigidas a prevenir la VBG?</a>
+                </div>
+                <a id="calidadatencion" class="activatooltip"><div class="trans">Percepción sobre la calidad de atención a mujeres VBG</div></a>
+                <div class="tooltip">
+                    <a href="/monitoreopf/calidad-servicios/">Funcionarios: ¿Como valora los servicios que su instituci&oacute;n ofrece a mujeres que viven VBG?</a>
+                </div> 
+                <a id="accionesparamejorar" class="activatooltip"><div class="trans">Acciones para mejorar la calidad de atención.</div></a>
+                <div class="tooltip">
+                    <a href="/monitoreopf/mejorar-atencion/">¿Han tratado de mejorar la atenci&oacute;n de las mujeres que viven VBG?</a>
+                    <a href="/monitoreopf/que-acciones/">¿Cuáles fueron las acciones que su institución realizó?</a>
+                </div>                
+            </div>
+            <div class="variable-links">
+                <a id="registrodatos" class="activatooltip"><div class="trans">Registro de datos</div></a>
+                <div class="tooltip">
+                    <a href="/monitoreopf/registro-datos/">¿Su instituci&oacute;n lleva un registro sobre casos de VBG?</a>                    
+                    <a href="/monitoreopf/casos-registrados-por-tipo">¿Que cantidad de casos de VBG han registrado?</a>
+                </div>                
+            </div>            
+            <div class="clean"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

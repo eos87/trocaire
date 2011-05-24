@@ -719,7 +719,7 @@ def satisfaccion(request, tipo):
     return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
 
 def calidad_servicios(request, tipo):
-    titulo = u'¿Cómo Ud los servicios que las intituciones ofrecen a las mujeres que viven VBG?'
+    titulo = u'¿Cómo valora Ud los servicios que las intituciones ofrecen a las mujeres que viven VBG?'
     from trocaire.encuesta.models import SERVICIOS
     resultados = _query_set_filtrado(request, tipo)
     tabla = {}
@@ -738,7 +738,7 @@ def calidad_servicios(request, tipo):
                                                                     valor_servicio=op[0]).count())    
     totales = get_total(resultados)
     tabla = get_list_with_total(tabla, totales)
-    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
+    return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
 def nivel_educativo(request, tipo):
     from trocaire.encuesta.models import NIVEL_EDUCATIVO
