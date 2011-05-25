@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block extratitle %}{{titulo}}{% endblock %}
+
 {% block extrahead %}
 <script type="text/javascript" src="/files/js/highcharts.js"></script>
 <script type="text/javascript" src="/files/js/exporting.js"></script>
@@ -39,10 +41,10 @@
             var series;
             var titulo;
             if(id=='m10_13'){
-                titulo = 'Mujeres';
+                titulo = '{{totales.0}} Mujeres';
                 series = [{data: [{% for key, value in tabla.items %}['{{key|title}}', {{value.1}}],{% endfor %}]}]
             }else if(id=='h10_13'){
-                titulo = 'Hombres';
+                titulo = '{{totales.1}} Hombres';
                 series = [{data: [{% for key, value in tabla.items %}['{{key|title}}', {{value.2}}],{% endfor %}]}]
             }
             chart = new Highcharts.Chart({
@@ -69,11 +71,13 @@
 {% endblock %}
 
 {% block contenido %}
+{% include "cambiar_instrumento.html" %}
 <div class="title_bar">
-    <div class="titulo">{{titulo}}</div>
+    <div class="titulo">Líderes | {{titulo}}</div>
     <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
 </div>
-<div class="contraparts"><br>
+<div class="contraparts">
+	{% include "filtros_seleccionados.html" %}
     <div id= "grafosmujer" class="barra">
         <a href="#" id="m10_13" class="grafos">Gr&aacute;fico Mujeres</a>
     </div>

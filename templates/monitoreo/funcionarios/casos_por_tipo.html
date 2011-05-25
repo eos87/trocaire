@@ -7,20 +7,19 @@
 <script type="text/javascript" src="/files/js/exporting.js"></script>
 <script type="text/javascript">
     var plotOptions = {
-         pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-               enabled: false
+    		column: {
+                groupPadding: 0,
+                pointPadding: 0.9,
+                borderWidth: 0
             },
-            showInLegend: true
-         },
          series: {
+        	pointWidth: 25,
+            minPointLength : 0.5,
             dataLabels: {
                 enabled: true,
                 align: "center",
                 formatter: function() {
-                    return ''+ this.percentage.toFixed(2) + ' %';
+                    return ''+ this.point.y;
                 },
                 color: '#000',
                 style: {
@@ -31,7 +30,7 @@
     }
     var tooltip = {
         formatter: function() {
-            return '<b>'+ this.point.name +'</b>: '+ this.percentage.toFixed(2) +'%';
+            return '<b>'+ this.series.name +'</b>: '+ this.point.y;
         }
     }
     var chart;
@@ -41,24 +40,35 @@
             var series;
             var titulo;
             if(id=='m10_13'){
-                titulo = 'Mujeres';
-                series = [{data: [{% for key, value in tabla.items %}['{{key|title}}', {{value.1}}],{% endfor %}]}]
+                titulo = '{{totales.0}} Mujeres';
+                series = [{% for key, value in tabla.items %}{name: '{{key|title}}', data: [{{value.1}}]},{% endfor %}]
             }else if(id=='h10_13'){
-                titulo = 'Hombres';
-                series = [{data: [{% for key, value in tabla.items %}['{{key|title}}', {{value.2}}],{% endfor %}]}]
+                titulo = '{{totales.1}} Hombres';
+                series = [{% for key, value in tabla.items %}{name: '{{key|title}}', data: [{{value.2}}]},{% endfor %}]
             }
             chart = new Highcharts.Chart({
                 chart: {
                     renderTo: 'container',
-                    defaultSeriesType: 'pie',
+                    defaultSeriesType: 'column',
                     height: 480,
-                    width: 900
+                    width: 960
                 },
                 title: {
                     text: '{{titulo}}'
                 },
                 subtitle: {
                     text: titulo
+                },
+                xAxis: {
+                    categories: [
+                        'Opciones'
+                    ]
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Cantidad de casos'
+                    }
                 },
                 tooltip: tooltip,
                 plotOptions: plotOptions,
@@ -71,11 +81,13 @@
 {% endblock %}
 
 {% block contenido %}
+{% include "cambiar_instrumento.html" %}
 <div class="title_bar">
     <div class="titulo">Funcionarios | {{titulo|truncatewords:"12"}}</div>
     <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
 </div>
-<div class="contraparts"><br>
+<div class="contraparts">
+	{% include "filtros_seleccionados.html" %}
     <div id= "grafosmujer" class="barra">
         <a href="#" id="m10_13" class="grafos">Gr&aacute;fico Mujeres</a>
     </div>

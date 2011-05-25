@@ -177,13 +177,7 @@ def ruta_critica(request):
             for op in opciones:
                 tabla[field.verbose_name][key][op] = RutaCritica.objects.filter(content_type=cfunc, object_id__in=lista, ** {field.name: op - 1}).count()
 
-    totales = get_total(resultados)
-    #tomar todos los valores de la tabla y calcular promedio
-#    for key, value in tabla.items():
-#        for i in range(1, 3):
-#            total = sum(tabla[key][i].values())
-#            for nivel in opciones:
-#                tabla[key][i][nivel] = [tabla[key][i][nivel], get_prom(tabla[key][i][nivel], total)]
+    totales = get_total(resultados) 
 
     totales_vertical = []
     grafico = {}
@@ -306,7 +300,7 @@ def calidad_servicios(request):
         for opcion in SERVICIOS:
             tabla[opcion[1]][key] = CalidadAtencionFuncionario.objects.filter(content_type=cfunc, object_id__in=lista, valor_servicio=opcion[0]).count()
 
-    return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
+    return render_to_response("monitoreo/funcionarios/casos_por_tipo2.html",
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
@@ -326,7 +320,7 @@ def mejorar_atencion(request):
         for opcion in SI_NO_SIMPLE2:
             tabla[opcion[1]][key] = AccionMejorarAtencion.objects.filter(content_type=cfunc, object_id__in=lista, realizo_accion=opcion[0]).count()
 
-    return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
+    return render_to_response("monitoreo/funcionarios/casos_por_tipo2.html",
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
@@ -367,7 +361,7 @@ def prevenir_vbg(request):
         [lista.append(encuesta.id) for encuesta in grupo]
         for opcion in SI_NO_SIMPLE2:
             tabla[opcion[1]][key] = AccionPrevVBG.objects.filter(content_type=cfunc, object_id__in=lista, realizo_accion=opcion[0]).count()
-    return render_to_response("monitoreo/funcionarios/casos_por_tipo.html",
+    return render_to_response("monitoreo/funcionarios/casos_por_tipo2.html",
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
@@ -410,7 +404,7 @@ def donde_buscar_ayuda(request):
             tabla[op].append(AccionVBGFuncionario.objects.filter(content_type=cfunc, object_id__in=lista, donde_buscar=op).count())
 
     for key, value in tabla.items():
-        if verificar(value) < 5:
+        if verificar(value) < 10:
             del tabla[key]
 
     totales = get_total(resultados)
@@ -465,6 +459,28 @@ def existe_ley_penaliza(request):
     return render_to_response("monitoreo/funcionarios/generica_pie_func2.html",
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
+    
+def recursos_institucion(request):
+    titulo = u'¿Con que recursos cuenta su institución para realizar la atención que brinda a las mujeres que viven VBG?'
+    resultados = _query_set_filtrado(request, 'funcionario')
+    tabla = {}    
+    opciones = RecursoCuentaIns.objects.all()
+
+    for op in opciones:
+        tabla[op] = []
+
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+
+        for op in opciones:
+            tabla[op].append(AccionMejorarAtencion.objects.filter(content_type=cfunc, object_id__in=lista, recursos=op).count())
+
+    totales = get_total(resultados)
+    tabla = get_prom_lista_func(tabla, totales)
+    return render_to_response("monitoreo/funcionarios/generica_funcionario.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
+                              RequestContext(request))
 
 #obtener la vista adecuada para los indicadores
 def _get_view_funcionario(request, vista):
@@ -494,6 +510,7 @@ VALID_VIEWS_FUNCIONARIO = {
     'mencione-instrumentos': mencione_instrumentos,
     'donde-buscar-ayuda': donde_buscar_ayuda,
     'que-debe-hacer': que_debe_hacer_funcionario,
+    'recursos-institucion': recursos_institucion,
 }
 
 def get_prom_lista_con_total(tabla, total):
@@ -589,7 +606,7 @@ def lideres_le_hablan_de(request):
             tabla[op].append(ConceptoViolencia.objects.filter(content_type=clider, object_id__in=[encuesta.id for encuesta in grupo], \
                              hablande=op, respuesta='si').count())
     for key, value in tabla.items():
-        if verificar(value) == 0:
+        if verificar(value) < 10:
             del tabla[key]
     totales = get_total(encuestas)
     tabla = get_prom_lista_func(tabla, totales)
@@ -776,7 +793,7 @@ def donde_buscar_ayuda_lideres(request):
             tabla[op].append(AccionVBGLider.objects.filter(content_type=clider, object_id__in=lista, donde_buscar=op).count())
 
     for key, value in tabla.items():
-        if verificar(value) < 5:
+        if verificar(value) < 10:
             del tabla[key]
 
     totales = get_total(resultados)
@@ -1048,7 +1065,7 @@ def cuales_acciones_lideres(request):
     tabla = get_prom_lista_func(tabla, totales)
 
     return render_to_response("monitoreo/lideres/generica_lideres.html",
-                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, },
                               RequestContext(request))
 
 def mujeres_lideres(request):
@@ -1265,7 +1282,7 @@ VALID_VIEWS_LIDERES = {
     'tipo-vbg-ha-vivido': tipo_vbg_ha_vivido,
     'frecuencia-vbg': frecuencia_vbg,
     'quien-ejercio-vbg': quien_ejercio_vbg,
-    'conocimiento-leyes': conocimiento_leyes,
+    'prohibido-por-ley': conocimiento_leyes,
     'existe-ley-penaliza-vbg': existe_ley_penaliza_vbg,
     'decisiones': decisiones,
     'corresponsabilidad': corresponsabilidad,

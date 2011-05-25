@@ -91,13 +91,14 @@
 {% endblock %}
 
 {% block contenido %}
+{% include "cambiar_instrumento.html" %}
 <div class="title_bar">
     <div class="titulo">Funcionarios | {{titulo|truncatewords:"12"}}</div>
     <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
 </div>
 <div class="contraparts">
-    {% if not nografo %}
-    <br>
+	{% include "filtros_seleccionados.html" %}
+    {% if not nografo %}    
     <div id= "grafosmujer" class="barra">
         <a href="#"  id="mujeres" class="grafos">Gráfico Mujeres</a>
     </div>

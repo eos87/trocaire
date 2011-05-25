@@ -81,11 +81,13 @@
 {% endblock %}
 
 {% block contenido %}
+{% include "cambiar_instrumento.html" %}
 <div class="title_bar">
-    <div class="titulo">¿Menciones los pasos de la ruta cr&iacute;tica de la violencia?</div>
+    <div class="titulo">Funcionarios | ¿Menciones los pasos de la ruta cr&iacute;tica de la violencia?</div>
     <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
 </div>
-<div class="contraparts"><br>
+<div class="contraparts">
+{% include "filtros_seleccionados.html" %}
 <table class="tabla-resultados" style="width:100%;">
         <caption>TOTALES</caption>
         <thead>

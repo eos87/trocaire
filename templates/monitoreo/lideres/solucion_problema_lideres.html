@@ -41,12 +41,12 @@
             var series;
             var titulo;
             if(id=='m10_13'){
-                titulo = 'Mujeres de 10-13 años';
+                titulo = '{{totales.0}} Mujeres';
                 series = [{% for key, value in grafico.1.items %}{
                         name: "{% if key == 1 %}De acuerdo{% else %}En desacuerdo{% endif %}",
                         data: {{value}}}, {% endfor %}]
             }else if(id=='m14_18'){
-                titulo = 'Mujeres de 14-17 años';
+                titulo = '{{totales.1}} Hombres';
                 series = [{% for key, value in grafico.2.items %}{
                         name: "{% if key == 1 %}De acuerdo{% else %}En desacuerdo{% endif %}",
                         data: {{value}}}, {% endfor %}]
@@ -54,7 +54,9 @@
             chart = new Highcharts.Chart({
                 chart: {
                     renderTo: 'container',
-                    defaultSeriesType: 'column'
+                    defaultSeriesType: 'column',
+                    width: 960,
+                    height: 480
                 },
                 title: {
                     text: '¿Cuales de las siguientes actividades realiza usted en su hogar?'
@@ -84,11 +86,13 @@
 {% endblock %}
 
 {% block contenido %}
+{% include "cambiar_instrumento.html" %}
 <div class="title_bar">
-    <div class="titulo">{{titulo}}</div>
+    <div class="titulo">Líderes | {{titulo}}</div>
     <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
 </div>
-<div class="contraparts"><br>
+<div class="contraparts">
+	{% include "filtros_seleccionados.html" %}
     {% if not nografo %}
     <div id= "grafosmujer" class="barra">
         <a href="#" id="m10_13" class="grafos">Gr&aacute;fico Mujeres</a>
@@ -97,6 +101,7 @@
         <a href="#" id="m14_18" class="grafos">Gr&aacute;fico Hombres</a>
     </div>
     <div class="clean"></div>
+    <br>
     <div id="container"></div>
     {% endif %}
 </div>

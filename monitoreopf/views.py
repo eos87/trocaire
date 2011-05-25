@@ -9,3 +9,6 @@ def consultarpf(request):
 
 def proposito(request):
     return render_to_response('pf/proposito.html', RequestContext(request, locals()))
+
+def fin(request):
+    return render_to_response('pf/fin.html', RequestContext(request, locals()))

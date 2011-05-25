@@ -50,7 +50,9 @@
             chart = new Highcharts.Chart({
                 chart: {
                     renderTo: 'container',
-                    defaultSeriesType: 'pie'
+                    defaultSeriesType: 'pie',
+                    height: 480,
+                    width: 960
                 },
                 title: {
                     text: '{{titulo}}'
@@ -69,11 +71,13 @@
 {% endblock %}
 
 {% block contenido %}
+{% include "cambiar_instrumento.html" %}
 <div class="title_bar">
     <div class="titulo">{{titulo}}</div>
     <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
 </div>
-<div class="contraparts"><br>
+<div class="contraparts">
+	{% include "filtros_seleccionados.html" %}
     <div id= "grafosmujer" class="barra">
         <a href="#" id="m10_13" class="grafos">Gr&aacute;fico Mujeres</a>
     </div>
@@ -98,6 +102,6 @@
                 <td>{{totales.1}}</td>
             </tr>
         </tbody>
-    </table><br>    
+    </table><br>	
 </div>
 {% endblock %}

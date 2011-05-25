@@ -42,10 +42,10 @@
             var titulo;
             if(id=='m10_13'){
                 titulo = '{{totales.0}} Mujeres';
-                series = [{data: [{% for key, value in tabla.items %}['{{key}}', {{value.0.0}}],{% endfor %}]}]
-            }else if(id=='m14_18'){
+                series = [{data: [{% for key, value in tabla.items %}['{{key|title}}', {{value.1}}],{% endfor %}]}]
+            }else if(id=='h10_13'){
                 titulo = '{{totales.1}} Hombres';
-                series = [{data: [{% for key, value in tabla.items %}['{{key}}', {{value.1.0}}],{% endfor %}]}]
+                series = [{data: [{% for key, value in tabla.items %}['{{key|title}}', {{value.2}}],{% endfor %}]}]
             }
             chart = new Highcharts.Chart({
                 chart: {
@@ -73,16 +73,16 @@
 {% block contenido %}
 {% include "cambiar_instrumento.html" %}
 <div class="title_bar">
-    <div class="titulo">L&iacute;deres | {{titulo}}</div>
-    <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
+    <div class="titulo">Funcionarios | {{titulo|truncatewords:"12"}}</div>
+    <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
 </div>
-<div class="contraparts">	
-	{% include "filtros_seleccionados.html" %}	
+<div class="contraparts">
+	{% include "filtros_seleccionados.html" %}
     <div id= "grafosmujer" class="barra">
         <a href="#" id="m10_13" class="grafos">Gr&aacute;fico Mujeres</a>
     </div>
     <div id= "grafoshombre" class="barra">
-        <a href="#" id="m14_18" class="grafos">Gr&aacute;fico Hombres</a>
+        <a href="#" id="h10_13" class="grafos">Gr&aacute;fico Hombres</a>
     </div>
     <div class="clean"></div>
     <div id="container"></div>
@@ -108,25 +108,23 @@
     </table>
     <br>
     <table class="tabla-resultados">
-        <caption>{{titulo}}:</caption>
+        <caption>{{titulo}}</caption>
         <thead>
             <tr>
-                <th >Resultado</th>
-                <th >Mujeres</th>
-                <th >Hombres</th>
+                <th>&nbsp;</th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
             </tr>
         </thead>
         <tbody>
             {% for key, value in tabla.items %}
             <tr>
-                <td>{{key}}</td>
-                {% for valor in value %}
-                <td>{{valor.0}} ({{valor.1}} %)</td>
-                {% endfor %}
+                <td>{{key|title}}</td>
+                <td>{{value.1}}</td>
+                <td>{{value.2}}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <br>
 </div>
 {% endblock %}

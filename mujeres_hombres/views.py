@@ -93,7 +93,7 @@ def comportamiento(request, tipo):
     return render_to_response("monitoreo/comportamiento.html", RequestContext(request, locals()))
 
 def hombres_violencia_mujeres(request, tipo):    
-    titulo = '¿Cree usted que los hombres son violentos debido a?'
+    titulo = '¿Para usted los hombres ejercen violencia hacia las mujeres porque?'
     resultados = _query_set_filtrado(request, tipo=tipo)
     tabla = {}
     campos = [field for field in JustificacionVBG._meta.fields if field.get_internal_type() == 'CharField']
@@ -165,7 +165,7 @@ def vbg_resolver_con(request, tipo):
             
     checkvalue = lambda x: sum(x)
     for key, value in tabla.items():        
-        if checkvalue(value) == 0:
+        if checkvalue(value) < 10:
             del tabla[key]
 
     totales = get_total(resultados)
@@ -209,7 +209,7 @@ def como_afecta(request, tipo):
 
     checkvalue = lambda x: sum(x)
     for key, value in tabla.items():
-        if checkvalue(value) == 0:
+        if checkvalue(value) < 10:
             del tabla[key]
 
     totales = get_total(resultados)
@@ -218,7 +218,7 @@ def como_afecta(request, tipo):
     return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
 
 def conoce_leyes(request, tipo):
-    titulo = u'¿Sabe usted si en Nicaragua existe alguna ley que penaliza la violencia contra las mujeres?'
+    titulo = u'¿Sabe usted si en existe alguna ley que penaliza la violencia contra las mujeres?'
     resultados = _query_set_filtrado(request, tipo)
     tabla = {}
 
@@ -236,18 +236,19 @@ def conoce_leyes(request, tipo):
     
     return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
-#def mencione_leyes(request, tipo):
-#    titulo = u'Mencione la ley que penaliza la VBG contra las mujeres'
-#    resultados = _query_set_filtrado(request, tipo)
-#    tabla = {}
-#    
-#    for key, grupo in resultados.items():
-#        lista = []
-#        [lista.append(encuesta.id) for encuesta in grupo]
-#        
-#        tabla[key] = ConocimientoLey.objects.filter(content_type=get_content_type(tipo), object_id__in=lista)
-#        
-#    return render_to_response("monitoreo/generica_1.html", RequestContext(request, locals()))
+def mencione_leyes(request, tipo):
+    titulo = u'Mencione la ley que penaliza la VBG contra las mujeres'
+    resultados = _query_set_filtrado(request, tipo)
+    tabla = {}
+    totales = get_total(resultados)
+    
+    for key, grupo in resultados.items():
+        lista = []
+        [lista.append(encuesta.id) for encuesta in grupo]
+        
+        tabla[key] = list(set(ConocimientoLey.objects.filter(content_type=get_content_type(tipo), object_id__in=lista).values_list('mencione')))
+        
+    return render_to_response("monitoreo/lista_leyes.html", RequestContext(request, locals()))
 
 def prohibido_por_ley(request, tipo):
     """Acciones prohibidas por la ley"""
@@ -369,7 +370,7 @@ def donde_buscar_ayuda(request, tipo):
 
     checkvalue = lambda x: sum(x)
     for key, value in tabla.items():
-        if checkvalue(value) == 0:
+        if checkvalue(value) < 10:
             del tabla[key]
 
     totales = get_total(resultados)
@@ -441,7 +442,7 @@ def participacion_en_espacios(request, tipo):
 
     checkvalue = lambda x: sum(x)
     for key, value in tabla.items():
-        if checkvalue(value) == 0:
+        if checkvalue(value) < 10:
             del tabla[key]
 
     totales = get_total(resultados)
@@ -927,7 +928,7 @@ VALID_VIEWS = {
     'afeccion-vbg': afeccion_vbg,
     'como-afecta': como_afecta,
     'conoce-leyes': conoce_leyes,
-    #'mencione-leyes': mencione_leyes,
+    'mencione-leyes': mencione_leyes,
     'prohibido-por-ley': prohibido_por_ley,
     'hombres-violentos-por': hombres_violentos,
     'hombres-violencia-mujeres': hombres_violencia_mujeres,

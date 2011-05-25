@@ -83,18 +83,20 @@
 
 {% block contenido %}
 <!-- BEGIN tabla de la MUERTE-->
+{% include "cambiar_instrumento.html" %}
 <div class="title_bar">
-    <div class="titulo">{{titulo}}</div>
+    <div class="titulo">Funcionarios | {{titulo}}</div>
     <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
 </div>
 <div class="contraparts">
-    <br>
+    {% include "filtros_seleccionados.html" %}
     <div id= "grafosmujer" class="barra">
         <a href="#"  id="m10_13" class="grafos">Gráfico Mujeres</a>
     </div>
     <div id= "grafoshombre" class="barra">
         <a href="#" id="m14_18" class="grafos">Gráfico Hombres</a>
     </div>
+    <div class="clean"></div>
     <br>
     <div id="container"></div><br>
     <table class="tabla-resultados" style="width:100%;">

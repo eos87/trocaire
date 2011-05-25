@@ -68,7 +68,7 @@
 {% endblock %}
 
 {% block contenido %}
-{{grafico}}<br>
+{% include "cambiar_instrumento.html" %}
 <div class="title_bar">
     <div class="titulo">{{tipo|title}} | ¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad?</div>
     <div class="titulo der"><a href="/monitoreo/{{tipo}}/">&larr; Volver</a></div>

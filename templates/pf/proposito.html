@@ -2,37 +2,13 @@
 
 {% block extratitle %}Resultado de propósito{% endblock %}
 {% block extrahead%}
-    <script src="http://cdn.jquerytools.org/1.2.5/full/jquery.tools.min.js" type="text/javascript"></script>
-    <link type="text/css" rel="stylesheet"  href="/files/css/style.css" >
+    <script src="http://cdn.jquerytools.org/1.2.5/full/jquery.tools.min.js" type="text/javascript"></script>    
     <script type="text/javascript">
     $(document).ready(function(){
         $(".activatooltip").tooltip({ effect: 'slide', position:'center right', events:{def:"click,mouseleave"}});
         $(".activatooltipleft").tooltip({ effect: 'slide', position:'center left', events:{def:"click,mouseleave"}});
     });
     </script>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("ul.menu_body li:even").addClass("alt");
-		$('img.menu_head').click(function() {
-			$('ul.menu_body').slideToggle('medium');
-		});
-		$('ul.menu_body li a').mouseover(function() {
-			$(this).animate({
-				fontSize : "12px",
-				paddingLeft : "20px"
-			}, 50);
-		});
-		$('ul.menu_body li a').mouseout(function() {
-			$(this).animate({
-				fontSize : "12px",
-				paddingLeft : "10px"
-			}, 50);
-		});
-	});
-</script>
-
-
 {%endblock%}
 
 {% block contenido %}
@@ -62,23 +38,23 @@
         </div>
         <div id="panel-variable-links">
             <div class="variable-links">
-                <a id="prevalenciaviolencia" class="activatooltip"><div class="trans">Prevalencia VBG mujeres</div></a>
+                <a id="prevalenciaviolencia" class="activatooltip"><div class="trans">Prevalencia VBG según mujeres</div></a>
                 <div class="tooltip">
                     <a href="/monitoreopf/mujeres/afeccion-vbg/">¿Afecta la VBG a las mujeres, familia y comunidad?</a>
                     <a href="/monitoreopf/mujeres/como-afecta/">¿Cómo afecta la VBG a las mujeres, familia y comunidad?</a>
                 </div>
-                <a id="prevalenciaviolencia" class="activatooltip"><div class="trans">Prevalencia VBG hombres</div></a>
+                <a id="prevalenciaviolencia" class="activatooltip"><div class="trans">Prevalencia VBG según hombres</div></a>
                 <div class="tooltip">
                     <a href="/monitoreopf/hombres/afeccion-vbg/">¿Afecta la VBG a las mujeres, familia y comunidad?</a>
                     <a href="/monitoreopf/hombres/como-afecta/">¿Cómo afecta la VBG a las mujeres, familia y comunidad?</a>
                 </div>
-                <a id="prevalenciaviolencia" class="activatooltip"><div class="trans">Prevalencia VBG lideres</div></a>
+                <a id="prevalenciaviolencia" class="activatooltip"><div class="trans">Prevalencia VBG según lideres</div></a>
                 <div class="tooltip">
                     <a href="/monitoreopf/mujeres-vbg-comunidad/">¿Piensa usted que en su comunidad existen mujeres que viven VBG?</a>                    
                 </div>
             </div>
             <div class="variable-links">
-            	<a id="prevalenciaviolencia" class="activatooltip"><div class="trans">Prevalencia VBG mujeres</div></a>
+            	<a id="prevalenciaviolencia" class="activatooltip"><div class="trans">Prevalencia VBG según mujeres</div></a>
                 <div class="tooltip">
                     <a href="/monitoreopf/mujeres/calidad-servicios/">Mujeres: ¿C&oacute;mo valora los servicios que ofrecen las instituciones a mujeres que viven VBG?</a>
                 </div>

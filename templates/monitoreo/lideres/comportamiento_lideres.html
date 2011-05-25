@@ -82,12 +82,14 @@
 {% endblock %}
 
 {% block contenido %}
+{% include "cambiar_instrumento.html" %}
 <!-- BEGIN tabla de la MUERTE-->
 <div class="title_bar">
-    <div class="titulo">Como deben comportarse los hombres y las mujeres</div>
+    <div class="titulo">Líderes | Como deben comportarse los hombres y las mujeres</div>
     <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
 </div>
-<div class="contraparts"><br>
+<div class="contraparts">
+	{% include "filtros_seleccionados.html" %}
     <div id= "grafosmujer" class="barra">
         <a href="#" id="m10_13" class="grafos">Grafico Mujeres</a>
     </div>

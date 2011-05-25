@@ -105,9 +105,9 @@
 {% endblock %}
 
 {% block contenido %}
-<!-- BEGIN tabla de la MUERTE-->
+{% include "cambiar_instrumento.html" %}
 <div class="title_bar">
-    <div class="titulo">¿Cuáles de las siguientes actividades realiza usted en su hogar?</div>
+    <div class="titulo">{{tipo|title}} | ¿Cuáles de las siguientes actividades realiza usted en su hogar?</div>
     <div class="titulo der"><a href="/monitoreo/{{tipo}}/">&larr; Volver</a></div>
 </div>
 <div class="contraparts">

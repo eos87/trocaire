@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block extratitle %}{{titulo}}{% endblock %}
+
+{% block contenido %}
+{% include "cambiar_instrumento.html" %}
+<div class="title_bar">
+    <div class="titulo">{{tipo|title}} | {{titulo}}</div>
+    <div class="titulo der"><a href="/monitoreo/{{tipo}}/">&larr; Volver</a></div>
+</div>
+<div class="contraparts">
+    {% include "filtros_seleccionados.html" %}    
+    <br><br>
+    <table class="tabla-resultados" style="width:100%;">
+        <caption>TOTALES</caption>
+        <thead>
+            <tr>
+                <th rowspan="2"></th>
+                <th colspan="4">{{tipo|title}}</th>
+            </tr>
+            <tr>
+                <th>10-13</th>
+                <th>14-17</th>
+                <th>18-mas</th>
+                <th>Todas/os</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>TOTALES ENCUESTADOS</td>
+                <td>{{totales.0}}</td>
+                <td>{{totales.1}}</td>
+                <td>{{totales.2}}</td>
+                <td>{{totales.3}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>    
+    <table class="tabla-resultados">
+    	<caption>{{tipo|title}} 10-13 años</caption>
+    	{% for elem in tabla.1 %}
+    	{% if elem.0 != '' %}
+    	<tr>
+    	<td>{{elem.0}}</td>    	
+    	</tr>    	
+    	{% endif %}
+    	{% endfor %}
+    </table><br>
+    <table class="tabla-resultados">
+    	<caption>{{tipo|title}} 14-17 años</caption>
+    	{% for elem in tabla.2 %}
+    	{% if elem.0 != '' %}
+    	<tr>
+    	<td>{{elem.0}}</td>    	
+    	</tr>    	
+    	{% endif %}
+    	{% endfor %}
+    </table><br>
+    <table class="tabla-resultados">
+    	<caption>{{tipo|title}} 18+ años</caption>
+    	{% for elem in tabla.3 %}
+    	{% if elem.0 != '' %}
+    	<tr>
+    	<td>{{elem.0}}</td>    	
+    	</tr>    	
+    	{% endif %}
+    	{% endfor %}
+    </table>    
+</div>
+{% endblock %}

@@ -82,6 +82,7 @@
 {% endblock %}
 
 {% block contenido %}
+{% include "cambiar_instrumento.html" %}
     <div class="title_bar">
         <div class="titulo">{{tipo|title}} | {{titulo}}</div>
         <div class="titulo der"><a href="/monitoreo/{{tipo}}/">&larr; Volver</a></div>
@@ -124,31 +125,29 @@
                 </tr>
             </tbody>
         </table><br>
-        <table class="tabla-resultados" style="width:100%;">
-        <caption>{{titulo}}</caption>
-        <thead>
-            <tr>
-                <th rowspan="2">Categorias</th>
-                <th colspan="4">{{tipo|title}}</th>
-            </tr>
-            <tr>
-                <th>10-13</th>
-                <th>14-17</th>
-                <th>18-mas</th>
-                <th>{% if tipo == 'mujeres' %}Todas{% else %}Todos{% endif %}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for key, value in tabla.items %}
-            <tr>
-                <td>{{key}}</td>
-                {% for valor in value %}
-                <td>{{valor.0}} ({{valor.1}}%)</td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    </div>    
+		<table class="tabla-resultados" style="width: 100%;">
+			<caption>{{titulo}}</caption>
+			<thead>
+				<tr>
+					<th rowspan="2">Categorias</th>
+					<th colspan="4">{{tipo|title}}</th>
+				</tr>
+				<tr>
+					<th>10-13</th>
+					<th>14-17</th>
+					<th>18-mas</th>
+					<th>{% if tipo == 'mujeres' %}Todas{% else %}Todos{% endif %}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for key, value in tabla.items %}
+				<tr>
+					<td>{{key}}</td> {% for valor in value %}
+					<td>{{valor.0}} ({{valor.1}}%)</td> {% endfor %}
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>    
 </div>
 {% endblock %}

@@ -46,10 +46,10 @@
             var series;
             var subtitulo;
             if(id=='m10_13'){
-                subtitulo = 'Mujeres';
+                subtitulo = '{{totales.0}} Mujeres';
                 series = [{data: [{% for key, value in grafico.items %}{name: '{{key}}', color: "{% cycle '#89A54E' '#373BFF' '#E58B16' '#E82C0C' '#E87271' '#A6986F' %}", y: {{value.1}}}, {% endfor %}]}]
             }else if(id=='m14_18'){
-                subtitulo = 'Hombres';
+                subtitulo = '{{totales.1}} Hombres';
                 series = [{data: [{% for key, value in grafico.items %}{name: '{{key}}', color: "{% cycle '#89A54E' '#373BFF' '#E58B16' '#E82C0C' '#E87271' '#A6986F' %}", y: {{value.2}}}, {% endfor %}]}]                
             }   		
     	
@@ -88,11 +88,13 @@
 {% endblock %}
 
 {% block contenido %}
+{% include "cambiar_instrumento.html" %}
 <div class="title_bar">
     <div class="titulo">L&iacute;deres | ¿Qu&eacute; hace usted cuando hay una situaci&oacute;n de violencia en su comunidad?</div>
     <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
 </div>
-<div class="contraparts"><br>
+<div class="contraparts">
+	{% include "filtros_seleccionados.html" %}
 	<div id= "grafosmujer" class="barra">
         <a href="#" id="m10_13" class="grafos">Gr&aacute;fico Mujeres</a>
     </div>
@@ -100,7 +102,7 @@
         <a href="#" id="m14_18" class="grafos">Gr&aacute;fico Hombres</a>
     </div>
     <div class="clean"></div>
-    <div id="container"></div>   
+    <div id="container"></div><br>   
     <div class="tabla-container">
         <table class="tabla-resultados" style="width:100%;">
             <caption>TOTALES</caption>
