@@ -1,0 +1,15 @@
+<div id="cambiar-indicador">
+    <img src="/files/img/cambiarinstrumento.png" width="184" height="32" class="menu_head" />
+    <ul class="menu_body">
+        {% if request.session.pf %}
+        <li><a href="/monitoreopf/proposito/"><img src="/files/img/propositope.png">Propósito</a></li>
+        <li><a href="/monitoreopf/fin/"><img src="/files/img/finpe.png">Fin</a></li>
+        {% else %}
+        <li><a href="/monitoreo/mujeres/"><img src="/files/img/mujerespe.png">Mujeres</a></li>
+        <li><a href="/monitoreo/hombres/"><img src="/files/img/hombrespe.png">Hombres </a></li>
+        <li><a href="/monitoreo/lideres/"><img src="/files/img/funcionariospe.png">Lideres</a></li>
+        <li><a href="/monitoreo/funcionarios/"><img src="/files/img/liderespe.png">Funcionarios</a></li>
+        {% endif %}
+    </ul>
+    <a href="/monitoreo{% if request.session.pf %}pf{% endif %}/consultar/" ><img src="/files/img/nuevaconsulta.png" width="184" height="32" class="nuevaconsulta" /></a>
+</div>

@@ -1,0 +1,17 @@
+<div class="filtros-seleccionados">
+	<center><div style="background:#add9d9; width:100%;">FILTROS SELECCIONADOS</div></center>
+    <div class="filtro"><b>Año</b><br>{{request.session.year}}</div>
+    {% if request.session.pais %}
+    <div class="filtro"><b>Pais</b><br>{% for pais in request.session.pais %}{{pais.nombre}}{% endfor %}</div>
+    {% endif %}
+    {% if request.session.departamento %}
+    <div class="filtro"><b>Departamento</b><br>{% for departamento in request.session.departamento %}{{departamento.nombre}}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    {% endif %}
+    {% if request.session.organizacion %}
+    <div class="filtro"><b>Organización</b><br>{% for organizacion in request.session.organizacion %}{{organizacion.nombre_corto}}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    {% endif %}
+    {% if request.session.municipio %}
+    <div class="filtro"><b>Municipio</b><br>{% for municipio in request.session.municipio %}{{municipio.nombre}}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    {% endif %}
+    <div class="clean"></div>
+</div>

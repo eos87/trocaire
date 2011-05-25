@@ -9,12 +9,12 @@ from models import *
 from trocaire.lugar.models import *
 from trocaire.utils import _query_set_filtrado, get_total, get_prom
 
-def consultar(request, pf=False):
+def consultar(request, pf=False):    
     if pf:
-        request.session['pf'] = pf
+        request.session['pf'] = True
     else:
-        request.session['pf'] = pf
-        
+        request.session['pf'] = False
+            
     if request.method == 'POST':
         form = ConsultarForm(request.POST)
         if form.is_valid():
@@ -23,11 +23,10 @@ def consultar(request, pf=False):
             request.session['departamento'] = form.cleaned_data['departamento']
             request.session['organizacion'] = form.cleaned_data['organizacion']
             request.session['municipio'] = form.cleaned_data['municipio']
-            request.session['centinela'] = 1            
-            centinela = request.session['centinela']          
+            request.session['centinela'] = 1
     else:
         form = ConsultarForm()
-        centinela = 0
+        request.session['centinela'] = 0
 
     return render_to_response("monitoreo/consultar.html", RequestContext(request, locals()))
 

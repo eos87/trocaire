@@ -87,7 +87,8 @@
         <div class="titulo der"><a href="/monitoreo/{{tipo}}/">&larr; Volver</a></div>
     </div>
 <div class="contraparts">
-<br>
+	{% include "filtros_seleccionados.html" %}
+	<br>
         <div {% if tipo == 'mujeres' %}id="grafosmujer" {% else %}id="grafoshombre"{% endif %} class="barra">
             <a href="#" id="m10_13" class="grafos">10-13 años</a>
             <a href="#" id="m14_18" class="grafos">14-17 años</a>

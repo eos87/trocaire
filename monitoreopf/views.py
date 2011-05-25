@@ -5,7 +5,7 @@ from trocaire.mujeres_hombres.views import *
 
 def consultarpf(request):
     request.session['centinela'] = 0
-    return consultar(request, pf=True)
+    return consultar(request, pf=1)
 
 def proposito(request):
-    return render_to_response('pf/proposito.html', {}, RequestContext(request))
+    return render_to_response('pf/proposito.html', RequestContext(request, locals()))
