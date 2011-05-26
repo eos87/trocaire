@@ -49,7 +49,10 @@
                     </tr>
                 </table>
                 <br>
-                <input id="consultar" type="submit" value="" />
+                <input class="consultar" type="submit" value="" />
+                {% if request.session.pf %}
+                <input class="consultar avanzada" type="submit" value="" name="_avanzada"/>
+                {% endif %}
                 <br><br>
             </div>
         </form>

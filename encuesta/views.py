@@ -4,6 +4,7 @@ from django.core.urlresolvers import ViewDoesNotExist
 from django.db.models import Sum
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.http import HttpResponseRedirect
 from forms import ConsultarForm
 from models import *
 from trocaire.lugar.models import *
@@ -24,6 +25,10 @@ def consultar(request, pf=False):
             request.session['organizacion'] = form.cleaned_data['organizacion']
             request.session['municipio'] = form.cleaned_data['municipio']
             request.session['centinela'] = 1
+            
+            if '_avanzada' in request.POST:
+                return HttpResponseRedirect('/monitoreopf/cruces/')
+            
     else:
         form = ConsultarForm()
         request.session['centinela'] = 0

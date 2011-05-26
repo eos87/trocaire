@@ -1,0 +1,11 @@
+{% extends "base.html" %} 
+{% block extratitle %}Cruce Mujeres{% endblock %} 
+
+{% block contenido %}
+<div class="title_bar">
+	<div class="titulo">Cruce Mujeres</div>
+	<div class="clean"></div>	
+</div>
+{% include "filtros_seleccionados.html" %}
+{{dicc}}
+{% endblock %}
