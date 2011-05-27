@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load dictfilter %} 
+
+{% block extratitle %}Cruce Mujeres{% endblock %} 
+
+{% block contenido %}
+<div class="title_bar">
+	<div class="titulo">Cruce Mujeres</div>
+	<div class="clean"></div>	
+</div>
+{% include "filtros_seleccionados.html" %}
+{% for key, value in dicc.items %}
+{{key}} -> {{value|length}}<br>
+{% endfor %}
+{{total_var1}}
+<br><br>
+<table class="tabla-resultados">
+	<thead>
+		<tr>
+			<th rowspan="2">{{request.session.mujer_var2_nombre}}</th>
+			<th colspan="{{dicc.keys|length|sumar:1}}">{{request.session.mujer_var1_nombre}}</th>
+		</tr>
+		<tr>			
+			{% for key in dicc.keys %}
+			<th>{{key}}</th>
+			{% endfor %}
+			<th>Total</th>
+		<tr>		
+	</thead>
+	<tbody>
+		{% for key, value in tabla.items %}
+		<tr>
+			<td>{{key}}</td>
+			{% for valor in value.values %}
+			<td>{{valor}}</td>
+			{% endfor %}
+			<td>{{total_var2|dict_get:key}}</td>
+		</tr>		
+		{% endfor %}
+		<tr>
+			<td>Total</td>
+			{% for k, v in total_var1.items %}
+			<td>{{v}}</td>
+			{% endfor %}
+			<td>{{total_general}}</td>
+		</tr>
+	</tbody>
+</table>
+{% endblock %}

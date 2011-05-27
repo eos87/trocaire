@@ -1,0 +1,49 @@
+{% extends "base.html" %} 
+{% block extratitle %}Consulta avanzada{% endblock %} 
+
+{% block contenido %}
+<div class="title_bar">
+	<div class="titulo">Selección de variables</div>
+	<div class="clean"></div>	
+</div>
+{% include "filtros_seleccionados.html" %}
+<div class="contraparts">
+	<div class="introform">	
+		<br>En esta sección debe seleccionar las variables que desea cruzar. 
+		Aqui va el texto que indica como funciona esta seccion <b>año</b> 
+		de implementación del instrumento y el <b>pais</b>
+		de origen, la cual a su vez habilita la posiblidad de seleccionar el <b>Departamento</b>,
+		<b>Organización</b> y <b>Municipio</b>. Basicamente debe de
+		seleccionar los filtros que quiere tomar en cuenta para su consulta y
+		posteriormente hacer un Clic en el boton <b>"Consultar"</b>
+	</div>
+	<br>
+	<div class="formblock">	        
+        <form action="." method="POST">
+            {% csrf_token %}
+            <div class="tabla-cruces">
+                <table width="960">
+                <caption>Mujeres</caption>
+                	<tr>                        
+                        <td width="40%">
+                        	<table>
+                        		<tr><td>{{ form.variable_1.label_tag }}</td></tr>
+                        		<tr><td>{{form.variable_1}}</td></tr>
+                        	</table>                        
+                        </td>
+                        <td width="60%">
+                        	<table>
+                        		<tr><td>{{ form.variable_2.label_tag }}</td></tr>
+                        		<tr><td>{{form.variable_2}}</td></tr>
+                        	</table>                        
+                        </td>
+                    </tr>
+                </table>                
+                <input class="consultar" type="submit" value="" name='_crucemujer' />                
+                <br><br>
+            </div>
+        </form>
+    </div>	
+</div>
+
+{% endblock %}

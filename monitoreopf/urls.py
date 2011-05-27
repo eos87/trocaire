@@ -22,7 +22,11 @@ urlpatterns = patterns('trocaire.monitoreopf.views',
     (r'^(?P<tipo>[-\w]+)/persona-ejercido/$', 'persona_ejercido'),
     (r'^(?P<tipo>[-\w]+)/ha-ejercido-vbg/$', 'ha_ejercido_vbg'),
     (r'^(?P<tipo>[-\w]+)/tipo-vbg-ejercido/$', 'tipo_vbg_ejercido'),
-    (r'^(?P<tipo>[-\w]+)/parentesco-ha-ejercido/$', 'parentesco_ha_ejercido'),    
+    (r'^(?P<tipo>[-\w]+)/parentesco-ha-ejercido/$', 'parentesco_ha_ejercido'),   
+    #-----------------urls para cruces de variables------------------------#
+    (r'^cruces/$', 'filtro_cruces'),
+    (r'^cruces/mujeres/$', 'cruce_mujeres'),  
+     
 )
 
 #url para lideres y funcionarios

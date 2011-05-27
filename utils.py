@@ -54,10 +54,15 @@ def _query_set_filtrado(request, tipo='mujer'):
         dicc[1] = Funcionario.objects.filter(sexo='femenino', ** params)
         dicc[2] = Funcionario.objects.filter(sexo='masculino', ** params)
         return dicc
+    
     elif tipo == 'lider':
         dicc[1] = Lider.objects.filter(sexo='femenino', ** params)
         dicc[2] = Lider.objects.filter(sexo='masculino', ** params)
         return dicc
+    
+    #consultas realizadas para cruces de variables
+    elif tipo == 'solomujeres':
+        return Mujer.objects.filter(** params)
 
 #funcion lambda que calcula los totales a partir de la consulta filtrada
 get_total = lambda x: [v.count() for k, v in x.items()]

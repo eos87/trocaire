@@ -312,7 +312,7 @@ label #id_year{
 #tabla-form table{
     margin-left:15px;
     font-size:12px;
- table-layout:fixed;
+ 	table-layout:fixed;
 }
 
 .introform{
@@ -346,15 +346,16 @@ small{
     font-weigth:bold;
     font-family:Arial;
 }
-#consultar{
+.consultar{
     background:url(/files/img/consultar.png);
     width:165px;
     height:34px;
     border:0;
     margin-left:15px;
 }
-
-
+.avanzada{
+	background:url(/files/img/consultaavanzada.png);
+}
 #menufiltros{
     background:#eef7f7;
     width:100%;
@@ -641,7 +642,22 @@ small{
     background:url(/files/img/arrow.png) no-repeat;
     background-position: center left;
 }
-
 .tooltip a:hover{
     color:#63e8e8;
+}
+.tabla-cruces table{
+	font-size: 12px;
+}
+.tabla-cruces caption{
+	font-size: 14px;
+	color: #000;
+	background: #EEF7F7;
+	border: 1px solid #CAE4F2;		
+}
+.tabla-cruces label{
+	padding-left: 20px;
+}
+.tabla-cruces ul{
+	list-style: none;
+	margin-left: -20px;
 }

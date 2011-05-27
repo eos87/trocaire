@@ -349,7 +349,10 @@ def obtener_indice(dicc):
         aux += calc_llave_valor(valor)    
     #obtener y retornar total de los values del dicc
     total = float(sum(dicc.values()))
-    return round(aux/total, 1)
+    if total == 0:
+        return 0
+    else:
+        return round(aux/total, 1)
     
 
 def donde_buscar_ayuda(request, tipo):
@@ -467,7 +470,7 @@ def motivo_participacion(request, tipo):
     
     checkvalue = lambda x: sum(x)
     for key, value in tabla.items():
-        if checkvalue(value) < 10:
+        if checkvalue(value) == 0:
             del tabla[key]
     
     totales = get_total(resultados)

@@ -248,7 +248,7 @@ class MujeresAdmin(admin.ModelAdmin):
     save_on_top = True
     actions_on_top = True
     list_display = ['contraparte', 'edad', 'codigo', 'encuestador', 'fecha']
-    list_filter = ['contraparte', ]
+    list_filter = ['contraparte', 'usuario']
     fields = ['codigo', 'contraparte', 'encuestador', 'usuario', 'fecha', 'cuanto_tiempo', 'sexo', 'edad', 'comunidad', 'municipio', 'estado_civil', 'lugar_origen', 'asiste_iglesia', 'cual_iglesia']
     #list_display_links = ['contraparte', 'encuestador', 'fecha']
     #list_editable = ['contraparte',]
@@ -388,7 +388,7 @@ class PrevalenciaVBGLiderInline(generic.GenericStackedInline):
     verbose_name_plural = 'Prevalencia de la Violencia Basada en Género'
     verbose_name = 'Prevalencia de la VBG'
     model = PrevalenciaVBGLider
-    filter_horizontal = ['quien', ]
+    filter_horizontal = ['quien', 'quien2']
     max_num = 1
 
 class LiderAdmin(admin.ModelAdmin):
