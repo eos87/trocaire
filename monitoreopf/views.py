@@ -8,6 +8,7 @@ from trocaire.utils import get_content_type, _query_set_filtrado
 from trocaire.encuesta.models import *
 from forms import MujerCrucesForm, VARIABLE_MUJER_1, VARIABLE_MUJER_2
 
+
 def consultarpf(request):
     request.session['centinela'] = 0
     return consultar(request, pf=1)
@@ -28,6 +29,8 @@ def filtro_cruces(request):
                 request.session['mujer_var1_nombre'] = VARIABLE_MUJER_1[int(request.POST['variable_1'])-1][1]
                 request.session['mujer_var2'] = request.POST['variable_2']
                 request.session['mujer_var2_nombre'] = VARIABLE_MUJER_2[int(request.POST['variable_2'])-1][1]
+                request.session['mujer_var2'] = request.POST['variable_2']
+
                 return HttpResponseRedirect('mujeres/')
         elif '_crucehombre' in request.POST:
             pass
@@ -110,5 +113,3 @@ def _query_set_cruce(request, var1):
             dicc[op[1]] = [obj.id for obj in objs]
         
     return dicc
-    
-    
