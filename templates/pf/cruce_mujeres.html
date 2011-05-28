@@ -1,30 +1,132 @@
 {% extends "base.html" %}
 {% load dictfilter %}
 
-{% block extratitle %}Cruce Mujeres{% endblock %} 
+{% block extratitle %}Cruce Mujeres{% endblock %}
+
+{% block extrahead %}
+<script type="text/javascript" src="/files/js/highcharts.js"></script>
+<script type="text/javascript" src="/files/js/exporting_patched.js"></script>
+<script type="text/javascript">
+    var plotOptions = {
+        column: {
+            groupPadding: 0,
+            pointPadding: 0.9,
+            borderWidth: 0
+        },
+        series: {
+            pointWidth: 25,
+            minPointLength : 0.5,
+            dataLabels: {
+                enabled: true,
+                align: "center",
+                formatter: function() {
+                    return ''+ this.y;
+                },
+                color: '#000',
+                style: {
+                    font: '12px Trebuchet MS, Verdana, sans-serif'
+                }
+            }
+        }
+    }
+    var tooltip = {
+        formatter: function() {
+            return ''+
+                this.series.name +': '+ this.y;
+        }
+    }
+    var leyenda = {
+        layout: 'horizontal',
+        align: 'center',
+        verticalAlign: 'bottom',
+        shadow: true
+    }
+    var chart;
+    $(document).ready(function() {
+        $('.view_grafo').click(function(){
+            var id = $(this).attr('id');
+            var series;
+            var titulo;
+            var subtitulo;            
+            {% for key, value in tabla.items %}
+            if(id=='{{key|slugify}}'){
+            	titulo = '{{request.session.var2_nombre}} ({{key}})';
+                subtitulo = 'vs {{request.session.var1_nombre}}. Total: {{total_var2|dict_get:key}}';
+                series = [{% for llave, valor in value.items %}{name: '{{llave}}', data: [{{valor}}]}, {% endfor %}];                
+            }
+            {% endfor %}
+            {% for key in dicc.keys %}            
+            if(id=='{{key|slugify}}'){
+            	titulo = '{{request.session.var1_nombre}} ({{key}})';
+                subtitulo = 'vs {{request.session.var2_nombre}}. Total: {{total_var1|dict_get:key}}';
+                series = [{% for llave, valor in tabla.items %}{name: '{{llave}}', data: [{{valor|dict_get:key}}]}, {% endfor %}]
+            }            
+            {% endfor %} 
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container',
+                    defaultSeriesType: 'column',
+                    height: 480,
+                    width: 960
+                },
+                title: {
+                    text: titulo
+                },
+                subtitle: {
+                    text: subtitulo
+                },
+                xAxis: {
+                    categories: [
+                        'Opciones'
+                    ]
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Cantidades'
+                    }
+                },
+                legend: leyenda,
+                tooltip: tooltip,
+                plotOptions: plotOptions,
+                series: series
+            });
+            $('html, body').animate({
+                scrollTop: $('#top').offset().top
+            }, 500);
+            return false;
+        });
+    });
+</script>
+{% endblock %} 
 
 {% block contenido %}
 <div class="title_bar">
 	<div class="titulo">Datos de {{request.session.content_type|title}}</div>
+	<div class="titulo der"><a href="/monitoreopf/cruces/">&larr; Cambiar variables</a></div>
 	<div class="clean"></div>	
 </div>
 {% include "filtros_seleccionados.html" %}
-{% for key, value in dicc.items %}
-{{key}} -> {{value|length}}<br>
-{% endfor %}
-{{total_var1}}
-<br><br>
+<span id="top"></span>
+<div id="container"></div>
+<br>
 <table class="tabla-resultados">
 	<thead>
 		<tr>
-			<th rowspan="2">{{request.session.var2_nombre}}</th>
-			<th colspan="{{dicc.keys|length|sumar:1}}">{{request.session.var1_nombre}}</th>
+			<th rowspan="3">{{request.session.var2_nombre}}</th>
+			<th colspan="{{dicc.keys|length|sumar:2}}">{{request.session.var1_nombre}}</th>
 		</tr>
 		<tr>			
-			{% for key in dicc.keys %}
+			{% for key in dicc.keys %}			
+			<th><a href='#top' id="{{key|slugify}}" class='view_grafo'>Ver gráfo &raquo;</a></th>			
+			{% endfor %}		
+			<th></th><th>Gráfico</th>
+		<tr>			
+			{% for key in dicc.keys %}			
 			<th>{{key}}</th>
 			{% endfor %}
 			<th>Total</th>
+			<th></th>
 		<tr>		
 	</thead>
 	<tbody>
@@ -35,15 +137,16 @@
 			<td>{{valor}}</td>
 			{% endfor %}
 			<td>{{total_var2|dict_get:key}}</td>
+			<td><a href='#top' id="{{key|slugify}}" class='view_grafo'>Ver gráfo &raquo;</a></td>			
 		</tr>		
-		{% endfor %}
+		{% endfor %}		
 		<tr>
 			<td>Total</td>
 			{% for k, v in total_var1.items %}
 			<td>{{v}}</td>
 			{% endfor %}
 			<td>{{total_general}}</td>
-		</tr>
+		</tr>		
 	</tbody>
 </table>
 {% endblock %}

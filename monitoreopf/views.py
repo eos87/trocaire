@@ -24,6 +24,7 @@ def fin(request):
 def filtro_cruces(request):
     if request.method == 'POST':
         if '_crucemujer' in request.POST:
+            form2 = HombreCrucesForm()
             form = MujerCrucesForm(request.POST)
             if form.is_valid():
                 request.session['var1'] = request.POST['variable_1']
@@ -32,10 +33,11 @@ def filtro_cruces(request):
                 request.session['var2_nombre'] = VARIABLE_MUJER_2[int(request.POST['variable_2'])-1][1]
                 request.session['var2'] = request.POST['variable_2']
                 request.session['content_type'] = 'mujeres'
-
+                
                 return HttpResponseRedirect('mujeres/')
             
         elif '_crucehombre' in request.POST:
+            form = MujerCrucesForm()
             form2 = HombreCrucesForm(request.POST)
             if form2.is_valid():
                 request.session['var1'] = request.POST['variable_hombre_1']                
@@ -44,7 +46,7 @@ def filtro_cruces(request):
                 request.session['var2_nombre'] = VARIABLE_HOMBRE_2[int(request.POST['variable_hombre_2'])-7][1]
                 request.session['var2'] = request.POST['variable_hombre_2']
                 request.session['content_type'] = 'hombres'
-
+                
                 return HttpResponseRedirect('hombres/')
     else:           
         form = MujerCrucesForm()
@@ -53,16 +55,16 @@ def filtro_cruces(request):
 
 #----------------- programacion para cruces de variables de mujeres ---------------------------------
 #DATOS DE VARIABLE NUMERO 1
-OPCIONES_VAR1 = {1: NIVEL_EDUCATIVO, 2: SI_NO_SIMPLE, 4: SI_NO_SIMPLE, 5: ESTADO_CIVIL,
-                 6: NIVEL_EDUCATIVO, 7: SI_NO_SIMPLE, 8: ESTADO_CIVIL}
+OPCIONES_VAR1 = {1: NIVEL_EDUCATIVO, 2: SI_NO_SIMPLE, 3: ((0,0), (1,2), (3,4), (5,5)), 4: SI_NO_SIMPLE, 
+                 5: ESTADO_CIVIL, 6: NIVEL_EDUCATIVO, 7: SI_NO_SIMPLE, 8: ESTADO_CIVIL}
 
-MODELO_VAR1 = {1: 'InformacionSocioEconomica', 2: 'InformacionSocioEconomica', 4: 'InformacionSocioEconomica', 5: 'Mujer',
-               6: 'InformacionSocioEconomica', 7: 'InformacionSocioEconomica', 8: 'Hombre'}
+MODELO_VAR1 = {1: 'InformacionSocioEconomica', 2: 'InformacionSocioEconomica', 3: 'ComposicionHogar', 4: 'InformacionSocioEconomica', 
+               5: 'Mujer', 6: 'InformacionSocioEconomica', 7: 'InformacionSocioEconomica', 8: 'Hombre'}
 
-CAMPO_VAR1 = {1: 'nivel_educativo', 2: 'trabaja_fuera', 4: 'estudia', 
+CAMPO_VAR1 = {1: 'nivel_educativo', 2: 'trabaja_fuera', 3: 'cuantos_hijos',  4: 'estudia', 
               5: 'estado_civil', 6: 'nivel_educativo', 7: 'trabaja_fuera', 8: 'estado_civil'}
 
-TIPO_RELACION_VAR1 = {1: 'generica', 2: 'generica', 4: 'generica', 
+TIPO_RELACION_VAR1 = {1: 'generica', 2: 'generica', 3: 'rango', 4: 'generica', 
                       5: 'normal', 6: 'generica', 7: 'generica', 8: 'normal'}
 
 #DATOS DE VARIABLE NUMERO 2
@@ -140,7 +142,9 @@ def _query_set_cruce(request, var1):
     if TIPO_RELACION_VAR1[var1] == 'generica':
         _app_label = 'encuesta'
     elif TIPO_RELACION_VAR1[var1] == 'normal':
-        _app_label = '1-principal' 
+        _app_label = '1-principal'
+    elif TIPO_RELACION_VAR1[var1] == 'rango':
+        _app_label = 'encuesta'  
     
     #obtener el modelo a consultar
     model = get_model(_app_label, MODELO_VAR1[var1])
@@ -158,4 +162,21 @@ def _query_set_cruce(request, var1):
                                         ** {CAMPO_VAR1[var1]: op[0]})
             dicc[op[1]] = [obj.id for obj in objs]
         
+        elif TIPO_RELACION_VAR1[var1] == 'rango':
+            params = {}
+            if op == (0,0):
+                key = 'No tiene'
+                params['tiene_hijos'] = 'no'
+            elif op == (5,5):
+                key = '5+ hijos'
+                params['%s__gte' % CAMPO_VAR1[var1]] = op[0]
+            elif op != (5,5):
+                key = '%s-%s hijos' % (op[0], op[1])
+                params['%s__range' % CAMPO_VAR1[var1]] = op
+                
+            objs = model.objects.filter(content_type=get_content_type(request.session['content_type']),
+                                        object_id__in=[encuesta.id for encuesta in resultados],
+                                         ** params)
+            dicc[key] = [obj.object_id for obj in objs]
+                                                                                                                                      
     return dicc

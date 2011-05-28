@@ -661,3 +661,9 @@ small{
 	list-style: none;
 	margin-left: -20px;
 }
+.view_grafo{
+	font-size: 11px; text-decoration: none;
+}
+.view_grafo:hover{
+	text-decoration: underline;
+}
