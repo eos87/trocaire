@@ -5,7 +5,7 @@
 
 {% block contenido %}
 <div class="title_bar">
-	<div class="titulo">Cruce Mujeres</div>
+	<div class="titulo">Datos de {{request.session.content_type|title}}</div>
 	<div class="clean"></div>	
 </div>
 {% include "filtros_seleccionados.html" %}
@@ -17,8 +17,8 @@
 <table class="tabla-resultados">
 	<thead>
 		<tr>
-			<th rowspan="2">{{request.session.mujer_var2_nombre}}</th>
-			<th colspan="{{dicc.keys|length|sumar:1}}">{{request.session.mujer_var1_nombre}}</th>
+			<th rowspan="2">{{request.session.var2_nombre}}</th>
+			<th colspan="{{dicc.keys|length|sumar:1}}">{{request.session.var1_nombre}}</th>
 		</tr>
 		<tr>			
 			{% for key in dicc.keys %}

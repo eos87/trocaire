@@ -43,6 +43,31 @@
                 <br><br>
             </div>
         </form>
+        <br>
+        <form action="." method="POST">
+            {% csrf_token %}
+            <div class="tabla-cruces">
+                <table width="960">
+                <caption>Hombres</caption>
+                	<tr>                        
+                        <td width="40%">
+                        	<table>
+                        		<tr><td>{{form2.variable_hombre_1.label_tag}}</td></tr>
+                        		<tr><td>{{form2.variable_hombre_1}}</td></tr>
+                        	</table>                        
+                        </td>
+                        <td width="60%">
+                        	<table>
+                        		<tr><td>{{form2.variable_hombre_2.label_tag}}</td></tr>
+                        		<tr><td>{{form2.variable_hombre_2}}</td></tr>
+                        	</table>                        
+                        </td>
+                    </tr>
+                </table>                
+                <input class="consultar" type="submit" value="" name='_crucehombre' />                
+                <br><br>
+            </div>
+        </form>
     </div>	
 </div>
 
