@@ -15,7 +15,18 @@
         },
         series: {
             pointWidth: 25,
-            minPointLength : 0.5
+            minPointLength : 0.5,
+	    dataLabels: {
+                enabled: true,
+                align: "center",
+                formatter: function() {
+                    return ''+ this.y + ' %';
+                },
+                color: '#000',
+                style: {
+                    font: '12px Trebuchet MS, Verdana, sans-serif'
+                }
+            }
         }
     }
     var tooltip = {
