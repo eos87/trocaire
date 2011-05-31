@@ -611,7 +611,7 @@ def lideres_le_hablan_de(request):
             tabla[op].append(ConceptoViolencia.objects.filter(content_type=clider, object_id__in=[encuesta.id for encuesta in grupo], \
                              hablande=op, respuesta='si').count())
     for key, value in tabla.items():
-        if verificar(value) < 10:
+        if verificar(value) == 0:
             del tabla[key]
     totales = get_total(encuestas)
     tabla = get_prom_lista_func(tabla, totales)
