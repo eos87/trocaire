@@ -5,5 +5,6 @@ def variables(request):
         centinela = 0
     dicc = {
         'centinela': centinela,
+	'request': request,
     }
     return dicc
