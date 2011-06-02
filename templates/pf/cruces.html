@@ -10,12 +10,10 @@
 <div class="contraparts">
 	<div class="introform">	
 		<br>En esta sección debe seleccionar las variables que desea cruzar. 
-		Aqui va el texto que indica como funciona esta seccion <b>año</b> 
-		de implementación del instrumento y el <b>pais</b>
-		de origen, la cual a su vez habilita la posiblidad de seleccionar el <b>Departamento</b>,
-		<b>Organización</b> y <b>Municipio</b>. Basicamente debe de
-		seleccionar los filtros que quiere tomar en cuenta para su consulta y
-		posteriormente hacer un Clic en el boton <b>"Consultar"</b>
+		En la primer sección están los cruces disponibles para información de <b>Mujeres</b> 
+		y en la segunda sección los datos para los <b>Hombres</b>
+		Basicamente debe de seleccionar en la columna izquierda la primer variable a cruzar y y
+		posteriormente seleccionar la segunda variable en le columna dos, y finalmente presionar el botón <b>"Consultar"</b>
 	</div>
 	<br>
 	<div class="formblock">	        
@@ -40,6 +38,31 @@
                     </tr>
                 </table>                
                 <input class="consultar" type="submit" value="" name='_crucemujer' />                
+                <br><br>
+            </div>
+        </form>
+        <br>
+        <form action="." method="POST">
+            {% csrf_token %}
+            <div class="tabla-cruces">
+                <table width="960">
+                <caption>Hombres</caption>
+                	<tr>                        
+                        <td width="40%">
+                        	<table>
+                        		<tr><td>{{form2.variable_hombre_1.label_tag}}</td></tr>
+                        		<tr><td>{{form2.variable_hombre_1}}</td></tr>
+                        	</table>                        
+                        </td>
+                        <td width="60%">
+                        	<table>
+                        		<tr><td>{{form2.variable_hombre_2.label_tag}}</td></tr>
+                        		<tr><td>{{form2.variable_hombre_2}}</td></tr>
+                        	</table>                        
+                        </td>
+                    </tr>
+                </table>                
+                <input class="consultar" type="submit" value="" name='_crucehombre' />                
                 <br><br>
             </div>
         </form>

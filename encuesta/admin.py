@@ -388,7 +388,7 @@ class PrevalenciaVBGLiderInline(generic.GenericStackedInline):
     verbose_name_plural = 'Prevalencia de la Violencia Basada en Género'
     verbose_name = 'Prevalencia de la VBG'
     model = PrevalenciaVBGLider
-    filter_horizontal = ['quien', ]
+    filter_horizontal = ['quien', 'quien2']
     max_num = 1
 
 class LiderAdmin(admin.ModelAdmin):

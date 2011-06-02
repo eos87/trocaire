@@ -858,11 +858,22 @@ class PrevalenciaVBGLider(models.Model):
     content_object = generic.GenericForeignKey()
 
     piensa_existe = models.IntegerField(choices=SI_NO_SIMPLE2, verbose_name='¿Piensa Ud que en su comunidad existen mujeres que alguna vez han vivido VBG?')
-    ha_vivido_vbg = models.CharField(max_length=10, choices=SI_NO_SIMPLE, verbose_name='¿Considera Ud que alguna vez ha vivido VBG?')
-    que_tipo = models.ManyToManyField(TipoVBG, verbose_name='¿Qué tipo de VBG ha vivido?', blank=True, null=True)
-    frecuencia = models.IntegerField(choices=FRECUENCIA, verbose_name='En este último año, con qué frecuencia ha vivido situaciones de VBG?', blank=True, null=True)
-    quien = models.ManyToManyField(Quien, verbose_name=u'¿Quién es la persona que ha ejercido VBG sobre Ud?', blank=True, null=True)
-
+    #campos respectivos para mujeres
+    ha_vivido_vbg = models.CharField(max_length=10, choices=SI_NO_SIMPLE, 
+                                     verbose_name='Mujeres: ¿Considera Ud que alguna vez ha vivido VBG?',
+                                     blank=True, null=True)
+    que_tipo = models.ManyToManyField(TipoVBG, verbose_name='Mujeres: ¿Qué tipo de VBG ha vivido?', blank=True, null=True)
+    frecuencia = models.IntegerField(choices=FRECUENCIA, verbose_name='Mujeres: En este último año, con qué frecuencia ha vivido situaciones de VBG?', blank=True, null=True)
+    quien = models.ManyToManyField(Quien, verbose_name=u'Mujeres: ¿Quién es la persona que ha ejercido VBG sobre Ud?', blank=True, null=True)
+    
+    #campos respectivos para hombres
+    ha_vivido_vbg2 = models.CharField(max_length=10, choices=SI_NO_SIMPLE, 
+                                      verbose_name='Hombres: ¿Considera Ud que alguna vez ha ejercido violencia hacia una mujer en el último año?',
+                                      blank=True, null=True)
+    que_tipo2 = models.ManyToManyField(TipoVBG, verbose_name='Hombres: ¿Qué tipo de VBG ha ejercido?', blank=True, null=True, related_name='tipovbg_ejercida')
+    frecuencia2 = models.IntegerField(choices=FRECUENCIA2, verbose_name='Hombres: En este último año, con qué frecuencia ha ejercido violencia hacia mujer?', blank=True, null=True)
+    quien2 = models.ManyToManyField(Quien2, verbose_name=u'Hombres: ¿Qué relación o parentesco tiene Ud con la mujer o mujeres contra las cuales ha ejercido violencia?', blank=True, null=True)
+    
     def __unicode__(self):
         return u'Prevalencia de VBG %s' % self.id
 

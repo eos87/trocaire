@@ -26,6 +26,7 @@
                     return ''+ this.y;
                 },
                 color: '#000',
+                x: 20,
                 style: {
                     font: '12px Trebuchet MS, Verdana, sans-serif'
                 }
@@ -34,37 +35,67 @@
     }
     var tooltip = {
         formatter: function() {
-            return '<b>'+ this.series.name +'</b>: '+ this.y;
+            return '<b>'+ this.point.name +'</b>: '+ this.y;
         }
-    }
+    }   
     
     $(document).ready(function(){
-    	$("#tabs").tabs();        
-        var mchart{{forloop.counter}} = new Highcharts.Chart({
-            chart: {
-                renderTo: 'primergrafo',
-                defaultSeriesType: 'column',
-                height: 480,
-                width: 900
-            },
-            title: {
-                text: 'Opcion {{key}}'
-            },
-            xAxis: {
-                categories: [{% for key, value in tabla.items %}'{{key}}',{% endfor %}]
-            },
-            tooltip: tooltip,
-            plotOptions: plotOptions,            
-            series : [
-			{% for key, value in grafico.items %}
-                {name: "{{key}}",
-                data: [{{value.1}}]},
-        	{% endfor %}
-             ]
-        });    
-                
+    	$("#tabs").tabs();
+    	$('.grafos').click(function(){
+    		var id = $(this).attr('id');
+            var series;
+            var subtitulo;
+            if(id=='m10_13'){
+                subtitulo = '{{totales.0}} {{tipo|title}} de 10-13 años';
+                series = [{data: [{% for key, value in grafico.items %}{name: '{{key}}', color: "{% cycle '#89A54E' '#373BFF' '#E58B16' '#E82C0C' '#E87271' '#A6986F' %}", y: {{value.1}}}, {% endfor %}]}]
+            }else if(id=='m14_18'){
+                subtitulo = '{{totales.1}} {{tipo|title}} de 14-17 años';
+                series = [{data: [{% for key, value in grafico.items %}{name: '{{key}}', color: "{% cycle '#89A54E' '#373BFF' '#E58B16' '#E82C0C' '#E87271' '#A6986F' %}", y: {{value.2}}}, {% endfor %}]}]                
+            }else if(id=='m18_mas'){
+            	subtitulo = '{{totales.2}} {{tipo|title}} mayores de 18 años';
+                series = [{data: [{% for key, value in grafico.items %}{name: '{{key}}', color: "{% cycle '#89A54E' '#373BFF' '#E58B16' '#E82C0C' '#E87271' '#A6986F' %}", y: {{value.3}}}, {% endfor %}]}]
+            }else if(id=='todas'){
+            	subtitulo = '{{totales.3}} {% if tipo == 'mujeres' %}Todas las{% else %}Todos los{% endif %} {{tipo}}';
+                series = [{data: [{% for key, value in grafico.items %}{name: '{{key}}', color: "{% cycle '#89A54E' '#373BFF' '#E58B16' '#E82C0C' '#E87271' '#A6986F' %}", y: {{value.4}}}, {% endfor %}]}]
+            }   		
+    	
+        	var mchart = new Highcharts.Chart({
+            	chart: {
+                	renderTo: 'container',
+                	defaultSeriesType: 'bar',
+                	height: 480,
+                	width: 900
+            	},
+            	legend:{
+            		enabled: false
+            	},
+            	title: {
+                    text: '¿Qué hace usted cuando hay una situación de violencia en su comunidad?'
+                },
+            	subtitle:{
+            		text: subtitulo
+            	},
+            	xAxis: {
+                	categories: [{% for key, value in tabla.items %}'{{key}}',{% endfor %}]
+            	},
+            	yAxis: {
+                	min: 1,
+                	title: {
+                   		text: 'Promedio de selección',                   
+                	}
+             	},
+            	tooltip: tooltip,
+            	plotOptions: plotOptions,            
+            	series : series
+        	});
+    	});
     });
 </script>
+<style type="text/css">
+    #grafoshombre, #grafosmujer{
+        width: 830px;
+    }
+</style>
 {% endblock %}
 
 {% block contenido %}
@@ -74,6 +105,13 @@
     <div class="titulo der"><a href="/monitoreo/{{tipo}}/">&larr; Volver</a></div>
 </div>
 <div class="contraparts"><br>
+	<div {% if tipo == 'mujeres' %}id="grafosmujer" {% else %}id="grafoshombre"{% endif %} class="barra">
+        <a href="#" id="m10_13" class="grafos">10-13 años</a>
+        <a href="#" id="m14_18" class="grafos">14-17 años</a>
+        <a href="#" id="m18_mas" class="grafos">18+ años</a>
+        <a href="#" id="todas" class="grafos">{% if tipo == 'mujeres' %}Todas{% else %}Todos{% endif %}</a>
+    </div>
+    <div class="clean"></div>
     <div class="tabla-container">
         <table class="tabla-resultados" style="width:100%;">
             <caption>TOTALES</caption>
@@ -99,7 +137,7 @@
                 </tr>
             </tbody>
         </table><br>
-        <div id="primergrafo"></div>
+        <div id="container"></div>        
     </div>
     <div id="tabs" style="font-size:70%;">
         <ul>

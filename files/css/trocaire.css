@@ -661,3 +661,12 @@ small{
 	list-style: none;
 	margin-left: -20px;
 }
+.view_grafo{
+	background: url(/files/img/view_graph.png) no-repeat right;
+	padding-right: 20px;
+	font-size: 11px; text-decoration: none;
+	color: #069;
+}
+.view_grafo:hover{
+	text-decoration: underline;
+}
