@@ -14,3 +14,8 @@ def dict_get(value, arg):
 def sumar(value, arg):    
 
     return value + arg
+
+@register.filter
+def ordenar(value):
+    dicc = sorted(value.items(), key=lambda x: x[1], reverse=True)
+    return dicc 
