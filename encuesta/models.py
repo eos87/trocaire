@@ -4,6 +4,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.contrib.auth.models import User
 from trocaire.lugar.models import *
+from trocaire.utils import get_file_path
+from trocaire.thumbs import ImageWithThumbsField
+
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules([], ["^trocaire\.thumbs\.ImageWithThumbsField"])
 
 class Encuestador(models.Model):
     nombre_completo = models.CharField(max_length=250, help_text='Un nombre y un Apellido')
@@ -27,14 +32,17 @@ class Contraparte(models.Model):
     pais = models.ForeignKey(Pais)
     departamento = models.ForeignKey(Departamento, verbose_name='Departamento/Provincia')
     municipio = models.ForeignKey(Municipio, verbose_name='Municipio/Cantón')
-    logo = models.ImageField(upload_to='logos/', blank=True, null=True)
-
+    logo = ImageWithThumbsField(upload_to=get_file_path, sizes=((124, 47), ), blank=True, null=True, help_text=u'Logo de la organizacion')
+    #logo = models.ImageField(upload_to='logos/', blank=True, null=True)
+    
+    fileDir = 'logos/'
+    
     def __unicode__(self):
         return self.nombre_corto
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_contraparte'
+#        app_label = '1-principal'
+#        db_table = 'encuesta_contraparte'
         verbose_name_plural = 'Contrapartes'
 
 #Definiendo los choices
@@ -741,8 +749,8 @@ class Mujer(Base):
         return u'Encuesta Mujeres %s' % self.id
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_mujer'
+#        app_label = '1-principal'
+#        db_table = 'encuesta_mujer'
         verbose_name = 'Encuesta Mujer'
         verbose_name_plural = 'Encuestas Mujeres'
 
@@ -801,8 +809,8 @@ class Hombre(Base):
     comunicacion = generic.GenericRelation(ComunicacionAsertiva)
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_hombre'
+#        app_label = '1-principal'
+#        db_table = 'encuesta_hombre'
         verbose_name = 'Encuesta Hombre'
         verbose_name_plural = 'Encuestas Hombres'
 
@@ -915,8 +923,8 @@ class Lider(Base):
     comunicacion = generic.GenericRelation(ComunicacionAsertiva)
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_lider'
+#        app_label = '1-principal'
+#        db_table = 'encuesta_lider'
         verbose_name = 'Encuesta Líder/Lideresa/Docente'
         verbose_name_plural = 'Encuesta Líderes/Lideresas/Docentes'
 
@@ -1152,8 +1160,8 @@ class Funcionario(Base):
     accion_prevencion = generic.GenericRelation(IncidenciaPoliticaFuncionario)
 
     class Meta:
-        app_label = '1-principal'
-        db_table = 'encuesta_funcionario'
+#        app_label = '1-principal'
+#        db_table = 'encuesta_funcionario'
         verbose_name = 'Encuesta Funcionaria/o'
         verbose_name_plural = 'Encuesta Funcionarias/os'
 
