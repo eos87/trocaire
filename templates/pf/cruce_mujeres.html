@@ -46,7 +46,11 @@
    	}
    	var tooltip = {
        formatter: function() {
-           return '<b>'+ this.point.name +'</b>: '+ this.y +'%';
+    	   if (this.percentage != undefined){
+           		return '<b>'+ this.point.name +'</b>: '+ this.y +'%';
+    	   }else{
+    		   return '<b>'+ this.series.name +'</b>: '+ this.y +'%';
+    	   }
        }
    	}
     var leyenda = {
@@ -66,7 +70,7 @@
             {% for key, value in tabla.items %}
             if(id=='{{key|slugify}}'){
              titulo = '{{request.session.var2_nombre}}: <span style="color: #80699B;">{{key}}</span>';
-                subtitulo = 'vs {{request.session.var1_nombre}}. Total: {{total_var2|dict_get:key}}';
+                subtitulo = 'vs {{request.session.var1_nombre}}';
                 {% with total_var1 as totales %}
                 series = [{% for llave, valor in value|ordenar:totales %}{name: '{{llave}}', data: [{{valor}}]}, {% endfor %}];
                 {% endwith %}
