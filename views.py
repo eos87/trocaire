@@ -7,6 +7,7 @@ from django.template import RequestContext
 
 def index(request):
     request.session['centinela'] = 0
+    contrapartes = Contraparte.objects.all()
     return render_to_response("index.html", RequestContext(request, locals()))
 
 def get_depas(request):
