@@ -31,7 +31,7 @@
     <div class="logos">
     {% for contraparte in contrapartes %}
     {% if contraparte.logo %}
-    <img src="{{contraparte.logo.url}}" alt="{{contraparte.nombre_corto}}" class="cp" width="124" height="47">
+    <img src="{{contraparte.logo.url_124x47}}" alt="{{contraparte.nombre_corto}}" class="cp" width="124" height="47">
     {% if not forloop.last %}<img src="/files/img/separador.png" alt="line" class="line">{% endif %}
     {% endif %}    
     {% endfor %}
