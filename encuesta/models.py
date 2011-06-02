@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.contrib.auth.models import User
 from trocaire.lugar.models import *
-from trocaire.utils import get_file_path
+from trocaire.files import *
 from trocaire.thumbs import ImageWithThumbsField
 
 from south.modelsinspector import add_introspection_rules
