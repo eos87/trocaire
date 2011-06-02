@@ -32,7 +32,7 @@ class Contraparte(models.Model):
     pais = models.ForeignKey(Pais)
     departamento = models.ForeignKey(Departamento, verbose_name='Departamento/Provincia')
     municipio = models.ForeignKey(Municipio, verbose_name='Municipio/Cantón')
-    logo = ImageWithThumbsField(upload_to=get_file_path, sizes=((124, 47), ), blank=True, null=True, help_text=u'Logo de la organizacion')
+    logo = ImageWithThumbsField(upload_to=get_file_path, sizes=((124, 47), (160, 75)), blank=True, null=True, help_text=u'Logo de la organizacion')
     #logo = models.ImageField(upload_to='logos/', blank=True, null=True)
     
     fileDir = 'logos/'
