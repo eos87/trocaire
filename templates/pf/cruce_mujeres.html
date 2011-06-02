@@ -7,6 +7,8 @@
 <script type="text/javascript" src="/files/js/highcharts.js"></script>
 <script type="text/javascript" src="/files/js/exporting_patched.js"></script>
 <script type="text/javascript">
+	var chart;
+	var chart2;
 	var plotOptions = {
         pie: {
            allowPointSelect: true,
@@ -16,12 +18,24 @@
            },
            showInLegend: true
         },
+        column: {
+            groupPadding: 0,
+            pointPadding: 0.9,
+            borderWidth: 0
+        },
         series: {
+           pointWidth: 25,
+           minPointLength : 0.5,
            dataLabels: {
                enabled: true,
                align: "center",
-               formatter: function() {
-                   return ''+ this.percentage.toFixed(1) + ' %';
+               formatter: function() {            	   
+            	   if (this.percentage != undefined){
+            		   return ''+ this.percentage.toFixed(1) + ' %';   
+            	   }else{
+            		   return ''+ this.y + ' %';
+            	   }
+                   
                },
                color: '#000',
                style: {
@@ -29,49 +43,48 @@
                }
            }
        }
-   }
-   var tooltip = {
+   	}
+   	var tooltip = {
        formatter: function() {
            return '<b>'+ this.point.name +'</b>: '+ this.y +'%';
        }
-   } 
-//     var tooltip = {
-//         formatter: function() {
-//             return ''+
-//                 this.series.name +': '+ this.y;
-//         }
-//     }
+   	}
     var leyenda = {
         layout: 'horizontal',
         align: 'center',
         verticalAlign: 'bottom',
         shadow: true
-    }
-    var chart;
+    }    
+	{% comment %}{% with total_var1|dict_get:llave as total %}{{valor|get_promedio:total}}{% endwith %}{% endcomment %} 
     $(document).ready(function() {
         $('.view_grafo').click(function(){
             var id = $(this).attr('id');
             var series;
             var titulo;
             var subtitulo;
+            var tipo;
             {% for key, value in tabla.items %}
             if(id=='{{key|slugify}}'){
              titulo = '{{request.session.var2_nombre}}: <span style="color: #80699B;">{{key}}</span>';
                 subtitulo = 'vs {{request.session.var1_nombre}}. Total: {{total_var2|dict_get:key}}';
-                series = [{data: [{% for llave, valor in value|ordenar %}['{{llave}}', {{valor}}], {% endfor %}]}];
+                {% with total_var1 as totales %}
+                series = [{% for llave, valor in value|ordenar:totales %}{name: '{{llave}}', data: [{{valor}}]}, {% endfor %}];
+                {% endwith %}
+                tipo = 'column';
             }
             {% endfor %}
             {% for key in dicc.keys %}
             if(id=='{{key|slugify}}'){
              titulo = '{{request.session.var1_nombre}}: <span style="color: #80699B;">{{key}}</span>';
-                subtitulo = 'vs {{request.session.var2_nombre}}. Total: {{total_var1|dict_get:key}}';
-                series = [{data: [{% for llave, valor in tabla|ordenar %}['{{llave}}', {{valor|dict_get:key}}], {% endfor %}]}]
+                subtitulo = 'vs {{request.session.var2_nombre}}. Total: {{total_var1|dict_get:key}}';                
+                series = [{data: [{% for llave, valor in tabla.items %}['{{llave}}', {{valor|dict_get:key}}], {% endfor %}]}];                
+                tipo = 'pie';
             }
             {% endfor %}
             chart = new Highcharts.Chart({
                 chart: {
                     renderTo: 'container',
-                    defaultSeriesType: 'pie',
+                    defaultSeriesType: tipo,
                     height: 480,
                     width: 960
                 },
@@ -107,6 +120,7 @@
 {% endblock %}
 
 {% block contenido %}
+<br>
 <div class="title_bar">
 <div class="titulo">Datos de {{request.session.content_type|title}}</div>
 <div class="titulo der"><a href="/monitoreopf/cruces/">&larr; Cambiar variables</a></div>

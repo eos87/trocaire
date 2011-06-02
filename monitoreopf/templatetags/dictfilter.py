@@ -1,4 +1,5 @@
 from django import template
+from trocaire.utils import get_prom
 register = template.Library()
 
 @register.filter
@@ -16,6 +17,12 @@ def sumar(value, arg):
     return value + arg
 
 @register.filter
-def ordenar(value):
+def ordenar(value, arg):       
+    for k, v in value.items():                        
+        value[k] = get_prom(value[k], arg[k])        
     dicc = sorted(value.items(), key=lambda x: x[1], reverse=True)
-    return dicc 
+    return dicc
+
+@register.filter
+def get_promedio(value, arg):    
+    return get_prom(value, arg)
