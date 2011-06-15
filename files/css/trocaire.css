@@ -101,7 +101,7 @@ a{
 }
 .banner{
     background: url(/files/img/banner.png) repeat-x;
-    height: 286px;
+    height: 296px;
 }
 
 .filtros-seleccionados{
@@ -116,14 +116,14 @@ a{
 }
 
 .intro{
-    width: 320px;
+    width: 340px;
     float: left;
-    padding-top: 25px;
+    padding-top: 20px;
     height: 261px;
     font-size: 12px;
 }
 .intro .title{
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     color: #333333;
     padding-left: 5px;
@@ -133,12 +133,13 @@ a{
     text-align: justify;
     padding-left: 5px;
     font-size: 12px;
+    margin-top: 5px;
 }
 .salidas{
     float: left;
     width: 600px;
     margin-top: 15px;
-    padding-left: 40px;
+    padding-left: 20px;
 }
 .salidas a{
     display: inline-block;
