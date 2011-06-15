@@ -670,3 +670,10 @@ small{
 .view_grafo:hover{
 	text-decoration: underline;
 }
+.logo-org{
+	float: left;
+	width: 160px;
+	height: 160px;
+	margin-right: 10px;
+    margin-left: 10px;
+}
