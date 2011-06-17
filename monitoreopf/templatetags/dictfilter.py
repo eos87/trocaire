@@ -17,7 +17,8 @@ def sumar(value, arg):
     return value + arg
 
 @register.filter
-def ordenar(value, arg):       
+def ordenar(dicc, arg):
+    value = dict.copy(dicc)
     for k, v in value.items():                        
         value[k] = get_prom(value[k], arg[k])        
     dicc = sorted(value.items(), key=lambda x: x[1], reverse=True)

@@ -127,7 +127,7 @@ def cruce_mujeres(request):
             total_var1[key] += tabla[k][key]
     
     #calcular el total general
-    total_general = sum(total_var1.values())
+    total_general = sum(total_var1.values())    
     
     return render_to_response('pf/cruce_mujeres.html', RequestContext(request, locals()))
        
