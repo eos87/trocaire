@@ -10,6 +10,34 @@ from models import *
 from trocaire.lugar.models import *
 from trocaire.utils import _query_set_filtrado, get_total, get_prom
 
+def generales(request):
+    '''Vista para generar tablas de datos generales'''
+    total_mujeres = Mujer.objects.all().count() + Lider.objects.filter(sexo='femenino').count() + Funcionario.objects.filter(sexo='femenino').count() 
+    total_hombres = Hombre.objects.all().count() + Lider.objects.filter(sexo='masculino').count() + Funcionario.objects.filter(sexo='masculino').count()    
+    total =  total_mujeres + total_hombres
+    
+    tabla_hombre_mujer = {1: {'nombre': 'Mujeres', 'frecuencia': total_mujeres, 'porcentaje': get_prom(total_mujeres, total)},
+                          2: {'nombre': 'Hombres', 'frecuencia': total_hombres, 'porcentaje': get_prom(total_hombres, total)}}
+    
+    tabla_municipio = {}
+    dicc = {}    
+    for municipio in Municipio.objects.all().order_by('nombre'):
+        frecuencia = Mujer.objects.filter(municipio=municipio).count() + Hombre.objects.filter(municipio=municipio).count() + \
+                     Lider.objects.filter(municipio=municipio).count() + Funcionario.objects.filter(municipio=municipio).count()
+        
+        if frecuencia != 0:            
+            dicc[municipio.nombre] = frecuencia
+    
+    #ordenar el dicc    
+    dicc2 = sorted(dicc.items(), key=lambda x: x[1], reverse=True)
+    counter_municipio = 1       
+    #generar la tabla con los datos a partir del dicc ordenado
+    for value in dicc2:
+        tabla_municipio[counter_municipio] = {'nombre': value[0], 'frecuencia': value[1], 'porcentaje': get_prom(value[1], total)}
+        counter_municipio += 1
+                     
+    return render_to_response("generales.html", RequestContext(request, locals()))
+
 def consultar(request, pf=False):    
     if pf:
         request.session['pf'] = True

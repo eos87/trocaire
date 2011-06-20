@@ -1,0 +1,50 @@
+<div>
+	<table class="tabla-resultados" style="width: 100%;">
+		<caption>
+			{{titulo}} | Total encuestados: <b>{{total}}</b>
+		</caption>
+		<thead>
+			<tr>
+				<th>Categoría</th>
+				<th>Frecuencia</th>
+				<th>Porcentaje</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for key, value in tabla.items %}
+			<tr>
+				<td>{{value.nombre}}</td>
+				<td>{{value.frecuencia}}</td>
+				<td>{{value.porcentaje}} %</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+<br>
+<script type="text/javascript">
+	$(document).ready(function(){    
+        var series;
+        series = [{data: [{% for key, value in tabla.items %}['{{value.nombre}}', {{value.frecuencia}}],{% endfor %}]}]        
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: '{{titulo|slugify}}',
+                defaultSeriesType: 'pie',
+                height: 480,
+                width: 960
+            },
+            title: {
+                text: '{{titulo}}'
+            },
+            subtitle: {
+                text: 'Total: {{total}}'
+            },                                
+            tooltip: tooltip,
+            plotOptions: plotOptions,
+            series: series
+        });    
+	});
+</script>
+<div id="{{titulo|slugify}}" style='margin-left: 1px;'></div>
+
+

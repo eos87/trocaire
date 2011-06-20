@@ -8,6 +8,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^$', 'trocaire.views.index'),
+    (r'^generales/$', 'trocaire.encuesta.views.generales'),
     (r'^monitoreo/', include('trocaire.encuesta.urls')),
     (r'^monitoreopf/', include('trocaire.monitoreopf.urls')),
     (r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html'}),

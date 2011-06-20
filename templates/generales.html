@@ -1,0 +1,61 @@
+{% extends "base.html" %} 
+{% block extratitle %}Datos Generales{%endblock %} 
+
+{% block extrahead %}
+<script type="text/javascript" src="/files/js/highcharts.js"></script>
+<script type="text/javascript" src="/files/js/exporting_patched.js"></script>
+<script type="text/javascript">
+    var plotOptions = {
+         pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+               enabled: false
+            },
+            showInLegend: true
+         },         
+         column: {
+         	groupPadding: 0,
+            pointPadding: 0.9,
+            borderWidth: 0
+         },
+         series: {
+            dataLabels: {
+                enabled: true,
+                align: "center",
+                formatter: function() {
+                    return ''+ this.percentage.toFixed(0) + ' %';
+                },
+                color: '#000',
+                style: {
+                    font: '12px Trebuchet MS, Verdana, sans-serif'
+                }
+            }
+        }
+    }
+    var tooltip = {
+        formatter: function() {
+            return '<b>'+ this.point.name +'</b>: '+ this.y;
+        }
+    }    
+    var chart;    
+</script>
+{% endblock %}
+
+{% block contenido %}
+<div class="title_bar">
+	<div class="titulo">Datos Generales</div>
+</div>
+<div class="tabla-container">
+	<div class="total-hombres-mujeres">	
+	{% with tabla=tabla_hombre_mujer titulo='Total Hombres y Mujeres' total=total %}
+	{% include "tabla.html" %}
+	{% endwith %}
+	</div><br>
+	<div class="total-municipios">
+	{% with tabla=tabla_municipio titulo='Registros por municipio' total=total %}
+	{% include "tabla.html" %}
+	{% endwith %}
+	</div>
+</div>
+{% endblock %}

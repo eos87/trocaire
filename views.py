@@ -95,3 +95,4 @@ def get_orgs(request):
     orgs = Contraparte.objects.filter(departamento__pk__in=map(lambda x: int(x), ids.split(','))).values('id', 'nombre_corto')
 
     return HttpResponse(simplejson.dumps(list(orgs)), mimetype='application/json')
+
