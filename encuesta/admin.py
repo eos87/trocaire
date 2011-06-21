@@ -265,9 +265,9 @@ class MujeresAdmin(admin.ModelAdmin):
         grupos = request.user.groups.all()
         trocaire = Group.objects.get(name='Trocaire')
         if request.user.is_superuser or trocaire in grupos:
-            form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
+            form = super(MujeresAdmin, self).get_form(request, ** kwargs)
         else:
-            form = super(MujeresAdmin, self).get_form(self, request, ** kwargs)
+            form = super(MujeresAdmin, self).get_form(request, ** kwargs)
             form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
             form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
         return form
@@ -350,9 +350,9 @@ class HombresAdmin(admin.ModelAdmin):
         grupos = request.user.groups.all()
         trocaire = Group.objects.get(name='Trocaire')
         if request.user.is_superuser or trocaire in grupos:
-            form = super(HombresAdmin, self).get_form(self, request, ** kwargs)
+            form = super(HombresAdmin, self).get_form(request, ** kwargs)
         else:
-            form = super(HombresAdmin, self).get_form(self, request, ** kwargs)
+            form = super(HombresAdmin, self).get_form(request, ** kwargs)
             form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
             form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
         return form
@@ -435,9 +435,9 @@ class LiderAdmin(admin.ModelAdmin):
         grupos = request.user.groups.all()
         trocaire = Group.objects.get(name='Trocaire')
         if request.user.is_superuser or trocaire in grupos:
-            form = super(LiderAdmin, self).get_form(self, request, ** kwargs)
+            form = super(LiderAdmin, self).get_form(request, ** kwargs)
         else:
-            form = super(LiderAdmin, self).get_form(self, request, ** kwargs)
+            form = super(LiderAdmin, self).get_form(request, ** kwargs)
             form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
             form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
         return form
@@ -552,9 +552,9 @@ class FuncionarioAdmin(admin.ModelAdmin):
         grupos = request.user.groups.all()
         trocaire = Group.objects.get(name='Trocaire')
         if request.user.is_superuser or trocaire in grupos:
-            form = super(FuncionarioAdmin, self).get_form(self, request, ** kwargs)
+            form = super(FuncionarioAdmin, self).get_form(request, ** kwargs)
         else:
-            form = super(FuncionarioAdmin, self).get_form(self, request, ** kwargs)
+            form = super(FuncionarioAdmin, self).get_form(request, ** kwargs)
             form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
             form.base_fields['contraparte'].queryset = Contraparte.objects.filter(usuario=request.user)
         return form
@@ -579,9 +579,9 @@ class ContraparteAdmin(admin.ModelAdmin):
         grupos = request.user.groups.all()
         trocaire = Group.objects.get(name='Trocaire')
         if request.user.is_superuser or trocaire in grupos:
-            form = super(ContraparteAdmin, self).get_form(self, request, ** kwargs)
+            form = super(ContraparteAdmin, self).get_form(request, ** kwargs)
         else:
-            form = super(ContraparteAdmin, self).get_form(self, request, ** kwargs)
+            form = super(ContraparteAdmin, self).get_form(request, ** kwargs)
             form.base_fields['usuario'].queryset = User.objects.filter(pk=request.user.pk)
         return form
 
