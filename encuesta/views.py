@@ -20,21 +20,40 @@ def generales(request):
                           2: {'nombre': 'Hombres', 'frecuencia': total_hombres, 'porcentaje': get_prom(total_hombres, total)}}
     
     tabla_municipio = {}
-    dicc = {}    
+    dicc = {}        
     for municipio in Municipio.objects.all().order_by('nombre'):
         frecuencia = Mujer.objects.filter(municipio=municipio).count() + Hombre.objects.filter(municipio=municipio).count() + \
                      Lider.objects.filter(municipio=municipio).count() + Funcionario.objects.filter(municipio=municipio).count()
         
         if frecuencia != 0:            
-            dicc[municipio.nombre] = frecuencia
+            dicc[municipio] = frecuencia
     
     #ordenar el dicc    
     dicc2 = sorted(dicc.items(), key=lambda x: x[1], reverse=True)
     counter_municipio = 1       
     #generar la tabla con los datos a partir del dicc ordenado
     for value in dicc2:
-        tabla_municipio[counter_municipio] = {'nombre': value[0], 'frecuencia': value[1], 'porcentaje': get_prom(value[1], total)}
+        tabla_municipio[counter_municipio] = {'nombre': '%s - %s' % (value[0].departamento.nombre, value[0].nombre), 'frecuencia': value[1], 'porcentaje': get_prom(value[1], total)}
         counter_municipio += 1
+    
+    #datos para estado civil
+    counter_civil = 1
+    tabla_civil = {}
+    for op in ESTADO_CIVIL:
+        frecuencia = Mujer.objects.filter(estado_civil=op[0]).count() + Hombre.objects.filter(estado_civil=op[0]).count() + \
+                     Lider.objects.filter(estado_civil=op[0]).count() + Funcionario.objects.filter(estado_civil=op[0]).count()
+        counter_civil += 1
+        tabla_civil[counter_civil] = {'nombre': op[1], 'frecuencia': frecuencia, 'porcentaje': get_prom(frecuencia, total)}
+        
+    #datos para asistencia a iglesia
+    counter_iglesia = 1
+    tabla_iglesia = {}
+    iglesia = {True: 'Si asiste', False: 'No asiste'}
+    for op in [True, False]:
+        frecuencia = Mujer.objects.filter(asiste_iglesia=op).count() + Hombre.objects.filter(asiste_iglesia=op).count() + \
+                     Lider.objects.filter(asiste_iglesia=op).count() + Funcionario.objects.filter(asiste_iglesia=op).count()
+        counter_iglesia += 1
+        tabla_iglesia[counter_iglesia] = {'nombre': iglesia[op], 'frecuencia': frecuencia, 'porcentaje': get_prom(frecuencia, total)}        
                      
     return render_to_response("generales.html", RequestContext(request, locals()))
 

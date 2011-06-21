@@ -63,6 +63,15 @@ a{
 .salir_sprite:hover{
     background-position: 0 -28px;
 }
+.generales_sprite{
+    background: url(/files/img/generales_sprite.png) no-repeat;
+    display: inline-block;
+    width: 126px;
+    height: 28px;
+}
+.generales_sprite:hover{
+	background-position: 0 -28px;
+}
 .mh_sprite{
     background: url(/files/img/mh_sprite.png) no-repeat;
     display: inline-block;

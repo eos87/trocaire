@@ -52,10 +52,20 @@
 	{% include "tabla.html" %}
 	{% endwith %}
 	</div><br>
+	<div class="total-civil">
+	{% with tabla=tabla_civil titulo='Estado civil' total=total %}
+	{% include "tabla.html" %}
+	{% endwith %}
+	</div><br>	
+	<div class="total-iglesia">
+	{% with tabla=tabla_iglesia titulo='Asistencia a iglesia' total=total %}
+	{% include "tabla.html" %}
+	{% endwith %}
+	</div><br>
 	<div class="total-municipios">
 	{% with tabla=tabla_municipio titulo='Registros por municipio' total=total %}
 	{% include "tabla.html" %}
 	{% endwith %}
-	</div>
+	</div>		
 </div>
 {% endblock %}
