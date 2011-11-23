@@ -1,14 +1,14 @@
 # -*- coding: UTF-8 -*-
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import ViewDoesNotExist
-from django.db.models import Sum
+from django.db.models import Sum, get_model
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from forms import ConsultarForm
 from models import *
 from trocaire.lugar.models import *
-from trocaire.utils import _query_set_filtrado, get_total, get_prom
+from trocaire.utils import _query_set_filtrado, get_total, get_prom, get_content_type
 
 def generales(request):
     '''Vista para generar tablas de datos generales'''
@@ -81,6 +81,42 @@ def consultar(request, pf=False):
         request.session['centinela'] = 0
 
     return render_to_response("monitoreo/consultar.html", RequestContext(request, locals()))
+
+#---------------------------- INICIAN VISTAS NUEVAS ---------------------------------------
+def checkOpt(output, op):
+    if output == 'model':
+        opt = op
+        key = op.nombre
+    else:
+        opt = op[0]
+        key = op[1]
+        
+    return opt, key
+
+def generic_view(request, tipo, **kwargs):
+    titulo = kwargs['titulo']    
+    _modelo = get_model('encuesta', kwargs['model'])    
+    resultados = _query_set_filtrado(request, tipo)    
+    tabla = {}    
+    if kwargs['output'] == 'model':
+        opciones = get_model('encuesta', kwargs['options']).objects.all()
+    else:
+        pass
+    
+    for op in opciones:
+        opt, key = checkOpt(kwargs['output'], op)
+        tabla[key] = []
+        
+    for grupo in resultados.values():
+        for op in opciones:           
+            opt, key = checkOpt(kwargs['output'], op) 
+            tabla[key].append(_modelo.objects.filter(content_type=get_content_type(tipo), 
+                                                    object_id__in=grupo.values_list('id', flat=True), 
+                                                    ** {kwargs['field']:opt}).count())
+    totales = get_total(resultados)
+            
+    return render_to_response('new/generic_view.html', RequestContext(request, locals()))
+
 
 #---------------------------- ACA LAS VISTAS PARA FUNCIONARIOS -------------------------------#
 cfunc = ContentType.objects.get(app_label="1-principal", model="funcionario")

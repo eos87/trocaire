@@ -47,12 +47,12 @@ def _query_set_filtrado(request, tipo='mujer'):
         dicc[4] = Hombre.objects.filter(** params)
         return dicc
     
-    elif tipo == 'funcionario':
+    elif tipo == 'funcionario' or tipo == 'funcionarios':
         dicc[1] = Funcionario.objects.filter(sexo='femenino', ** params)
         dicc[2] = Funcionario.objects.filter(sexo='masculino', ** params)
         return dicc
     
-    elif tipo == 'lider':
+    elif tipo == 'lider' or tipo == 'lideres':
         dicc[1] = Lider.objects.filter(sexo='femenino', ** params)
         dicc[2] = Lider.objects.filter(sexo='masculino', ** params)
         return dicc
@@ -73,6 +73,10 @@ def get_content_type(tipo='mujeres'):
         return ContentType.objects.get(app_label="1-principal", model="mujer")
     elif tipo == 'hombres':
         return ContentType.objects.get(app_label="1-principal", model="hombre")
+    elif tipo == 'lideres':
+        return ContentType.objects.get(app_label="1-principal", model="lider")
+    elif tipo == 'funcionarios':
+        return ContentType.objects.get(app_label="1-principal", model="funcionario")
 
 #funcion para retornar una la tabla con promedios y total
 def get_list_with_total(tabla, total):
