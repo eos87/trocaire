@@ -73,7 +73,7 @@
 {% block contenido %}
 {% include "cambiar_instrumento.html" %}
 <div class="title_bar">
-    <div class="titulo">L&iacute;deres | {{titulo}}</div>
+    <div class="titulo">{% if tipo %}{{tipo|title}}{% else %}L&iacute;deres{% endif %} | {{titulo}}</div>
     <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
 </div>
 <div class="contraparts">	

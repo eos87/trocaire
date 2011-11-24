@@ -93,7 +93,7 @@
 {% block contenido %}
 {% include "cambiar_instrumento.html" %}
 <div class="title_bar">
-    <div class="titulo">L&iacute;deres | {{titulo}}</div>
+    <div class="titulo">{% if tipo %}{{tipo|title}}{% else %}L&iacute;deres{% endif %} | {{titulo}}</div>
     <div class="titulo der"><a href="/monitoreo/lideres/">&larr; Volver</a></div>
 </div>
 <div class="contraparts">
@@ -139,12 +139,13 @@
         </thead>
         <tbody>
             {% for key, value in tabla.items %}
+            {% comment %}{% if not value.0.0 == 0 and not value.1.0 == 0 %}{% endcomment %}
             <tr>
                 <td>{{key}}</td>
                 {% for valor in value %}
                 <td>{{valor.0}} ({{valor.1}} %)</td>
                 {% endfor %}
-            </tr>
+            </tr>            
             {% endfor %}
         </tbody>
     </table>

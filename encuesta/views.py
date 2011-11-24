@@ -1195,39 +1195,52 @@ def nivel_satisfaccion(request):
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
-def presenta_propuestas(request):
+def presenta_propuestas(request, tipo='lideres'):
     titulo = u'¿Ha presentado propuestas de acciones de prevención de VBG?'
-    tabla = {}
-    resultados = _query_set_filtrado(request, tipo='lider')
-
+    if tipo == 'funcionarios':
+        titulo = u'¿Su institución o usted han presentado propuestas de acciones de prevención de VBG?'
+    tabla = {}    
+    resultados = _query_set_filtrado(request, tipo=tipo)
+    modelo = CalidadAtencion if tipo == 'lideres' else IncidenciaPoliticaFuncionario
+    
     for op in ['si', 'no']:
         tabla[op.title()] = []
-
+    
     for key, grupo in resultados.items():
         lista = []
         [lista.append(encuesta.id) for encuesta in grupo]
 
         for op in ['si', 'no']:
-            tabla[op.title()].append(CalidadAtencion.objects.filter(content_type=clider, object_id__in=lista, propuesta=op).count())
+            if tipo == 'lideres':
+                params = {'propuesta':op}
+            else:
+                params = {'ha_recibido':1} if op == 'si' else {'ha_recibido':2}
+                 
+            tabla[op.title()].append(modelo.objects.filter(content_type=get_content_type(tipo), object_id__in=lista, ** params).count())
 
     totales = get_total(resultados)
     tabla = get_prom_lista_func(tabla, totales)
     return render_to_response("monitoreo/lideres/generica_lideres_pie.html",
-                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'tipo': tipo},
                               RequestContext(request))
 
-def tipo_propuesta_presentada(request):
+def tipo_propuesta_presentada(request, tipo='lideres'):
     titulo = u'¿Que tipo de propuesta ha presentado?'
-    resultados = _query_set_filtrado(request, tipo='lider')
+    if tipo == 'funcionarios':
+        titulo = u'¿Que tipo de propuestas han recibido?'
+    resultados = _query_set_filtrado(request, tipo=tipo)
     tabla = {}
     opciones = TipoPropuesta.objects.all()
+    modelo = CalidadAtencion if tipo == 'lideres' else IncidenciaPoliticaFuncionario
     for op in opciones:
         tabla[op] = []
 
     for op in opciones:
+        params = {'si_tipo':op} if tipo == 'lideres' else {'tipo_propuestas':op}
         for key, grupo in resultados.items():
-            tabla[op].append(CalidadAtencion.objects.filter(content_type=clider, object_id__in=[encuesta.id for encuesta in grupo], \
-                             si_tipo=op).count())
+            tabla[op].append(modelo.objects.filter(content_type=get_content_type(tipo), object_id__in=grupo.values_list('id', flat=True), \
+                             ** params).count())
+            
     for key, value in tabla.items():
         if verificar(value) == 1:
             del tabla[key]
@@ -1235,7 +1248,7 @@ def tipo_propuesta_presentada(request):
     tabla = get_prom_lista_func(tabla, totales)
 
     return render_to_response("monitoreo/lideres/generica_lideres.html",
-                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True, 'tipo': tipo},
                               RequestContext(request))
 
 def negocia_propuestas(request):
@@ -1380,9 +1393,9 @@ VALID_VIEWS_LIDERES = {
     'cuales-acciones': cuales_acciones_lideres,
     'mujeres-lideres': mujeres_lideres,
     'nivel-satisfaccion': nivel_satisfaccion,
-    'presenta-propuestas': presenta_propuestas,
+    #'presenta-propuestas': presenta_propuestas,
     'negocia-propuestas': negocia_propuestas,
-    'tipo-propuesta-presentada': tipo_propuesta_presentada,
+    #'tipo-propuesta-presentada': tipo_propuesta_presentada,
     'tipo-propuesta-negociada': tipo_propuesta_negociada,
     'solucion-problema-lideres': solucion_problema_lideres,
     'negociacion-exitosa': negociacion_exitosa,

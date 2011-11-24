@@ -21,8 +21,11 @@ urlpatterns = patterns('',
     #---------------------lideres-------------------------------------     
     
     
+    (r'^(?P<tipo>[-\w]+)/presenta-propuestas/$', 'trocaire.encuesta.views.presenta_propuestas'), 
+    (r'^(?P<tipo>[-\w]+)/tipo-propuesta/$', 'trocaire.encuesta.views.tipo_propuesta_presentada'),
+    
     (r'^lideres/$', direct_to_template, {'template': 'monitoreo/lideres.html'}),
-    (r'^lideres/(?P<vista>[-\w]+)/$', 'trocaire.encuesta.views._get_vista_lideres'),  
+    (r'^lideres/(?P<vista>[-\w]+)/$', 'trocaire.encuesta.views._get_vista_lideres'),      
     
     (r'^funcionarios/$', direct_to_template, {'template': 'monitoreo/funcionarios.html'}),
     (r'^funcionarios/(?P<vista>[-\w]+)/$', 'trocaire.encuesta.views._get_view_funcionario'),    
