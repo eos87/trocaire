@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block extratitle %}{{titulo}}{% endblock %}
+
+{% block contenido %}
+{% include "cambiar_instrumento.html" %}
+<div class="title_bar">
+    <div class="titulo">{{tipo|title}} | {{titulo}}</div>
+    <div class="titulo der"><a href="/monitoreo/{{tipo}}/">&larr; Volver</a></div>
+</div>
+<div class="contraparts">
+    {% include "filtros_seleccionados.html" %}    
+    <br><br>
+    <table class="tabla-resultados" style="width:100%;">
+        <caption>TOTALES</caption>
+        <thead>
+            <tr>
+            	<th></th>
+                <th>Mujeres</th>
+                <th>Hombres</th>
+            </tr>            
+        </thead>
+        <tbody>
+            <tr>
+                <td>TOTALES ENCUESTADOS</td>
+                <td>{{totales.0}}</td>
+                <td>{{totales.1}}</td>                
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    {% for key, value in tabla.items %}    
+    <table class="tabla-resultados">
+    	<caption>{% if key == 1 %}Mujeres{% else %}Hombres{% endif %}</caption>
+    	{% for obj in value %}
+    	{% if obj %}
+    	{% ifchanged obj %}
+        <tr>
+    	<td>{{obj}}</td>    	
+    	</tr>
+    	{% endifchanged %}
+    	{% endif %}
+    	{% endfor %}
+    </table><br>
+    {% endfor %}
+</div>
+{% endblock %}

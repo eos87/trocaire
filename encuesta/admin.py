@@ -519,7 +519,7 @@ class FuncionarioAdmin(admin.ModelAdmin):
     save_on_top = True
     actions_on_top = True
     search_fields = ['codigo']
-    list_filter = ['contraparte', ]
+    list_filter = ['contraparte', 'sexo']
     list_display = ['contraparte', 'codigo', 'encuestador', 'institucion', 'fecha', 'edad']
     inlines = [InformacionSocioEconomicaFuncionarioInline,
         ConceptoViolenciaInline,

@@ -1194,34 +1194,54 @@ def nivel_satisfaccion(request):
     return render_to_response("monitoreo/lideres/casos_por_tipo.html",
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
-
-def presenta_propuestas(request, tipo='lideres'):
-    titulo = u'¿Ha presentado propuestas de acciones de prevención de VBG?'
-    if tipo == 'funcionarios':
-        titulo = u'¿Su institución o usted han presentado propuestas de acciones de prevención de VBG?'
-    tabla = {}    
-    resultados = _query_set_filtrado(request, tipo=tipo)
-    modelo = CalidadAtencion if tipo == 'lideres' else IncidenciaPoliticaFuncionario
     
-    for op in ['si', 'no']:
-        tabla[op.title()] = []
+#vista generica, podra generar -ha presentado- y -ha negociado- propuestas 
+def generic_pie(request, tipo=None, ** kwargs):
+    titulo = kwargs['titulo']
+    if not tipo: 
+        tipo = kwargs['tipo']
+    tabla = {}    
+    resultados = _query_set_filtrado(request, tipo=tipo)    
+    modelo = get_model('encuesta', kwargs['model'])
+    
+    for op in kwargs['options']:
+        if kwargs['tipo_choice'] == 'tupla':
+            tabla[op[1].title()] = []
+        else:
+            tabla[op.title()] = []
     
     for key, grupo in resultados.items():
-        lista = []
-        [lista.append(encuesta.id) for encuesta in grupo]
-
-        for op in ['si', 'no']:
-            if tipo == 'lideres':
-                params = {'propuesta':op}
-            else:
-                params = {'ha_recibido':1} if op == 'si' else {'ha_recibido':2}
-                 
-            tabla[op.title()].append(modelo.objects.filter(content_type=get_content_type(tipo), object_id__in=lista, ** params).count())
-
+        for op in kwargs['options']:
+            if kwargs['tipo_choice'] == 'si_no':
+                params = { kwargs['field'] : op }
+            elif kwargs['tipo_choice'] == 'simple':
+                params = { kwargs['field'] : 1 } if op == 'si' else {kwargs['field'] : 2 }
+            elif kwargs['tipo_choice'] == 'tupla':
+                params = { kwargs['field'] : op[0] }
+                op = op[1]                             
+            
+            tabla[op.title()].append(modelo.objects.filter(content_type=get_content_type(tipo), object_id__in=grupo.values_list('id', flat=True), ** params).count())
+            
     totales = get_total(resultados)
     tabla = get_prom_lista_func(tabla, totales)
     return render_to_response("monitoreo/lideres/generica_lideres_pie.html",
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'tipo': tipo},
+                              RequestContext(request))
+    
+def generic_lista(request, tipo=None, **kwargs):
+    titulo = kwargs['titulo']
+    tabla = {}
+    if not tipo: 
+        tipo = kwargs['tipo']        
+    resultados = _query_set_filtrado(request, tipo=tipo)
+    modelo = get_model('encuesta', kwargs['model'])
+    for key, grupo in resultados.items():
+        query = modelo.objects.filter(content_type=get_content_type(tipo), object_id__in=grupo.values_list('id', flat=True))
+        tabla[key] = query.values_list(kwargs['field'], flat=True)
+            
+    totales = get_total(resultados)
+    return render_to_response("new/generic_lista.html",
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True, 'tipo': tipo},
                               RequestContext(request))
 
 def tipo_propuesta_presentada(request, tipo='lideres'):
@@ -1242,7 +1262,7 @@ def tipo_propuesta_presentada(request, tipo='lideres'):
                              ** params).count())
             
     for key, value in tabla.items():
-        if verificar(value) == 1:
+        if sum(value) == 0:
             del tabla[key]
     totales = get_total(resultados)
     tabla = get_prom_lista_func(tabla, totales)
@@ -1251,47 +1271,29 @@ def tipo_propuesta_presentada(request, tipo='lideres'):
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True, 'tipo': tipo},
                               RequestContext(request))
 
-def negocia_propuestas(request):
-    titulo = u'¿Ha negociado propuestas de acciones de prevención de VBG?'
-    tabla = {}
-    resultados = _query_set_filtrado(request, tipo='lider')
-
-    for op in ['si', 'no']:
-        tabla[op.title()] = []
-
-    for key, grupo in resultados.items():
-        lista = []
-        [lista.append(encuesta.id) for encuesta in grupo]
-
-        for op in ['si', 'no']:
-            tabla[op.title()].append(CalidadAtencion.objects.filter(content_type=clider, object_id__in=lista, propuesta2=op).count())
-
-    totales = get_total(resultados)
-    tabla = get_prom_lista_func(tabla, totales)
-    return render_to_response("monitoreo/lideres/generica_lideres_pie.html",
-                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
-                              RequestContext(request))
-
-def tipo_propuesta_negociada(request):
-    titulo = u'¿Que tipo de propuesta ha negociado?'
-    resultados = _query_set_filtrado(request, tipo='lider')
+#propuestas negociadas por lideres y funcionarios
+def tipo_propuesta_negociada(request, tipo='lideres'):
+    titulo = u'¿Que tipo de propuesta ha negociado?'    
+    resultados = _query_set_filtrado(request, tipo=tipo)
     tabla = {}
     opciones = TipoPropuesta.objects.all()
+    modelo = CalidadAtencion if tipo == 'lideres' else IncidenciaPoliticaFuncionario
     for op in opciones:
         tabla[op] = []
 
     for op in opciones:
+        params = {'si_tipo2':op} if tipo == 'lideres' else {'que_propuestas':op}
         for key, grupo in resultados.items():
-            tabla[op].append(CalidadAtencion.objects.filter(content_type=clider, object_id__in=[encuesta.id for encuesta in grupo], \
-                             si_tipo2=op).count())
-    for key, value in tabla.items():
-        if verificar(value) == 1:
+            tabla[op].append(modelo.objects.filter(content_type=get_content_type(tipo), object_id__in=grupo.values_list('id', flat=True), \
+                             **params).count())
+    for key, value in tabla.items():        
+        if sum(value) == 0:
             del tabla[key]
     totales = get_total(resultados)
     tabla = get_prom_lista_func(tabla, totales)
 
     return render_to_response("monitoreo/lideres/generica_lideres.html",
-                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True},
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True, 'tipo': tipo},
                               RequestContext(request))
 
 def solucion_problema_lideres(request):
@@ -1392,11 +1394,9 @@ VALID_VIEWS_LIDERES = {
     'prevenir-vbg': prevenir_vbg_lider,
     'cuales-acciones': cuales_acciones_lideres,
     'mujeres-lideres': mujeres_lideres,
-    'nivel-satisfaccion': nivel_satisfaccion,
-    #'presenta-propuestas': presenta_propuestas,
-    'negocia-propuestas': negocia_propuestas,
+    'nivel-satisfaccion': nivel_satisfaccion,    
     #'tipo-propuesta-presentada': tipo_propuesta_presentada,
-    'tipo-propuesta-negociada': tipo_propuesta_negociada,
+    #'tipo-propuesta-negociada': tipo_propuesta_negociada,
     'solucion-problema-lideres': solucion_problema_lideres,
     'negociacion-exitosa': negociacion_exitosa,
     'que-hace-ante-vbg': que_hace_ante_vbg,
