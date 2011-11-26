@@ -738,7 +738,7 @@ def calidad_servicios(request, tipo):
        
         for op in opciones:            
             tabla[op[1]].append(CalidadAtencion.objects.filter(content_type=get_content_type(tipo), 
-                                                                    object_id__in=lista, 
+                                                                    object_id__in=lista,
                                                                     valor_servicio=op[0]).count())    
     totales = get_total(resultados)
     tabla = get_list_with_total(tabla, totales)
