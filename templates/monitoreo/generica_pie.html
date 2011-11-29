@@ -61,7 +61,7 @@
                     width: 960
                 },
                 title: {
-                    text: '{{titulo}}'
+                    text: '{{titulo|truncatewords:11}}'
                 },
                 subtitle: {
                     text: titulo
@@ -84,7 +84,7 @@
 {% block contenido %}
 {% include "cambiar_instrumento.html" %}
     <div class="title_bar">
-        <div class="titulo">{{tipo|title}} | {{titulo}}</div>
+        <div class="titulo">{{tipo|title}} | {{titulo|truncatewords:11}}</div>
         <div class="titulo der"><a href="/monitoreo/{{tipo}}/">&larr; Volver</a></div>
     </div>
 <div class="contraparts">

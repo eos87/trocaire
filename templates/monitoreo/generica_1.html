@@ -102,7 +102,7 @@
 {% block contenido %}
 {% include "cambiar_instrumento.html" %}
 <div class="title_bar">
-    <div class="titulo">{{tipo|title}} | {{titulo}}</div>
+    <div class="titulo">{{tipo|title}} | {{titulo|truncatewords:11}}</div>
     <div class="titulo der"><a href="/monitoreo/{{tipo}}/">&larr; Volver</a></div>
 </div>
 <div class="contraparts">
@@ -121,7 +121,7 @@
         <thead>
             <tr>
                 <th rowspan="2"></th>
-                <th colspan="4">{{tipo|title}}</th>
+                <th colspan="4">{{tipo|title|truncatewords:11}}</th>
             </tr>
             <tr>
                 <th>10-13</th>
