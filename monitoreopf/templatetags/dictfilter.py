@@ -13,7 +13,6 @@ def dict_get(value, arg):
 
 @register.filter
 def sumar(value, arg):    
-
     return value + arg
 
 @register.filter
@@ -27,3 +26,7 @@ def ordenar(dicc, arg):
 @register.filter
 def get_promedio(value, arg):    
     return get_prom(value, arg)
+
+@register.filter
+def sorting(dicc):    
+    return sorted(dicc.items())

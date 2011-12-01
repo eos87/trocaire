@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
-from models import FRECUENCIA_CAPAC
+from models import *
 
 urlpatterns = patterns('',
     (r'^consultar/$', 'trocaire.encuesta.views.consultar'),
@@ -20,22 +20,20 @@ urlpatterns = patterns('',
         name="como_afecta_vbg_func"),                           
     
     #------------------ ha presentado y ha negociado propuestas ---------------------    
-    url(r'^lideres/presenta-propuestas/$', 
-        'trocaire.encuesta.views.generic_pie', 
-        {'tipo': 'lideres', 'model': 'calidadatencion', 'options': ['si', 'no'], 'tipo_choice': 'si_no', 'field': 'propuesta', 'titulo': u'¿Ha presentado propuestas de acciones de prevención de VBG?'}, 
-        name="presenta_lideres"),
-    url(r'^funcionarios/presenta-propuestas/$', 
-        'trocaire.encuesta.views.generic_pie', 
-        {'tipo': 'funcionarios', 'model': 'IncidenciaPoliticaFuncionario', 'options': ['si', 'no'], 'tipo_choice': 'simple', 'field': 'ha_recibido', 'titulo': u'¿Su institución o usted han presentado propuestas de acciones de prevención de VBG?'}, 
-        name="presenta_func"),
-    url(r'^lideres/negocia-propuestas/$', 
-        'trocaire.encuesta.views.generic_pie', 
+    url(r'^lideres/presenta-propuestas/$', 'trocaire.encuesta.views.generic_pie', 
+        {'tipo': 'lideres', 'model': 'calidadatencion', 'options': ['si', 'no'], 'tipo_choice': 'si_no', 'field': 'propuesta', 'titulo': u'¿Ha presentado propuestas de acciones de prevención de VBG?'}),
+    
+    url(r'^funcionarios/presenta-propuestas/$', 'trocaire.encuesta.views.generic_pie', 
+        {'tipo': 'funcionarios', 'model': 'IncidenciaPoliticaFuncionario', 'options': ['si', 'no'], 'tipo_choice': 'simple', 'field': 'ha_recibido', 'titulo': u'¿Su institución o usted han presentado propuestas de acciones de prevención de VBG?'}),
+    
+    url(r'^lideres/negocia-propuestas/$', 'trocaire.encuesta.views.generic_pie', 
         {'tipo': 'lideres', 'model': 'calidadatencion', 'options': ['si', 'no'], 'tipo_choice': 'si_no', 'field': 'propuesta2', 'titulo': u'¿Ha negociado propuestas de acciones de prevención de VBG?'}, 
         name="negocia_lideres"),
-    url(r'^funcionarios/negocia-propuestas/$', 
-        'trocaire.encuesta.views.generic_pie', 
+                       
+    url(r'^funcionarios/negocia-propuestas/$', 'trocaire.encuesta.views.generic_pie', 
         {'tipo': 'funcionarios', 'model': 'IncidenciaPoliticaFuncionario', 'options': ['si', 'no'], 'tipo_choice': 'simple', 'field': 'ud_negociado', 'titulo': u'¿Ud ha negociado con las mujeres de este municipio alguna propuesta que planteaba mejorar los servicios que Uds brindan?'}, 
-        name="negocia_func"),                         
+        name="negocia_func"),  
+                                              
     url(r'^(?P<tipo>[-\w]+)/vbg-afecta-mujeres/$', 'trocaire.encuesta.views.generic_pie', 
         {'model': 'efectovbg', 'options': ['si', 'no'], 'tipo_choice': 'si_no', 'field': 'afecta_mujeres', 'titulo': u'¿Cree Ud que la VBG afecta a las mujeres, la familia y a la comunidad?'}, 
         name="vbg_afecta_mujeres"),
@@ -53,18 +51,39 @@ urlpatterns = patterns('',
     
     url(r'^(?P<tipo>[-\w]+)/mencione-leyes/$', 'trocaire.encuesta.views.generic_lista', 
         {'model': 'conocimientoley', 'field': 'mencione', 'titulo': u'¿Mencione el nombre de la ley que penaliza la Violencia contra las mujeres?'}),
-    #---------------------lideres-------------------------------------    
     
-    (r'^(?P<tipo>[-\w]+)/tipo-propuesta/$', 'trocaire.encuesta.views.tipo_propuesta_presentada'),
-    (r'^(?P<tipo>[-\w]+)/tipo-propuesta-negociada/$', 'trocaire.encuesta.views.tipo_propuesta_negociada'),
+    #-------------------- salidas de lideres y funcionarios con generica hombres mujeres -----------------
+    url(r'^lideres/estudia-actualmente-2/$', 'trocaire.mujeres_hombres.views.generic_view_hm', 
+        {'tipo': 'lideres', 'modelo': 'InformacionSocioEconomicaLider', 'options': SI_NO_SIMPLE, 'field': 'estudia', 'titulo': u'¿Estudia actualmente?', 
+         'template_name': 'monitoreo/lideres/generica_lideres_pie.html', 'nocheck': True}),    
+    url(r'^funcionarios/estudia-actualmente-2/$', 'trocaire.mujeres_hombres.views.generic_view_hm', 
+        {'tipo': 'funcionarios', 'modelo': 'InformacionSocioEconomicaFuncionario', 'options': SI_NO_SIMPLE, 'field': 'estudia', 'titulo': u'¿Estudia actualmente?', 
+         'template_name': 'monitoreo/lideres/generica_lideres_pie.html', 'nocheck': True}),
+    url(r'^lideres/nivel-educativo/$', 'trocaire.mujeres_hombres.views.generic_view_hm', 
+        {'tipo': 'lideres', 'modelo': 'InformacionSocioEconomicaLider', 'options': NIVEL_EDUCATIVO, 'field': 'nivel_educativo', 'titulo': u'¿Cuál es su nivel educativo más alto?', 
+         'template_name': 'monitoreo/lideres/generica_lideres_pie.html', 'nocheck': True}),
+    url(r'^funcionarios/nivel-educativo/$', 'trocaire.mujeres_hombres.views.generic_view_hm', 
+        {'tipo': 'funcionarios', 'modelo': 'InformacionSocioEconomicaFuncionario', 'options': NIVEL_EDUCATIVO, 'field': 'nivel_educativo', 'titulo': u'¿Cuál es su nivel educativo más alto?', 
+         'template_name': 'monitoreo/lideres/generica_lideres_pie.html', 'nocheck': True}),
+    url(r'^lideres/trabaja-fuera/$', 'trocaire.mujeres_hombres.views.generic_view_hm', 
+        {'tipo': 'lideres', 'modelo': 'InformacionSocioEconomicaLider', 'options': SI_NO_SIMPLE, 'field': 'trabaja_fuera', 'titulo': u'Trabaja usted fuera del hogar?', 
+         'template_name': 'monitoreo/lideres/generica_lideres_pie.html', 'nocheck': True}),                                                  
+    url(r'^lideres/donde-trabaja/$', 'trocaire.mujeres_hombres.views.generic_view_hm', 
+        {'tipo': 'lideres', 'modelo': 'InformacionSocioEconomicaLider', 'options': LugarDeTrabajo.objects.all(), 'field': 'donde_trabaja', 'titulo': u'¿Donde trabaja?', 
+         'template_name': 'monitoreo/lideres/generica_lideres_pie.html', 'nocheck': True, 'checkcero': True}),
+        
+    #----------------- fin salidas genericas --------------------
     
-    (r'^lideres/$', direct_to_template, {'template': 'monitoreo/lideres.html'}),
-    (r'^lideres/(?P<vista>[-\w]+)/$', 'trocaire.encuesta.views._get_vista_lideres'),      
+    url(r'^(?P<tipo>[-\w]+)/tipo-propuesta/$', 'trocaire.encuesta.views.tipo_propuesta_presentada'),
+    url(r'^(?P<tipo>[-\w]+)/tipo-propuesta-negociada/$', 'trocaire.encuesta.views.tipo_propuesta_negociada'),
     
-    (r'^funcionarios/$', direct_to_template, {'template': 'monitoreo/funcionarios.html'}),
-    (r'^funcionarios/(?P<vista>[-\w]+)/$', 'trocaire.encuesta.views._get_view_funcionario'),
+    url(r'^lideres/$', direct_to_template, {'template': 'monitoreo/lideres.html'}),
+    url(r'^lideres/(?P<vista>[-\w]+)/$', 'trocaire.encuesta.views._get_vista_lideres'),      
     
-    (r'^(?P<tipo>[-\w]+)/', include('trocaire.mujeres_hombres.urls')),
+    url(r'^funcionarios/$', direct_to_template, {'template': 'monitoreo/funcionarios.html'}),
+    url(r'^funcionarios/(?P<vista>[-\w]+)/$', 'trocaire.encuesta.views._get_view_funcionario'),
+    
+    url(r'^(?P<tipo>[-\w]+)/', include('trocaire.mujeres_hombres.urls')),
 )
 
 

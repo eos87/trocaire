@@ -15,6 +15,7 @@ from trocaire.utils import get_prom_dead_list
 from trocaire.utils import get_prom_dead_list2
 from trocaire.utils import get_prom_dead_list3
 from trocaire.utils import get_total
+from trocaire.encuesta.views import get_prom_lista_func
 
 def index(request, tipo):
     if tipo == 'mujeres':
@@ -25,62 +26,54 @@ def index(request, tipo):
         raise Http404
 
 #verifica si la opcion es tupla o queryset
-def checkOpt2(op, options):
+def checkOpt(op, options):
     if type(options) == QuerySet:
         key = val = op
     elif type(options) == tuple:
         key = op[1]
-        val = op[0]
-        
+        val = op[0]        
     return key, val
 
-def generic_view_hm(request, tipo, ** params):
+def generic_view_hm(request, tipo=None, ** params):
     titulo = params['titulo']
     template = params.get('template_name', 'monitoreo/generica_1.html')
+    if tipo == None:
+        tipo = params.get('tipo', '')
+                    
     resultados = _query_set_filtrado(request, tipo)
     tabla = {}
     opciones = params['options']
     modelo = get_model('encuesta', params['modelo'])
 
     for op in opciones:
-        key, val = checkOpt2(op, params['options'])
+        key, val = checkOpt(op, params['options'])
         tabla[key] = []
 
     for key, grupo in resultados.items():
         for op in opciones:
-            key, val = checkOpt2(op, params['options'])
+            key, val = checkOpt(op, params['options'])
             tabla[key].append(modelo.objects.filter(content_type=get_content_type(tipo), object_id__in=grupo.values_list('id', flat=True), 
                                                     ** {params['field']:val}).count())
-
+    
     checkvalue = lambda x: sum(x)
-    for key, value in tabla.items():
-        if checkvalue(value) < 10:
-            del tabla[key]
+    #mandar a chequear si la suma de valores es menos de 10 (opcional)
+    if not params.get('nocheck', False) == True:        
+        for key, value in tabla.items():
+            if checkvalue(value) < 10:
+                del tabla[key]
+                
+    #mandar a chequear si la suma de valores es cero (opcional)
+    if params.get('checkcero', False) == True:
+        for key, value in tabla.items():
+            if sum(value) == 0:
+                del tabla[key]
 
     totales = get_total(resultados)
-    tabla = get_list_with_total(tabla, totales)
+    if tipo in ['mujeres', 'hombres']:
+        tabla = get_list_with_total(tabla, totales)
+    else:
+        tabla = get_prom_lista_func(tabla, totales)
     return render_to_response(template, locals(), RequestContext(request))
-#
-#    titulo = u'¿Cómo valora Ud los servicios que las intituciones ofrecen a las mujeres que viven VBG?'
-#    from trocaire.encuesta.models import SERVICIOS
-#    resultados = _query_set_filtrado(request, tipo)
-#    tabla = {}
-#    opciones = SERVICIOS
-#        
-#    for op in opciones:
-#        tabla[op[1]] = []
-#    
-#    for key, grupo in resultados.items():
-#        lista = []
-#        [lista.append(encuesta.id) for encuesta in grupo]
-#       
-#        for op in opciones:            
-#            tabla[op[1]].append(CalidadAtencion.objects.filter(content_type=get_content_type(tipo), 
-#                                                                    object_id__in=lista,
-#                                                                    valor_servicio=op[0]).count())    
-#    totales = get_total(resultados)
-#    tabla = get_list_with_total(tabla, totales)
-#    return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))        
 
 def hablan_de(request, tipo='mujeres'):    
     titulo = "¿Cuando alguien le habla de VBG usted cree que le estan hablando de?"
