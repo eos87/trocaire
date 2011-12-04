@@ -78,12 +78,14 @@
 </div>
 <div class="contraparts">	
 	{% include "filtros_seleccionados.html" %}	
+	{% if not nografo %}
     <div id= "grafosmujer" class="barra">
         <a href="#" id="m10_13" class="grafos">Gr&aacute;fico Mujeres</a>
     </div>
     <div id= "grafoshombre" class="barra">
         <a href="#" id="m14_18" class="grafos">Gr&aacute;fico Hombres</a>
     </div>
+    {% endif %}
     <div class="clean"></div>
     <div id="container"></div>
 </div>

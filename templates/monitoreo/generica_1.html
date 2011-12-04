@@ -19,7 +19,7 @@
                 enabled: true,
                 align: "center",
                 formatter: function() {
-                    return ''+ this.y + ' %';
+                    return ''+ this.y + {% if not hide_perc %}'%'{% else %}''{% endif %};
                 },
                 color: '#000',
                 style: {
@@ -31,7 +31,7 @@
     var tooltip = {
         formatter: function() {
             return ''+
-                this.series.name +': '+ this.y +'%';
+                this.series.name +': '+ this.y +{% if not hide_perc %}'%'{% else %}''{% endif %};
         }
     }
     var leyenda = {
@@ -67,7 +67,7 @@
                     width: 960
                 },
                 title: {
-                    text: '{{titulo}}'
+                    text: {% if graph_title %}'{{graph_title}}'{% else %}'{{titulo}}'{% endif %}
                 },
                 subtitle: {
                     text: titulo

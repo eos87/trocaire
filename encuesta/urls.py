@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
+from trocaire.lugar.models import Comunidad
 from models import *
 
 urlpatterns = patterns('',
@@ -52,6 +53,9 @@ urlpatterns = patterns('',
     url(r'^(?P<tipo>[-\w]+)/mencione-leyes/$', 'trocaire.encuesta.views.generic_lista', 
         {'model': 'conocimientoley', 'field': 'mencione', 'titulo': u'¿Mencione el nombre de la ley que penaliza la Violencia contra las mujeres?'}),
     
+    url(r'^(?P<tipo>[-\w]+)/acciones-prevenir/$', 'trocaire.encuesta.views.generic_lista', 
+        {'model': 'AccionVBGLider', 'field': 'porque_no', 'titulo': u'¿Por qué no han realizado acciones dirigidas a prevenir la VBG?'}),
+    
     #-------------------- salidas de lideres y funcionarios con generica hombres mujeres -----------------
     url(r'^lideres/estudia-actualmente-2/$', 'trocaire.mujeres_hombres.views.generic_view_hm', 
         {'tipo': 'lideres', 'modelo': 'InformacionSocioEconomicaLider', 'options': SI_NO_SIMPLE, 'field': 'estudia', 'titulo': u'¿Estudia actualmente?', 
@@ -71,11 +75,17 @@ urlpatterns = patterns('',
     url(r'^lideres/donde-trabaja/$', 'trocaire.mujeres_hombres.views.generic_view_hm', 
         {'tipo': 'lideres', 'modelo': 'InformacionSocioEconomicaLider', 'options': LugarDeTrabajo.objects.all(), 'field': 'donde_trabaja', 'titulo': u'¿Donde trabaja?', 
          'template_name': 'monitoreo/lideres/generica_lideres_pie.html', 'nocheck': True, 'checkcero': True}),
+    url(r'^funcionarios/comunidad-mujeres/$', 'trocaire.mujeres_hombres.views.generic_view_hm', 
+        {'tipo': 'funcionarios', 'modelo': 'IncidenciaPoliticaFuncionario', 'options': Comunidad.objects.all(), 'field': 'que_comunidades', 'titulo': u'¿De que comunidades eran las mujeres que presentaron las propuestas?', 
+         'template_name': 'monitoreo/lideres/generica_lideres_pie.html', 'nocheck': True, 'nografo': True}),
         
     #----------------- fin salidas genericas --------------------
     
     url(r'^(?P<tipo>[-\w]+)/tipo-propuesta/$', 'trocaire.encuesta.views.tipo_propuesta_presentada'),
     url(r'^(?P<tipo>[-\w]+)/tipo-propuesta-negociada/$', 'trocaire.encuesta.views.tipo_propuesta_negociada'),
+    
+    url(r'^(?P<tipo>[-\w]+)/calidad-servicios/$', 'trocaire.encuesta.views.calidad_servicios'),
+    url(r'^(?P<tipo>[-\w]+)/solucion-conflicto/$', 'trocaire.encuesta.views.solucion_conflicto'),
     
     url(r'^lideres/$', direct_to_template, {'template': 'monitoreo/lideres.html'}),
     url(r'^lideres/(?P<vista>[-\w]+)/$', 'trocaire.encuesta.views._get_vista_lideres'),      

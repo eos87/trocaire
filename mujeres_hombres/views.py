@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import ViewDoesNotExist
 from django.shortcuts import render_to_response, Http404
 from django.template import RequestContext
-from django.db.models import get_model
+from django.db.models import get_model, Avg, Sum
 from django.db.models.query import QuerySet
 from trocaire.encuesta.models import *
 from trocaire.lugar.models import *
@@ -73,7 +73,31 @@ def generic_view_hm(request, tipo=None, ** params):
         tabla = get_list_with_total(tabla, totales)
     else:
         tabla = get_prom_lista_func(tabla, totales)
+        
+    #de no necesitar los grafos, activar esta variable nografo
+    nografo = params.get('nografo', False)
     return render_to_response(template, locals(), RequestContext(request))
+
+def cantidad_personas(request, tipo='mujeres', **params):
+    titulo = params['titulo']
+    options = params['options']
+    modelo = get_model('encuesta', params['modelo'])
+    resultados = _query_set_filtrado(request, tipo)
+    tabla = {}
+    for op in options:
+        key, val = checkOpt(op, options)
+        tabla[key] = []
+        
+    for key, grupo in resultados.items():
+        for op in options:
+            key, val = checkOpt(op, options)
+            query = modelo.objects.filter(content_type=get_content_type(tipo), object_id__in=grupo.values_list('id', flat=True))
+            tabla[key].append((query.aggregate(campo=Sum(val))['campo'], round(query.aggregate(campo=Avg(val))['campo'], 1)))
+    totales = get_total(resultados)   
+    
+    return render_to_response('monitoreo/generica_1.html', RequestContext(request, {'tabla': tabla, 'totales': totales, 'hide_perc': True, 
+                                                                                    'graph_title': params['graph_title'],
+                                                                                    'titulo': titulo, 'tipo': tipo}))
 
 def hablan_de(request, tipo='mujeres'):    
     titulo = "¿Cuando alguien le habla de VBG usted cree que le estan hablando de?"
@@ -287,17 +311,21 @@ def conoce_leyes(request, tipo):
     
     return render_to_response("monitoreo/generica_pie.html", RequestContext(request, locals()))
 
-def mencione_leyes(request, tipo):
-    titulo = u'Mencione la ley que penaliza la VBG contra las mujeres'
+def lista_generica(request, tipo, **params):
+    titulo = params['titulo']
     resultados = _query_set_filtrado(request, tipo)
+    modelo = get_model('encuesta', params['modelo'])
     tabla = {}
     totales = get_total(resultados)
+    options = params.get('options', 'None') 
     
     for key, grupo in resultados.items():
-        lista = []
-        [lista.append(encuesta.id) for encuesta in grupo]
-        
-        tabla[key] = list(set(ConocimientoLey.objects.filter(content_type=get_content_type(tipo), object_id__in=lista).values_list('mencione')))
+        if options:            
+            tabla[key] = modelo.objects.filter(content_type=get_content_type(tipo), object_id__in=grupo.values_list('id', flat=True),
+                                               **{params['field']:options}).distinct().values_list(params['field_values'])                
+        else:
+            tabla[key] = modelo.objects.filter(content_type=get_content_type(tipo), 
+                                               object_id__in=grupo.values_list('id', flat=True)).distint().values_list(params['field'])
         
     return render_to_response("monitoreo/lista_leyes.html", RequestContext(request, locals()))
 
@@ -982,7 +1010,7 @@ VALID_VIEWS = {
     'afeccion-vbg': afeccion_vbg,
     'como-afecta': como_afecta,
     'conoce-leyes': conoce_leyes,
-    'mencione-leyes': mencione_leyes,
+    #'mencione-leyes': mencione_leyes,
     'prohibido-por-ley': prohibido_por_ley,
     'hombres-violentos-por': hombres_violentos,
     'hombres-violencia-mujeres': hombres_violencia_mujeres,

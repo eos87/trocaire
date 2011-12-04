@@ -73,8 +73,8 @@
 {% block contenido %}
 {% include "cambiar_instrumento.html" %}
 <div class="title_bar">
-    <div class="titulo">Funcionarios | {{titulo|truncatewords:"12"}}</div>
-    <div class="titulo der"><a href="/monitoreo/funcionarios/">&larr; Volver</a></div>
+    <div class="titulo">{% if tipo %}{{tipo|title}}{% else %}Funcionarios{% endif %} | {{titulo|truncatewords:"12"}}</div>
+    <div class="titulo der"><a href="/monitoreo/{% if tipo %}{{tipo}}{% else %}funcionarios{% endif %}/">&larr; Volver</a></div>
 </div>
 <div class="contraparts">
 	{% include "filtros_seleccionados.html" %}

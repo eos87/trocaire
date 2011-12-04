@@ -372,24 +372,26 @@ def casos_registrados_por_tipo(request):
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales},
                               RequestContext(request))
 
-def calidad_servicios(request):
+def calidad_servicios(request, tipo):
     from models import SERVICIOS
     titulo = u'¿Cómo valora usted los servicios que su institución ofrece a mujeres que viven VBG?'
-    resultados = _query_set_filtrado(request, tipo='funcionario')
+    if tipo == 'lideres':
+        titulo = u'¿Cómo valora usted los servicios que las instituciones ofrecen a mujeres que viven VBG?'
+    resultados = _query_set_filtrado(request, tipo=tipo)
+    modelo = CalidadAtencionFuncionario if tipo == 'funcionarios' else CalidadAtencion
     tabla = {}
     totales = get_total(resultados)
 
     for opcion in SERVICIOS:
         tabla[opcion[1]] = {}
 
-    for key, grupo in resultados.items():
-        lista = []
-        [lista.append(encuesta.id) for encuesta in grupo]
+    for key, grupo in resultados.items():        
         for opcion in SERVICIOS:
-            tabla[opcion[1]][key] = CalidadAtencionFuncionario.objects.filter(content_type=cfunc, object_id__in=lista, valor_servicio=opcion[0]).count()
+            tabla[opcion[1]][key] = modelo.objects.filter(content_type=get_content_type(tipo), valor_servicio=opcion[0],
+                                                          object_id__in=grupo.values_list('id', flat=True)).count()
 
     return render_to_response("monitoreo/funcionarios/casos_por_tipo2.html",
-                              {'tabla': tabla, 'titulo': titulo, 'totales': totales},
+                              {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'tipo': tipo},
                               RequestContext(request))
 
 def mejorar_atencion(request):
@@ -590,7 +592,7 @@ VALID_VIEWS_FUNCIONARIO = {
     'registro-datos': registro_datos,
     'casos-registrados': casos_registrados,
     'casos-registrados-por-tipo': casos_registrados_por_tipo,
-    'calidad-servicios': calidad_servicios,
+    #'calidad-servicios': calidad_servicios,
     'mejorar-atencion': mejorar_atencion,
     'que-acciones': que_acciones,
     'prevenir-vbg': prevenir_vbg,
@@ -1296,10 +1298,10 @@ def tipo_propuesta_negociada(request, tipo='lideres'):
                               {'tabla': tabla, 'titulo': titulo, 'totales': totales, 'nografo': True, 'tipo': tipo},
                               RequestContext(request))
 
-def solucion_problema_lideres(request):
+def solucion_conflicto(request, tipo):
     titulo = u'¿Qué se debe hacer para que la solución a un conflicto entre la pareja sea exitoso?'
     from models import DES_AC
-    resultados = _query_set_filtrado(request, tipo='lider')
+    resultados = _query_set_filtrado(request, tipo=tipo)
     tabla = {}
     campos = [field for field in ComunicacionAsertiva._meta.fields if field.get_internal_type() == 'IntegerField' and not field.name == 'object_id']
     for field in campos:
@@ -1309,7 +1311,7 @@ def solucion_problema_lideres(request):
             [lista.append(encuesta.id) for encuesta in grupo]
             tabla[field.verbose_name][key] = []
             for op in DES_AC:
-                tabla[field.verbose_name][key].append(ComunicacionAsertiva.objects.filter(content_type=clider, object_id__in=lista, ** {field.name: op[0]}).count())
+                tabla[field.verbose_name][key].append(ComunicacionAsertiva.objects.filter(content_type=get_content_type(tipo), object_id__in=lista, ** {field.name: op[0]}).count())
 
     totales = get_total(resultados)
     grafico = convertir_grafico(tabla)
@@ -1397,7 +1399,7 @@ VALID_VIEWS_LIDERES = {
     'nivel-satisfaccion': nivel_satisfaccion,    
     #'tipo-propuesta-presentada': tipo_propuesta_presentada,
     #'tipo-propuesta-negociada': tipo_propuesta_negociada,
-    'solucion-problema-lideres': solucion_problema_lideres,
+    #'solucion-problema-lideres': solucion_problema_lideres,
     'negociacion-exitosa': negociacion_exitosa,
     'que-hace-ante-vbg': que_hace_ante_vbg,
 }
