@@ -78,7 +78,7 @@ def generic_view_hm(request, tipo=None, ** params):
     nografo = params.get('nografo', False)
     return render_to_response(template, locals(), RequestContext(request))
 
-def cantidad_personas(request, tipo='mujeres', **params):
+def edad_personas(request, tipo='mujeres', **params):
     titulo = params['titulo']
     options = params['options']
     modelo = get_model('encuesta', params['modelo'])

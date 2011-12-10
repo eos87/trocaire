@@ -6,7 +6,7 @@ RANGOS = (([1, 2], 'De 1 a 2'), ([3, 4], 'De 3 a 4'),
           ([5, 6], 'De 5 a 6'), ([7, 8], 'De 7 a 8'),
           ([9, 10], 'De 9 a 10'), ([11, 2000], 'Más de 10'))
 
-PERSONAS_HABITAN = (('entre0y6', u'Número de niños entre 0 y 6 años'), 
+EDAD_HABITAN = (('entre0y6', u'Número de niños entre 0 y 6 años'), 
                     ('entre7y17', u'Número de niños entre 7 y 17 años'), 
                     ('entre18ymas', u'Número de personas de 18 y más años'))
 
@@ -37,11 +37,11 @@ urlpatterns = patterns('trocaire.mujeres_hombres.views',
     url(r'^donde-trabaja/$', 'generic_view_hm', {'options': LugarDeTrabajo.objects.all(), 'field': 'donde_trabaja', 'template_name': 'monitoreo/generica_1.html',
                                                             'modelo': 'InformacionSocioEconomica', 'titulo': u'¿Donde Trabaja?'}),
     #------------
-    url(r'^cantidad-personas/$', 'cantidad_personas', {'options': PERSONAS_HABITAN, 'modelo': 'ComposicionHogar', 'graph_title': u'Promedio de personas que habitan en la casa', 
-                                                       'titulo': u'Cantidad de personas que habitan en la casa', }),
-    url(r'^hijos-hombres/$', 'cantidad_personas', {'options': HIJOS_HOMBRES, 'modelo': 'ComposicionHogar', 'graph_title': u'Promedio de hijos hombres que viven en la casa', 
+    url(r'^edad-personas/$', 'edad_personas', {'options': EDAD_HABITAN, 'modelo': 'ComposicionHogar', 'graph_title': u'Promedio de personas que habitan en casa por rangos de edad', 
+                                                       'titulo': u'¿Qué edad tienen las personas que habitan en su casa?', }),
+    url(r'^hijos-hombres/$', 'edad_personas', {'options': HIJOS_HOMBRES, 'modelo': 'ComposicionHogar', 'graph_title': u'Promedio de hijos hombres que viven en la casa', 
                                                        'titulo': u'Cantidad hijos hombres viven con usted', }),
-    url(r'^hijas-mujeres/$', 'cantidad_personas', {'options': HIJAS_MUJERES, 'modelo': 'ComposicionHogar', 'graph_title': u'Promedio de hijas mujeres que viven en la casa', 
+    url(r'^hijas-mujeres/$', 'edad_personas', {'options': HIJAS_MUJERES, 'modelo': 'ComposicionHogar', 'graph_title': u'Promedio de hijas mujeres que viven en la casa', 
                                                        'titulo': u'Cantidad hijas mujeres viven con usted', }),
     url(r'^mencione-leyes/$', 'lista_generica', {'modelo': 'ConocimientoLey', 'field': 'mencione', 'titulo': u'Mencione la ley que penaliza la VBG contra las mujeres'}),
     url(r'^propuestas-presentadas/$', 'lista_generica', {'modelo': 'CalidadAtencion', 'options': TipoPropuesta.objects.all(), 'field': 'si_tipo__in', 
