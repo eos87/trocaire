@@ -7,18 +7,17 @@ from models import *
 urlpatterns = patterns('',
     (r'^consultar/$', 'trocaire.encuesta.views.consultar'),
 
-    url(r'^(?P<tipo>[-\w]+)/vbg-resolverse-con/$', 
-        'trocaire.encuesta.views.generic_view', 
-        {'model': 'asuntopublicovbg', 'options': 'resolvervbg', 'output': 'model', 'field': 'resolverse_con', 'titulo': u'¿Considera que la VBG es un asunto que debe ser resuelto con la participación de?'}, 
-        name="vbg_resolver_con_func"),
-    url(r'^(?P<tipo>[-\w]+)/como-afecta-vbg/$', 
-        'trocaire.encuesta.views.generic_view', 
-        {'model': 'efectovbg', 'options': 'comoafecta', 'output': 'model', 'field': 'como_afecta', 'titulo': u'¿Cómo la VBG afecta a las mujeres, las familias y a las comunidades?'}, 
-        name="como_afecta_vbg_func"),                       
-    url(r'^(?P<tipo>[-\w]+)/negociacion-exitosa-func/$', 
-        'trocaire.encuesta.views.generic_view', 
-        {'model': 'comunicacionasertiva', 'options': 'NegociacionExitosa', 'output': 'model', 'field': 'negociacion_exitosa', 'titulo': u'¿Qué se debe hacer para que una negociación de pareja sea exitosa?'}, 
-        name="como_afecta_vbg_func"),                           
+    url(r'^(?P<tipo>[-\w]+)/vbg-resolverse-con/$', 'trocaire.encuesta.views.generic_view', 
+        {'model': 'asuntopublicovbg', 'options': 'resolvervbg', 'output': 'model', 'field': 'resolverse_con', 
+         'titulo': u'¿Considera que la VBG es un asunto que debe ser resuelto con la participación de?', 'checkvalues': 3}),
+                       
+    url(r'^(?P<tipo>[-\w]+)/como-afecta-vbg/$', 'trocaire.encuesta.views.generic_view', 
+        {'model': 'efectovbg', 'options': 'comoafecta', 'output': 'model', 'field': 'como_afecta', 
+         'titulo': u'¿Cómo la VBG afecta a las mujeres, las familias y a las comunidades?', 'checkvalues': 3}),    
+                                          
+    url(r'^(?P<tipo>[-\w]+)/negociacion-exitosa-func/$', 'trocaire.encuesta.views.generic_view', 
+        {'model': 'comunicacionasertiva', 'options': 'NegociacionExitosa', 'output': 'model', 'field': 'negociacion_exitosa', 
+         'titulo': u'¿Qué se debe hacer para que una negociación de pareja sea exitosa?'}),                           
     
     #------------------ ha presentado y ha negociado propuestas ---------------------    
     url(r'^lideres/presenta-propuestas/$', 'trocaire.encuesta.views.generic_pie', 
@@ -50,7 +49,7 @@ urlpatterns = patterns('',
     url(r'^(?P<tipo>[-\w]+)/quienes-capacitan/$', 'trocaire.encuesta.views.generic_view', 
         {'model': 'accesoinformacion', 'options': 'BrindanCapacitacion', 'output': 'model', 'field': 'quien_brinda', 'titulo': u'¿Quienes les brindan estas capacitaciones?'}),
     
-    url(r'^(?P<tipo>[-\w]+)/mencione-leyes/$', 'trocaire.encuesta.views.generic_lista', 
+    url(r'^(?P<tipo>[-\w]+)/mencione-ley/$', 'trocaire.encuesta.views.generic_lista', 
         {'model': 'conocimientoley', 'field': 'mencione', 'titulo': u'¿Mencione el nombre de la ley que penaliza la Violencia contra las mujeres?'}),
     
     url(r'^(?P<tipo>[-\w]+)/acciones-prevenir/$', 'trocaire.encuesta.views.generic_lista', 

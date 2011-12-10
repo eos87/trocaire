@@ -317,7 +317,7 @@ def lista_generica(request, tipo, **params):
     modelo = get_model('encuesta', params['modelo'])
     tabla = {}
     totales = get_total(resultados)
-    options = params.get('options', 'None') 
+    options = params.get('options', None) 
     
     for key, grupo in resultados.items():
         if options:            
@@ -325,7 +325,7 @@ def lista_generica(request, tipo, **params):
                                                **{params['field']:options}).distinct().values_list(params['field_values'])                
         else:
             tabla[key] = modelo.objects.filter(content_type=get_content_type(tipo), 
-                                               object_id__in=grupo.values_list('id', flat=True)).distint().values_list(params['field'])
+                                               object_id__in=grupo.values_list('id', flat=True)).distinct().values_list(params['field'])
         
     return render_to_response("monitoreo/lista_leyes.html", RequestContext(request, locals()))
 

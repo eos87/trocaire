@@ -113,6 +113,11 @@ def generic_view(request, tipo, **kwargs):
             tabla[key].append(_modelo.objects.filter(content_type=get_content_type(tipo), 
                                                     object_id__in=grupo.values_list('id', flat=True), 
                                                     ** {kwargs['field']:opt}).count())
+    checkValues = kwargs.get('checkvalues', None)
+    if checkValues:
+        for key, value in tabla.items():
+            if verificar(value) <= checkValues:
+                del tabla[key]
     totales = get_total(resultados)
             
     return render_to_response('new/generic_view.html', RequestContext(request, locals()))
