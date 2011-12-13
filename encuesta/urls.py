@@ -83,7 +83,7 @@ urlpatterns = patterns('',
     url(r'^(?P<tipo>[-\w]+)/tipo-propuesta/$', 'trocaire.encuesta.views.tipo_propuesta_presentada'),
     url(r'^(?P<tipo>[-\w]+)/tipo-propuesta-negociada/$', 'trocaire.encuesta.views.tipo_propuesta_negociada'),
     
-    url(r'^(?P<tipo>[-\w]+)/calidad-servicios/$', 'trocaire.encuesta.views.calidad_servicios'),
+    url(r'^(?P<tipo>[-\w]+)/calidad-servicios-1/$', 'trocaire.encuesta.views.calidad_servicios'),
     url(r'^(?P<tipo>[-\w]+)/solucion-conflicto/$', 'trocaire.encuesta.views.solucion_conflicto'),
     
     url(r'^lideres/$', direct_to_template, {'template': 'monitoreo/lideres.html'}),
